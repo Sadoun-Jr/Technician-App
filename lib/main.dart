@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:technicians/layouts/login%20page.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: const LoginLayout(),
     );
   }
 }
@@ -32,15 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home page"),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Center(child: Text(
-          "Find various technicians to get the job done"
-        ),),
-      ),
     );
   }
 }
