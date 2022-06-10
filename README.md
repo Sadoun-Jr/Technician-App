@@ -9,7 +9,7 @@ I will add various info down as I think of it<br />
 
 (  ) Welcome layout<br />
 (  ) Onboarding layout (Explanation of App)<br />
-(  ) Login and resgister layout<br />
+( **IN PROGRESS** ) Login and resgister layout<br />
 
 Consumer:<br />
 (  ) Step 1: Choose priority (appointment/emergency)<br />
@@ -49,6 +49,7 @@ Technician:<br />
 same page that the consumer will be able to book an appointment from.<br />
 
 7. NO CHAT SYSTEM<br />
+
 
 
 
