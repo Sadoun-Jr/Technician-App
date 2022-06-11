@@ -14,9 +14,10 @@ I will add various info down as I think of it<br />
 Consumer:<br />
 (  ) Step 1: Choose priority (appointment/emergency)<br />
 (  ) Step 2: Choose category layout (plumber, carpenter, etc...)<br />
-(  ) Step 3: Choose technician layout<br />
-(  ) Step 4: Choose appointment date<br />
-(  ) Step 5: Confirm receipt with appointment info<br />
+(  ) Step 3: Choose kind of problem (door fix, high temp, etc...)<br />
+(  ) Step 4: Choose technician layout<br />
+(  ) Step 5: Choose appointment date<br />
+(  ) Step 6: Confirm receipt with appointment info<br />
 (  ) Consumer dashboard<br />
 
 Technician:<br />

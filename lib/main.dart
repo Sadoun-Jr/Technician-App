@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:technicians/layouts/login%20page.dart';
+import 'package:technicians/layouts/login.dart';
+
+import 'layouts/choose register method.dart';
 
 
 void main() {
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginLayout(),
+      home: SelectRegisterMethodLayout(),
     );
   }
 }

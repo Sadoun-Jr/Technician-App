@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/adobe_xd.dart';
+import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/utils/glass%20box.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 
@@ -13,7 +14,7 @@ class LoginLayout extends StatefulWidget {
 }
 
 const String LOGIN_SCREEN_HEADER = "Sign in portal";
-const String FORGOT_PASSWORD = "FORGOT PASSWORD";
+const String FORGOT_PASSWORD = "Forgot password";
 const String SCHOOL_NAME = "TEXAS SCHOOL";
 const String REGISTER = "REGISTER";
 const String USERNAME = "User Name";
@@ -71,7 +72,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           decoration:
               BoxDecoration(color: Colors.transparent,
                   border: Border.all(color: Colors.white.withOpacity(0.2),
-                      width: 3.0),
+                      width: 5.0),
                   shape: BoxShape.circle
               ),
           child: Icon(Icons.timer, size: 75,)
@@ -80,14 +81,13 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Widget glassyLoginBox() {
-    Color textColor = Colors.white;
     return Container(
-      margin: const EdgeInsets.fromLTRB(30, 0, 30, 50),
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
           ),
       child: FrostedGlassBox(
-          440,
+          470,
           Center(
             child :loginBoxContents()
           ),
@@ -102,17 +102,17 @@ class _LoginLayoutState extends State<LoginLayout> {
 
     return SingleChildScrollView(
       child: Column(children: [
-        Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.fromLTRB(10, 30, 10, 30),
-          child: Text(
-            LOGIN_SCREEN_HEADER,
-            style: TextStyle(
-                fontSize: 24,
-                color: _midWhite,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
+        // Container(
+        //   alignment: Alignment.center,
+        //   margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //   child: Text(
+        //     LOGIN_SCREEN_HEADER,
+        //     style: TextStyle(
+        //         fontSize: 24,
+        //         color: _midWhite,
+        //         fontWeight: FontWeight.bold),
+        //   ),
+        // ),
         Container(
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -180,7 +180,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: FloatingActionButton.extended(
-            backgroundColor: _primaryColor,
+            backgroundColor: _midWhite,
             label: Text(
               LOGIN,
               style:
@@ -206,7 +206,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
             ),
-            onPressed: () => {},
+            onPressed: navigateToRegisterPage,
             // onPressed: navigateToResetPassLayout,
           ),
         ),
@@ -215,6 +215,13 @@ class _LoginLayoutState extends State<LoginLayout> {
           onPressed: () => {},
         )
       ]),
+    );
+  }
+
+  void navigateToRegisterPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectRegisterMethodLayout()),
     );
   }
 }
