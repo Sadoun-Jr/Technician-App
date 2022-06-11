@@ -22,4 +22,10 @@ class AppStrings {
   static int heroRegister = 222;
   static int heroConnectwithFb = 333;
 
+  //strings for the onboarding page
+  static String selectPriorityString = "When do you need the technician?";
+  static String immediately = "Right now";
+  static String appointment = "Appointment";
+
+
 }

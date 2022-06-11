@@ -10,11 +10,11 @@ I will add various info down as I think of it<br />
 (  ) Welcome layout<br />
    (  ) Onboarding layout<br />
    ( ✓ ) Select register/login layout<br />
-(  ) Onboarding layout (Explanation of App)<br />
-( **✓** ) Login and register layout<br />
+(   ) Onboarding layout (Explanation of App)<br />
+( ✓ ) Login and register layout<br />
 
 Consumer:<br />
-(  ) Step 1: Choose priority (appointment/emergency)<br />
+( **IN PROGRESS** ) Step 1: Choose priority (appointment/emergency)<br />
 (  ) Step 2: Choose category layout (plumber, carpenter, etc...)<br />
 (  ) Step 3: Choose kind of problem (door fix, high temp, etc...)<br />
 (  ) Step 4: Choose technician layout<br />
@@ -53,6 +53,11 @@ same page that the consumer will be able to book an appointment from.<br />
 
 7. NO CHAT SYSTEM<br />
 
+## Known bugs:
+
+1. The bottom navigator from the "github.com/Pyozer/introduction_screen" lib moves slightly up in
+position when the next button is revealed for the first time, it is very minimal though and can be
+solved by making the button transparent and not clickable
 
 
 
