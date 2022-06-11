@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:technicians/layouts/login.dart';
 
 import 'layouts/choose register method.dart';
+import 'layouts/select priority.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp(
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +21,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SelectRegisterMethodLayout(),
+      home: SelectPriority()
+      // SelectRegisterMethodLayout(),
     );
   }
 }

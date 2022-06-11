@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/adobe_xd.dart';
 import 'package:technicians/layouts/register%20with%20mail.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 

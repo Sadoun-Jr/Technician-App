@@ -11,7 +11,7 @@ I will add various info down as I think of it<br />
    (  ) Onboarding layout<br />
    ( ✓ ) Select register/login layout<br />
 (  ) Onboarding layout (Explanation of App)<br />
-( **IN PROGRESS** ) Login and register layout<br />
+( **✓** ) Login and register layout<br />
 
 Consumer:<br />
 (  ) Step 1: Choose priority (appointment/emergency)<br />

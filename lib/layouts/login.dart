@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/adobe_xd.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
+import 'package:technicians/layouts/select%20priority.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 
@@ -38,7 +38,7 @@ class _LoginLayoutState extends State<LoginLayout> {
         Align(
             alignment: Alignment.topCenter,
             child: Column(
-              children: [
+              children: const [
                 SizedBox(
                   height: 100,
                 ),
@@ -168,7 +168,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-            onPressed: () => {},
+            onPressed: navigateToChoosePriority,
             // onPressed: signIn,
           ),
         ),
@@ -185,6 +185,13 @@ class _LoginLayoutState extends State<LoginLayout> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SelectRegisterMethodLayout()),
+    );
+  }
+
+  void navigateToChoosePriority() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectPriority()),
     );
   }
 
