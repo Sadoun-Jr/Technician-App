@@ -3,8 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/adobe_xd.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
-import 'package:technicians/utils/glass%20box.dart';
 import 'package:technicians/utils/hex%20colors.dart';
+import 'package:technicians/widgets/glass%20box.dart';
+
+import '../utils/strings enum.dart';
+import '../widgets/logo.dart';
 
 class LoginLayout extends StatefulWidget {
   const LoginLayout({Key? key}) : super(key: key);
@@ -13,15 +16,6 @@ class LoginLayout extends StatefulWidget {
   State<LoginLayout> createState() => _LoginLayoutState();
 }
 
-const String LOGIN_SCREEN_HEADER = "Sign in portal";
-const String FORGOT_PASSWORD = "Forgot password";
-const String SCHOOL_NAME = "TEXAS SCHOOL";
-const String REGISTER = "REGISTER";
-const String USERNAME = "User Name";
-const String EMAIL = "Email";
-const String PASSWORD = "Password";
-const String LOGIN = "LOGIN";
-const String noAccountRegisterPlease = "Don't have an account?";
 Color _primaryColor = HexColor("#1D4EAB");
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
@@ -41,8 +35,16 @@ class _LoginLayoutState extends State<LoginLayout> {
     return Stack(
       children: [
         loginLayoutBackGroundImage(),
-        logo(),
-        Align(child:
+        Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 100,
+                ),
+                Logo(75, 75),
+              ],
+            )),        Align(child:
         glassyLoginBox(),
           alignment: Alignment.bottomCenter,),
         // loginBoxContents(),
@@ -60,34 +62,14 @@ class _LoginLayoutState extends State<LoginLayout> {
     );
   }
 
-  Widget logo() {
-    return Container(
-      height: 150,
-      width: double.infinity,
-      child: Container(
-          margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
-          alignment: Alignment.center,
-          width: 75,
-          height: 75,
-          decoration:
-              BoxDecoration(color: Colors.transparent,
-                  border: Border.all(color: Colors.white.withOpacity(0.2),
-                      width: 5.0),
-                  shape: BoxShape.circle
-              ),
-          child: Icon(Icons.timer, size: 75,)
-      ),
-    );
-  }
-
   Widget glassyLoginBox() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
           ),
       child: FrostedGlassBox(
-          470,
+          350,
           Center(
             child :loginBoxContents()
           ),
@@ -106,7 +88,7 @@ class _LoginLayoutState extends State<LoginLayout> {
         //   alignment: Alignment.center,
         //   margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         //   child: Text(
-        //     LOGIN_SCREEN_HEADER,
+        //     AppStrings.loginString,
         //     style: TextStyle(
         //         fontSize: 24,
         //         color: _midWhite,
@@ -132,7 +114,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              labelText: EMAIL,
+              labelText: AppStrings.emailString,
               labelStyle: TextStyle(color: _whiteText),
               focusedBorder:OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
@@ -160,7 +142,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              labelText: PASSWORD,
+              labelText: AppStrings.passwordString,
               labelStyle: TextStyle(color: _whiteText),
               focusedBorder:OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
@@ -170,7 +152,6 @@ class _LoginLayoutState extends State<LoginLayout> {
           ),
         ),
         Container(
-
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.transparent,
@@ -178,11 +159,12 @@ class _LoginLayoutState extends State<LoginLayout> {
             borderRadius: BorderRadius.circular(20),
           ),
           height: 50,
-          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: const EdgeInsets.fromLTRB(20, 40, 20, 10),
           child: FloatingActionButton.extended(
+            heroTag: AppStrings.heroLogin,
             backgroundColor: _midWhite,
             label: Text(
-              LOGIN,
+              AppStrings.loginString,
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
@@ -190,28 +172,9 @@ class _LoginLayoutState extends State<LoginLayout> {
             // onPressed: signIn,
           ),
         ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          height: 50,
-          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: FloatingActionButton.extended(
-            backgroundColor: Colors.white,
-            label: Text(
-              REGISTER,
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-            onPressed: navigateToRegisterPage,
-            // onPressed: navigateToResetPassLayout,
-          ),
-        ),
+
         TextButton(
-          child: Text(FORGOT_PASSWORD,),
+          child: Text(AppStrings.forgotPassword,),
           onPressed: () => {},
         )
       ]),
@@ -224,4 +187,6 @@ class _LoginLayoutState extends State<LoginLayout> {
       MaterialPageRoute(builder: (context) => SelectRegisterMethodLayout()),
     );
   }
+
+
 }

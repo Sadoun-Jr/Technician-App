@@ -8,8 +8,10 @@ I will add various info down as I think of it<br />
 ## (  ) Creating and Styling the layouts
 
 (  ) Welcome layout<br />
+   (  ) Onboarding layout<br />
+   ( ✓ ) Select register/login layout<br />
 (  ) Onboarding layout (Explanation of App)<br />
-( **IN PROGRESS** ) Login and resgister layout<br />
+( **IN PROGRESS** ) Login and register layout<br />
 
 Consumer:<br />
 (  ) Step 1: Choose priority (appointment/emergency)<br />

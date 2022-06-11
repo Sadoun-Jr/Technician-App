@@ -2,34 +2,28 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/adobe_xd.dart';
-import 'package:technicians/utils/glass%20box.dart';
+import 'package:technicians/layouts/register%20with%20mail.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 
+import '../utils/strings enum.dart';
+import '../widgets/logo.dart';
 import 'login.dart';
 
 class SelectRegisterMethodLayout extends StatefulWidget {
   const SelectRegisterMethodLayout({Key? key}) : super(key: key);
 
   @override
-  State<SelectRegisterMethodLayout> createState() => _SelectRegisterMethodLayoutState();
+  State<SelectRegisterMethodLayout> createState() =>
+      _SelectRegisterMethodLayoutState();
 }
 
-const String LOGIN_SCREEN_HEADER = "Sign in portal";
-const String FORGOT_PASSWORD = "Forgot password";
-const String SCHOOL_NAME = "TEXAS SCHOOL";
-const String REGISTER_WITH_FB = "CONNECT WITH FACEBOOK";
-const String REGISTER = "REGISTER";
-const String USERNAME = "User Name";
-const String EMAIL = "Email";
-const String PASSWORD = "Password";
-const String LOGIN = "LOGIN";
 const String noAccountRegisterPlease = "Don't have an account?";
 Color _primaryColor = HexColor("#1D4EAB");
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
 
-
-class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout> {
+class _SelectRegisterMethodLayoutState
+    extends State<SelectRegisterMethodLayout> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,14 +37,20 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
     return Stack(
       children: [
         loginLayoutBackGroundImage(),
-        Align(alignment: Alignment.topCenter,
-            child: Column(children:[
-              SizedBox(height: 150,),
-        logo(), ],)
+        Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 150,
+                ),
+                Logo(75, 75),
+              ],
+            )),
+        Align(
+          child: glassyLoginBox(),
+          alignment: Alignment.bottomCenter,
         ),
-        Align(child:
-        glassyLoginBox(),
-          alignment: Alignment.bottomCenter,),
         // loginBoxContents(),
       ],
     );
@@ -66,41 +66,18 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
     );
   }
 
-  Widget logo() {
-    return Container(
-      height: 100,
-      width: double.infinity,
-      child: Container(
-          alignment: Alignment.center,
-          width: 75,
-          height: 75,
-          decoration:
-              BoxDecoration(color: Colors.transparent,
-                  border: Border.all(color: Colors.white.withOpacity(0.2),
-                      width: 5.0),
-                  shape: BoxShape.circle
-              ),
-          child: Icon(Icons.timer, size: 75,)
-      ),
-    );
-  }
-
   Widget glassyLoginBox() {
     return Container(
       margin: const EdgeInsets.fromLTRB(30, 0, 30, 100),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50.0),
-          ),
+        borderRadius: BorderRadius.circular(50.0),
+      ),
       child:
-          Align(
-            alignment: Alignment.bottomCenter,
-            child :loginBoxContents()
-          ),
+          Align(alignment: Alignment.bottomCenter, child: loginBoxContents()),
     );
   }
 
   Widget loginBoxContents() {
-
     return SingleChildScrollView(
       child: Column(children: [
         Container(
@@ -113,9 +90,10 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: FloatingActionButton.extended(
+            heroTag: AppStrings.heroLogin,
             backgroundColor: _midWhite,
             label: Text(
-              LOGIN,
+              AppStrings.loginString,
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
@@ -133,13 +111,14 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: FloatingActionButton.extended(
+            heroTag: AppStrings.heroRegister,
             backgroundColor: _midWhite,
             label: Text(
-              REGISTER,
+              AppStrings.registerString,
               style:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-            onPressed: () => {},
+            onPressed: navigateToRegisterWithMail,
             // onPressed: signIn,
           ),
         ),
@@ -153,12 +132,16 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: FloatingActionButton.extended(
+            heroTag: AppStrings.heroConnectwithFb,
             backgroundColor: Colors.white,
-            icon: Icon(Icons.facebook, color: Colors.blue,size: 30,),
+            icon: Icon(
+              Icons.facebook,
+              color: Colors.blue,
+              size: 30,
+            ),
             label: Text(
-              REGISTER_WITH_FB,
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+              AppStrings.connectWithFb,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
             ),
             onPressed: () => {},
             // onPressed: navigateToResetPassLayout,
@@ -168,9 +151,17 @@ class _SelectRegisterMethodLayoutState extends State<SelectRegisterMethodLayout>
     );
   }
 
+  void navigateToRegisterWithMail() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterWithMailLayout()),
+    );
+  }
+
   void navigateToLoginPage() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => LoginLayout()),
-    );  }
+    );
+  }
 }
