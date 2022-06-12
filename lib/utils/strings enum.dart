@@ -1,4 +1,7 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:technicians/models/technician%20object.dart';
 
 class AppStrings {
 
@@ -64,5 +67,38 @@ class AppStrings {
     "carpenter issue 13",
     "carpenter issue 14",
     "carpenter issue 15",
+  ];
+
+  //select technician page strings
+  static String selectTechnicianString = "Select a technician";
+
+  static List<Technician> techniciansList = [
+    Technician(name: "Ahmed", desc: "Best plumber ever",
+    image: Container(height: 25, width: 25, color: Colors.grey,),rating: "5",
+      availability: "Available",),
+    Technician(name: "Samir", desc: "electrician",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.5",
+      availability: "Not Available",),
+    Technician(name: "Hosam", desc: "I can fix stuff",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.8",
+      availability: "Available",),
+    Technician(name: "Iyad", desc: "wood",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.3",
+      availability: "Not Available",),
+    Technician(name: "Gamil", desc: "Can do anything!",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "5",
+      availability: "Available",),
+    Technician(name: "Foaad", desc: "electricity pew pew",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.1",
+      availability: "Available",),
+    Technician(name: "Amr", desc: "I fix cars",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.8",
+      availability: "Not Available",),
+    Technician(name: "Karim", desc: "5 pounds please",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "5",
+      availability: "Available",),
+    Technician(name: "Mazen", desc: "I am watching you",
+      image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.9",
+      availability: "Available",),
   ];
 }

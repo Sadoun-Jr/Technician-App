@@ -6,9 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Changed the toggle of category/technician to global header and changed its
-visibility accordingly<br />
-- Added list of issues for various technicians
+-Created rough layout for selecting a technician
 
 ## (  ) Creating and Styling the layouts
 
@@ -26,7 +24,7 @@ Consumer:<br />
 ( ✓ ) Step 2a: Choose category by technician (plumber, carpenter, etc...)<br />
 ( ✓ ) Step 2b: Choose category by appliance (Washer, AC, Drier, etc...)<br />
 ( ✓ ) Step 3: Choose kind of issues (door fix, high temp, etc...)<br />
-(  ) Step 4: Choose technician layout<br />
+( ✓ ) Step 4: Choose technician layout<br />
 (  ) Step 5: Choose appointment date<br />
 (  ) Step 6: Confirm receipt with appointment info<br />
 (  ) Consumer dashboard<br />

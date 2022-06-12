@@ -41,39 +41,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     Navigator.pop(context);
   }
 
-  void turnOnPrioritySelected() {
-    isNextButtonVisible = true;
-    setState(
-      () => prioritySelected = true,
-    );
-  }
-
-  void categorySelected() {
-    isNextButtonVisible = true;
-    setState(() => isCategoryChosen = true);
-  }
-
   void switchNextButtonVisibility(bool visibile) {
-    if (visibile){
+    if (visibile) {
       isNextButtonVisible = true;
     } else {
       isNextButtonVisible = false;
     }
     setState(() => isCategoryChosen = true);
-  }
-
-  Widget _buildFullscreenImage() {
-    return Image.asset(
-      'assets/fullscreen.jpg',
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
-    );
-  }
-
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/$assetName', width: width);
   }
 
   //use the library read me as a reference
@@ -101,14 +75,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               child: Row(
                 children: [
                   FloatingActionButton.extended(
-                      onPressed: sortByTrades,
-                      label: Text("Appliances")
-                  ),
+                      onPressed: sortByTrades, label: Text("Appliances")),
                   Spacer(),
                   FloatingActionButton.extended(
-                      onPressed: sortByApplicances,
-                      label: Text("Trades")
-                  )
+                      onPressed: sortByApplicances, label: Text("Trades"))
                 ],
               ),
             ),
@@ -118,15 +88,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             selectEmergencyOnboarding(),
             selectCategoryOnboarding(),
             selectIssueTypeOnboarding(selectKindOfIssuesArray()),
+            selectTechnicianOnboarding(),
             Container(
                 child: Center(
-              child: Text("Hi daddy3 ?"),
-            ))
+              child: Text("technicians profile and select appointment"),
+            )),
           ],
           onDone: () => _onIntroEnd(context),
           //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
-          skipOrBackFlex: 1,
-
+          skipOrBackFlex: 0,
+          nextFlex: 0,
           //prevent scrolling by swiping
           // freeze: true,
 
@@ -136,7 +107,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           freeze: true,
           showBackButton: true,
           onChange: (page) {
-            if (page ==1) {
+            if (page == 1) {
               setState(() => isHeaderVisible = true);
             } else {
               setState(() => isHeaderVisible = false);
@@ -146,13 +117,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           // showNextButton: false,
           // rtl: true, // Display as right-to-left
           back: const Icon(Icons.arrow_back),
-          skip: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
+          skip:
+              const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
           next: Icon(
             Icons.arrow_forward,
           ),
 
-          done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
-          curve: Curves.fastLinearToSlowEaseIn,
+          done:
+              const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
           controlsMargin: const EdgeInsets.all(16),
           controlsPadding: kIsWeb
               ? const EdgeInsets.all(12.0)
@@ -176,16 +148,181 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START PAGE 4//////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+  int selectTechnicianValue = -1;
+
+  Widget selectTechnicianOnboarding() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(5, 5, 5, 80),
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    AppStrings.selectTechnicianString,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Search...",
+                hintStyle: TextStyle(color: Colors.grey.shade600),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                contentPadding: EdgeInsets.all(8),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(color: Colors.grey.shade100)),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            child: ListView.builder(
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                itemCount: AppStrings.techniciansList.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                      height: 100,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 1, horizontal: 4),
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: InkWell(
+                          borderRadius:BorderRadius.all(Radius.circular(15)),
+                          splashColor: Colors.redAccent,
+                          onTap: () =>
+                              setState(() => selectTechnicianValue = index),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: selectTechnicianValue == index
+                                    ? Colors.redAccent
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.all(Radius.circular(15))),
+                            child: Row(children: <Widget>[
+                              Expanded(
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    CircleAvatar(
+                                      // backgroundImage:
+                                      // AppStrings.techniciansList[index].image,
+                                      backgroundColor: Colors.grey,
+                                      maxRadius: 30,
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(0, 23, 16, 16),
+                                        color: Colors.transparent,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              AppStrings
+                                                  .techniciansList[index].name,
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            SizedBox(
+                                              height: 6,
+                                            ),
+                                            Text(
+                                              AppStrings
+                                                  .techniciansList[index].desc,
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      AppStrings
+                                          .techniciansList[index].rating,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: AppStrings
+                                              .techniciansList[index].availability == "Available" ?
+                                           FontWeight.bold : FontWeight.normal),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(5, 0, 16, 0),
+                                      child: Icon(
+                                        Icons.star
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ),
+                      ));
+                }),
+          )
+        ],
+      ),
+    );
+  }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END PAGE 4/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START PAGE 3///////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
   List<String> selectKindOfIssuesArray() {
     List<String> returnedList = [];
 
-    if (selectCategoryValue == 2){
+    if (selectCategoryValue == 2) {
       returnedList = AppStrings.plumberIssues;
-    }
-    else if (selectCategoryValue == 5){
+    } else if (selectCategoryValue == 5) {
       returnedList = AppStrings.carpenterIssues;
-    }
-    else{
+    } else {
       returnedList = ["no", "issue", "found"];
     }
 
@@ -199,7 +336,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       margin: EdgeInsets.fromLTRB(40, 80, 40, 80),
       child: ListView.builder(
           shrinkWrap: true,
-          physics: ScrollPhysics(),
+          physics: BouncingScrollPhysics(),
           itemCount: listOfIssues.length,
           itemBuilder: (context, index) {
             return Container(
@@ -213,18 +350,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(15),
                   onTap: () {
-                    setState(()=>selectIssueValue = index);
+                    setState(() => selectIssueValue = index);
                   },
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
-                      color: selectIssueValue == index ? Colors.grey : Colors.transparent,
+                      color: selectIssueValue == index
+                          ? Colors.grey
+                          : Colors.transparent,
                     ),
-                    child: Center(child: Text(
+                    child: Center(
+                        child: Text(
                       listOfIssues[index],
                       maxLines: 1,
-                    )
-                    ),
+                    )),
                   ),
                 ),
               ),
@@ -240,10 +379,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
         child: ListView(
             shrinkWrap: true,
-            physics: ScrollPhysics(),
+            physics: BouncingScrollPhysics(),
             children: <Widget>[
-
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               appliancesItemRow(1, "Electricians", 2, "Plumbers"),
               appliancesItemRow(3, "Builders", 4, "Painters"),
               appliancesItemRow(5, "Carpenters", 6, "Cleaners"),
@@ -254,10 +394,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               tradesItemRow(105, "Drier", 106, "Mobile phone"),
               tradesItemRow(107, "Drier", 108, "other"),
               tradesItemRow(109, "/////", 1010, "/////"),
-
             ]));
   }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END ONBOARDING PAGE 3//////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START ONBOARDING PAGE 2////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
   void sortByApplicances() {
     isSortedByTrades = false;
     setState(() => isSortedByAppliance = true);
@@ -266,6 +419,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void sortByTrades() {
     isSortedByAppliance = false;
     setState(() => isSortedByTrades = true);
+  }
+
+  void categorySelected() {
+    isNextButtonVisible = true;
+    setState(() => isCategoryChosen = true);
   }
 
   Widget appliancesItemRow(int selectedValueFirst, String textFirst,
@@ -282,13 +440,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => selectCategoryValue = selectedValueFirst),
+              onTap: () =>
+                  setState(() => selectCategoryValue = selectedValueFirst),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textFirst)),
                 decoration: BoxDecoration(
-                    color: selectCategoryValue == selectedValueFirst ? Colors.grey : Colors.transparent,
+                    color: selectCategoryValue == selectedValueFirst
+                        ? Colors.grey
+                        : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50))),
               ),
             ),
@@ -302,15 +463,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => selectCategoryValue = selectedValueSecond),
+              onTap: () =>
+                  setState(() => selectCategoryValue = selectedValueSecond),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textSecond)),
                 decoration: BoxDecoration(
-                    color: selectCategoryValue == selectedValueSecond ? Colors.grey : Colors.transparent,
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
-              ),
+                  color: selectCategoryValue == selectedValueSecond
+                      ? Colors.grey
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
               ),
             ),
           ),
@@ -333,13 +497,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => selectCategoryValue = selectedValueFirst),
+              onTap: () =>
+                  setState(() => selectCategoryValue = selectedValueFirst),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textFirst)),
                 decoration: BoxDecoration(
-                    color: selectCategoryValue == selectedValueFirst ? Colors.grey : Colors.transparent,
+                    color: selectCategoryValue == selectedValueFirst
+                        ? Colors.grey
+                        : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50))),
               ),
             ),
@@ -353,13 +520,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => selectCategoryValue = selectedValueSecond),
+              onTap: () =>
+                  setState(() => selectCategoryValue = selectedValueSecond),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textSecond)),
                 decoration: BoxDecoration(
-                  color: selectCategoryValue == selectedValueSecond ? Colors.grey : Colors.transparent,
+                  color: selectCategoryValue == selectedValueSecond
+                      ? Colors.grey
+                      : Colors.transparent,
                   borderRadius: BorderRadius.all(Radius.circular(50)),
                 ),
               ),
@@ -367,6 +537,28 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           ),
         ],
       ),
+    );
+  }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END ONBOARDING PAGE 2//////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START ONBOARDING PAGE 1////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+  void turnOnPrioritySelected() {
+    isNextButtonVisible = true;
+    setState(
+      () => prioritySelected = true,
     );
   }
 
@@ -404,4 +596,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////END ONBOARDING PAGE 1//////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 }
