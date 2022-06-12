@@ -32,6 +32,7 @@ var isNextButtonVisible = false;
 var isCategoryChosen = false;
 var isSortedByAppliance = true;
 var isSortedByTrades = false;
+var isHeaderVisible = false;
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -93,28 +94,30 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         IntroductionScreen(
           key: introKey,
           globalBackgroundColor: Colors.transparent,
-          globalHeader: Align(
-            alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16, right: 16),
-                child: (
-
-                    //TODO: make this a progress button ...?
-                    Icon(
-                  prioritySelected ? Icons.add : Icons.facebook,
-                  size: 35,
-                )),
+          globalHeader: Visibility(
+            visible: isHeaderVisible,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(60, 40, 60, 20),
+              child: Row(
+                children: [
+                  FloatingActionButton.extended(
+                      onPressed: sortByTrades,
+                      label: Text("Appliances")
+                  ),
+                  Spacer(),
+                  FloatingActionButton.extended(
+                      onPressed: sortByApplicances,
+                      label: Text("Trades")
+                  )
+                ],
               ),
-
+            ),
           ),
 
           rawPages: [
             selectEmergencyOnboarding(),
             selectCategoryOnboarding(),
-            Container(
-                child: Center(
-              child: Text("Hi dad dy22"),
-            )),
+            selectIssueTypeOnboarding(selectKindOfIssuesArray()),
             Container(
                 child: Center(
               child: Text("Hi daddy3 ?"),
@@ -132,9 +135,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           showSkipButton: false,
           freeze: true,
           showBackButton: true,
-          // onChange: (page) {
-          //   setState(() => isNextButtonVisible = false);
-          // },
+          onChange: (page) {
+            if (page ==1) {
+              setState(() => isHeaderVisible = true);
+            } else {
+              setState(() => isHeaderVisible = false);
+            }
+          },
 
           // showNextButton: false,
           // rtl: true, // Display as right-to-left
@@ -169,32 +176,77 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  int _value = -1;
+  List<String> selectKindOfIssuesArray() {
+    List<String> returnedList = [];
+
+    if (selectCategoryValue == 2){
+      returnedList = AppStrings.plumberIssues;
+    }
+    else if (selectCategoryValue == 5){
+      returnedList = AppStrings.carpenterIssues;
+    }
+    else{
+      returnedList = ["no", "issue", "found"];
+    }
+
+    return returnedList;
+  }
+
+  int selectIssueValue = -1;
+
+  Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(40, 80, 40, 80),
+      child: ListView.builder(
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
+          itemCount: listOfIssues.length,
+          itemBuilder: (context, index) {
+            return Container(
+              height: 50,
+              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () {
+                    setState(()=>selectIssueValue = index);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: selectIssueValue == index ? Colors.grey : Colors.transparent,
+                    ),
+                    child: Center(child: Text(
+                      listOfIssues[index],
+                      maxLines: 1,
+                    )
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+    );
+  }
+
+  int selectCategoryValue = -1;
 
   Widget selectCategoryOnboarding() {
     return Container(
-        margin: EdgeInsets.fromLTRB(40, 40, 40, 60),
+        margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
         child: ListView(
             shrinkWrap: true,
             physics: ScrollPhysics(),
             children: <Widget>[
-              Row(
-                children: [
-                  FloatingActionButton.extended(
-                      onPressed: sortByTrades,
-                      label: Text("Appliances")
-                  ),
-                  Spacer(),
-                  FloatingActionButton.extended(
-                      onPressed: sortByApplicances,
-                      label: Text("Trades")
-                  )
-                ],
-              ),
+
               SizedBox(height: 20,),
               appliancesItemRow(1, "Electricians", 2, "Plumbers"),
               appliancesItemRow(3, "Builders", 4, "Painters"),
-              appliancesItemRow(5, "Handymen", 6, "Cleaners"),
+              appliancesItemRow(5, "Carpenters", 6, "Cleaners"),
               appliancesItemRow(7, "Butcher", 8, "Mechanic"),
               appliancesItemRow(9, ".....", 10, "....."),
               tradesItemRow(101, "AC", 102, "Refrigirator"),
@@ -230,13 +282,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => _value = selectedValueFirst),
+              onTap: () => setState(() => selectCategoryValue = selectedValueFirst),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textFirst)),
                 decoration: BoxDecoration(
-                    color: _value == selectedValueFirst ? Colors.grey : Colors.transparent,
+                    color: selectCategoryValue == selectedValueFirst ? Colors.grey : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50))),
               ),
             ),
@@ -250,13 +302,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => _value = selectedValueSecond),
+              onTap: () => setState(() => selectCategoryValue = selectedValueSecond),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textSecond)),
                 decoration: BoxDecoration(
-                    color: _value == selectedValueSecond ? Colors.grey : Colors.transparent,
+                    color: selectCategoryValue == selectedValueSecond ? Colors.grey : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               ),
@@ -281,13 +333,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => _value = selectedValueFirst),
+              onTap: () => setState(() => selectCategoryValue = selectedValueFirst),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textFirst)),
                 decoration: BoxDecoration(
-                    color: _value == selectedValueFirst ? Colors.grey : Colors.transparent,
+                    color: selectCategoryValue == selectedValueFirst ? Colors.grey : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50))),
               ),
             ),
@@ -301,13 +353,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () => setState(() => _value = selectedValueSecond),
+              onTap: () => setState(() => selectCategoryValue = selectedValueSecond),
               child: Container(
                 height: 56,
                 width: 56,
                 child: Center(child: Text(textSecond)),
                 decoration: BoxDecoration(
-                  color: _value == selectedValueSecond ? Colors.grey : Colors.transparent,
+                  color: selectCategoryValue == selectedValueSecond ? Colors.grey : Colors.transparent,
                   borderRadius: BorderRadius.all(Radius.circular(50)),
                 ),
               ),
