@@ -7,6 +7,9 @@ I will add various info down as I think of it<br />
 
 ## (  ) Creating and Styling the layouts
 
+✓ - placeholder layout completed<br />
+✓✓ - Layout styled<br />
+
 (  ) Welcome layout<br />
    (  ) Onboarding layout<br />
    ( ✓ ) Select register/login layout<br />
@@ -14,8 +17,8 @@ I will add various info down as I think of it<br />
 ( ✓ ) Login and register layout<br />
 
 Consumer:<br />
-( **IN PROGRESS** ) Step 1: Choose priority (appointment/emergency)<br />
-(  ) Step 2: Choose category layout (plumber, carpenter, etc...)<br />
+( ✓ ) Step 1: Choose priority (appointment/emergency)<br />
+( ✓ ) Step 2: Choose category layout (plumber, carpenter, etc...)<br />
 (  ) Step 3: Choose kind of problem (door fix, high temp, etc...)<br />
 (  ) Step 4: Choose technician layout<br />
 (  ) Step 5: Choose appointment date<br />
