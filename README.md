@@ -18,7 +18,8 @@ I will add various info down as I think of it<br />
 
 Consumer:<br />
 ( ✓ ) Step 1: Choose priority (appointment/emergency)<br />
-( ✓ ) Step 2: Choose category layout (plumber, carpenter, etc...)<br />
+( ✓ ) Step 2a: Choose category by technician (plumber, carpenter, etc...)<br />
+( ✓ ) Step 2b: Choose category by appliance (Washer, AC, Drier, etc...)<br />
 (  ) Step 3: Choose kind of problem (door fix, high temp, etc...)<br />
 (  ) Step 4: Choose technician layout<br />
 (  ) Step 5: Choose appointment date<br />

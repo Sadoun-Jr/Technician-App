@@ -30,6 +30,8 @@ class OnBoardingPage extends StatefulWidget {
 var prioritySelected = false;
 var isNextButtonVisible = false;
 var isCategoryChosen = false;
+var isSortedByAppliance = true;
+var isSortedByTrades = false;
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -93,7 +95,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           globalBackgroundColor: Colors.transparent,
           globalHeader: Align(
             alignment: Alignment.topRight,
-            child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(top: 16, right: 16),
                 child: (
@@ -104,7 +105,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   size: 35,
                 )),
               ),
-            ),
+
           ),
 
           rawPages: [
@@ -172,23 +173,53 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget selectCategoryOnboarding() {
     return Container(
-        margin: EdgeInsets.fromLTRB(40, 80, 40, 60),
+        margin: EdgeInsets.fromLTRB(40, 40, 40, 60),
         child: ListView(
             shrinkWrap: true,
             physics: ScrollPhysics(),
             children: <Widget>[
-              categoryItemRow(1, "this is value 1", 2, "This is value 2"),
-              categoryItemRow(3, "this is value 3", 4, "This is value 4"),
-              categoryItemRow(5, "this is value 5", 6, "This is value 6"),
-              categoryItemRow(7, "this is value 7", 8, "This is value 8"),
-              categoryItemRow(9, "this is value 9", 10, "This is value 10"),
+              Row(
+                children: [
+                  FloatingActionButton.extended(
+                      onPressed: sortByTrades,
+                      label: Text("Appliances")
+                  ),
+                  Spacer(),
+                  FloatingActionButton.extended(
+                      onPressed: sortByApplicances,
+                      label: Text("Trades")
+                  )
+                ],
+              ),
+              SizedBox(height: 20,),
+              appliancesItemRow(1, "Electricians", 2, "Plumbers"),
+              appliancesItemRow(3, "Builders", 4, "Painters"),
+              appliancesItemRow(5, "Handymen", 6, "Cleaners"),
+              appliancesItemRow(7, "Butcher", 8, "Mechanic"),
+              appliancesItemRow(9, ".....", 10, "....."),
+              tradesItemRow(101, "AC", 102, "Refrigirator"),
+              tradesItemRow(103, "Computer", 104, "Dry Cleaner"),
+              tradesItemRow(105, "Drier", 106, "Mobile phone"),
+              tradesItemRow(107, "Drier", 108, "other"),
+              tradesItemRow(109, "/////", 1010, "/////"),
 
             ]));
   }
 
-  Widget categoryItemRow(int selectedValueFirst, String textFirst,
+  void sortByApplicances() {
+    isSortedByTrades = false;
+    setState(() => isSortedByAppliance = true);
+  }
+
+  void sortByTrades() {
+    isSortedByAppliance = false;
+    setState(() => isSortedByTrades = true);
+  }
+
+  Widget appliancesItemRow(int selectedValueFirst, String textFirst,
       int selectedValueSecond, String textSecond) {
-    return Container(
+    return Visibility(
+      visible: isSortedByAppliance,
       child: Row(
         children: [
           Container(
@@ -228,6 +259,57 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     color: _value == selectedValueSecond ? Colors.grey : Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget tradesItemRow(int selectedValueFirst, String textFirst,
+      int selectedValueSecond, String textSecond) {
+    return Visibility(
+      visible: isSortedByTrades,
+      child: Row(
+        children: [
+          Container(
+            height: 150,
+            width: 150,
+            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 2),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: InkWell(
+              onTap: () => setState(() => _value = selectedValueFirst),
+              child: Container(
+                height: 56,
+                width: 56,
+                child: Center(child: Text(textFirst)),
+                decoration: BoxDecoration(
+                    color: _value == selectedValueFirst ? Colors.grey : Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(50))),
+              ),
+            ),
+          ),
+          Spacer(),
+          Container(
+            height: 150,
+            width: 150,
+            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 2),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: InkWell(
+              onTap: () => setState(() => _value = selectedValueSecond),
+              child: Container(
+                height: 56,
+                width: 56,
+                child: Center(child: Text(textSecond)),
+                decoration: BoxDecoration(
+                  color: _value == selectedValueSecond ? Colors.grey : Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
               ),
             ),
           ),
