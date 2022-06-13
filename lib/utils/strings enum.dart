@@ -101,4 +101,7 @@ class AppStrings {
       image: Container(height: 25, width: 25, color: Colors.grey,),rating: "4.9",
       availability: "Available",),
   ];
+
+  //confirm appointment dialog strings
+  static String confirmAppointmentDialogTitle = "";
 }

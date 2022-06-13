@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Created rough layout for technician profile page
+- Added Confirmation/Retry dialog layout, this shows up after confirming appointment
 
 ## (  ) Creating and Styling the layouts
 
@@ -70,8 +70,8 @@ solved by making the button transparent and not clickable
 that for example, if user selects plumber issue #3 but then goes back and chooses a carpenter instead
 the carpenter issue #3 will be highlighted
 
-## New things I learned:
+3. When pressing the back button in the dashboard page, black screen shows up first, then another back
+will exit the app
 
-1- In the "github.com/Pyozer/introduction_screen", I can navigate to the next page using another button 
-with an external button using a global key.
+## New things I learned:
 

@@ -2,10 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
-import 'package:technicians/layouts/select%20priority.dart';
+import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
-
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
 
@@ -198,7 +197,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   void navigateToChoosePriority() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SelectPriority()),
+      MaterialPageRoute(builder: (context) => OnboardingSelection()),
     );
   }
 }

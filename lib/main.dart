@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:technicians/layouts/select%20priority.dart';
-import 'layouts/select priority.dart';
+import 'package:technicians/layouts/dashboard.dart';
+import 'layouts/onboarding selection process.dart';
 
 
 void main() {
@@ -19,7 +19,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SelectPriority(),
+      routes: {
+        "/onboarding selection": (context) => const OnboardingSelection(),
+        "/dashboard" : (context) => const UserDashboard(),
+      },
+      home: OnboardingSelection(),
       // SelectRegisterMethodLayout(),
     );
   }

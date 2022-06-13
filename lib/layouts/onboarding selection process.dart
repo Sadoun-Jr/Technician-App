@@ -1,18 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:technicians/layouts/dashboard.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 
-class SelectPriority extends StatefulWidget {
-  const SelectPriority({Key? key}) : super(key: key);
+class OnboardingSelection extends StatefulWidget {
+  const OnboardingSelection({Key? key}) : super(key: key);
 
   @override
-  State<SelectPriority> createState() => _SelectPriorityState();
+  State<OnboardingSelection> createState() => _OnboardingSelectionState();
 }
 
-class _SelectPriorityState extends State<SelectPriority> {
+class _OnboardingSelectionState extends State<OnboardingSelection> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -101,7 +102,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             selectTechnicianOnboarding(),
             selectAppointmentTimeOnboarding(),
           ],
-          onDone: () => _onIntroEnd(context),
+          onDone: () => _showMyDialog(),
           //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
           skipOrBackFlex: 0,
           nextFlex: 0,
@@ -154,6 +155,72 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ]),
     );
   }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START DIALOGUE/////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                side: BorderSide(color: Colors.green, width: 3)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0))
+                  ),
+                  height: 150,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(40),
+                    child: Text('Awesome', style: TextStyle(fontSize: 30),),
+                ),
+                Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(20,0,20,20),
+                    child: Text('The technician has been notified with your request')),
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(40),
+                  child: FloatingActionButton.extended(
+                    //TODO: set a key here to prevent user from multiple requests
+                    label: Text("To dashboard"),
+                      onPressed: () =>
+                      {
+                        Navigator.of(context)
+                            .pushNamedAndRemoveUntil('/dashboard', (Route<dynamic> route) => false)
+                      }),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END DIALOGUE///////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -214,8 +281,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       Align(
                           alignment: Alignment.centerLeft,
                           child: FloatingActionButton.extended(
-                              heroTag: 1,
-                              label: Text("Full profile"),
+                              heroTag: 3,
+                              label: Text("Reviews"),
                               onPressed: () => {})),
                       Align(
                           alignment: Alignment.centerRight,
@@ -411,7 +478,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           onTap: () =>
                               setState(() => selectTechnicianValue = index),
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
+                            duration: Duration(milliseconds: 200),
                             decoration: BoxDecoration(
                                 color: selectTechnicianValue == index
                                     ? Colors.redAccent
@@ -751,7 +818,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 
   void turnOnPrioritySelected() {
     isNextButtonVisible = true;
