@@ -71,7 +71,7 @@ that for example, if user selects plumber issue #3 but then goes back and choose
 the carpenter issue #3 will be highlighted
 
 3. When pressing the back button in the dashboard page, black screen shows up first, then another back
-will exit the app
+will exit the app (**FIXED**)
 
 ## New things I learned:
 
