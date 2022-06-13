@@ -20,7 +20,6 @@ Color _primaryColor = HexColor("#1D4EAB");
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
 
-
 class _LoginLayoutState extends State<LoginLayout> {
   @override
   Widget build(BuildContext context) {
@@ -44,9 +43,11 @@ class _LoginLayoutState extends State<LoginLayout> {
                 ),
                 Logo(75, 75),
               ],
-            )),        Align(child:
-        glassyLoginBox(),
-          alignment: Alignment.bottomCenter,),
+            )),
+        Align(
+          child: glassyLoginBox(),
+          alignment: Alignment.bottomCenter,
+        ),
         // loginBoxContents(),
       ],
     );
@@ -66,20 +67,18 @@ class _LoginLayoutState extends State<LoginLayout> {
     return Container(
       margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50.0),
-          ),
+        borderRadius: BorderRadius.circular(50.0),
+      ),
       child: FrostedGlassBox(
-          350,
-          Center(
-            child :loginBoxContents()
-          ),
-          double.infinity),
+        350,
+        double.infinity,
+        Center(child: loginBoxContents()),
+      ),
     );
   }
 
   Widget loginBoxContents() {
-    TextEditingController emailController = TextEditingController(
-    );
+    TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
     return SingleChildScrollView(
@@ -110,13 +109,16 @@ class _LoginLayoutState extends State<LoginLayout> {
                   width: 1.25,
                 ),
               ),
-              prefixIcon: Icon(Icons.email,color: _midWhite,),
+              prefixIcon: Icon(
+                Icons.email,
+                color: _midWhite,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.emailString,
               labelStyle: TextStyle(color: _whiteText),
-              focusedBorder:OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
@@ -138,13 +140,16 @@ class _LoginLayoutState extends State<LoginLayout> {
                   width: 1.25,
                 ),
               ),
-              prefixIcon: Icon(Icons.lock,color: _midWhite,),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: _midWhite,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.passwordString,
               labelStyle: TextStyle(color: _whiteText),
-              focusedBorder:OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
@@ -174,7 +179,9 @@ class _LoginLayoutState extends State<LoginLayout> {
         ),
 
         TextButton(
-          child: Text(AppStrings.forgotPassword,),
+          child: Text(
+            AppStrings.forgotPassword,
+          ),
           onPressed: () => {},
         )
       ]),
@@ -194,6 +201,4 @@ class _LoginLayoutState extends State<LoginLayout> {
       MaterialPageRoute(builder: (context) => SelectPriority()),
     );
   }
-
-
 }

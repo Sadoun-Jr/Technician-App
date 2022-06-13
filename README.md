@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
--Created rough layout for selecting a technician
+- Created rough layout for technician profile page
 
 ## (  ) Creating and Styling the layouts
 
@@ -25,7 +25,7 @@ Consumer:<br />
 ( ✓ ) Step 2b: Choose category by appliance (Washer, AC, Drier, etc...)<br />
 ( ✓ ) Step 3: Choose kind of issues (door fix, high temp, etc...)<br />
 ( ✓ ) Step 4: Choose technician layout<br />
-(  ) Step 5: Choose appointment date<br />
+( ✓ ) Step 5: Choose appointment date from technician profile page<br />
 (  ) Step 6: Confirm receipt with appointment info<br />
 (  ) Consumer dashboard<br />
 
@@ -70,5 +70,8 @@ solved by making the button transparent and not clickable
 that for example, if user selects plumber issue #3 but then goes back and chooses a carpenter instead
 the carpenter issue #3 will be highlighted
 
+## New things I learned:
 
+1- In the "github.com/Pyozer/introduction_screen", I can navigate to the next page using another button 
+with an external button using a global key.
 

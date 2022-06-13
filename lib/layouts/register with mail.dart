@@ -13,7 +13,6 @@ class RegisterWithMailLayout extends StatefulWidget {
 }
 
 class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
-
   Color _primaryColor = HexColor("#1D4EAB");
   Color _whiteText = Colors.white;
   Color _midWhite = Colors.white54;
@@ -21,9 +20,9 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
+      home: Scaffold(
         body: (loginLayout()),
-    ),
+      ),
     );
   }
 
@@ -31,14 +30,20 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
     return Stack(
       children: [
         loginLayoutBackGroundImage(),
-        Align(alignment: Alignment.topCenter,
-            child: Column(children:[
-              SizedBox(height: 50,),
-              Logo(75, 75), ],)
+        Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Logo(75, 75),
+              ],
+            )),
+        Align(
+          child: glassyLoginBox(),
+          alignment: Alignment.bottomCenter,
         ),
-        Align(child:
-        glassyLoginBox(),
-          alignment: Alignment.bottomCenter,),
         // loginBoxContents(),
       ],
     );
@@ -61,11 +66,10 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
         borderRadius: BorderRadius.circular(50.0),
       ),
       child: FrostedGlassBox(
-          470,
-          Center(
-              child :loginBoxContents()
-          ),
-          double.infinity),
+        470,
+        double.infinity,
+        Center(child: loginBoxContents()),
+      ),
     );
   }
 
@@ -82,9 +86,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
           child: Text(
             AppStrings.registerNewAccountString,
             style: TextStyle(
-                fontSize: 24,
-                color: _midWhite,
-                fontWeight: FontWeight.bold),
+                fontSize: 24, color: _midWhite, fontWeight: FontWeight.bold),
           ),
         ),
         Container(
@@ -102,13 +104,16 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                   width: 1.25,
                 ),
               ),
-              prefixIcon: Icon(Icons.email,color: _midWhite,),
+              prefixIcon: Icon(
+                Icons.email,
+                color: _midWhite,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.emailString,
               labelStyle: TextStyle(color: _whiteText),
-              focusedBorder:OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
@@ -130,20 +135,22 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                   width: 1.25,
                 ),
               ),
-              prefixIcon: Icon(Icons.lock,color: _midWhite,),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: _midWhite,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.passwordString,
               labelStyle: TextStyle(color: _whiteText),
-              focusedBorder:OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
           ),
         ),
-
         Container(
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           padding: const EdgeInsets.all(10),
@@ -159,22 +166,23 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                   width: 1.25,
                 ),
               ),
-              prefixIcon: Icon(Icons.lock,color: _midWhite,),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: _midWhite,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.confirmPasswordString,
               labelStyle: TextStyle(color: _whiteText),
-              focusedBorder:OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: _midWhite, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
           ),
         ),
-
         Container(
-
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.transparent,
@@ -189,13 +197,12 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             label: Text(
               AppStrings.createAccountButton,
               style:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
             onPressed: () => {},
             // onPressed: signIn,
           ),
         ),
-
       ]),
     );
   }
@@ -206,6 +213,4 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       MaterialPageRoute(builder: (context) => page()),
     );
   }
-
-
 }

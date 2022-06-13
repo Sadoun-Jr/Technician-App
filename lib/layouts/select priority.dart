@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
+import 'package:technicians/widgets/glass%20box.dart';
 
 class SelectPriority extends StatefulWidget {
   const SelectPriority({Key? key}) : super(key: key);
@@ -50,6 +52,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     setState(() => isCategoryChosen = true);
   }
 
+  void nextPage() {
+    introKey.currentState?.next();
+  }
+
+  void skipPages() {
+    introKey.currentState?.skipToEnd();
+  }
+
   //use the library read me as a reference
   //https://pub.dev/packages/introduction_screen
   @override
@@ -89,10 +99,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             selectCategoryOnboarding(),
             selectIssueTypeOnboarding(selectKindOfIssuesArray()),
             selectTechnicianOnboarding(),
-            Container(
-                child: Center(
-              child: Text("technicians profile and select appointment"),
-            )),
+            selectAppointmentTimeOnboarding(),
           ],
           onDone: () => _onIntroEnd(context),
           //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
@@ -151,7 +158,191 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////START PAGE 4//////////////////////////////////
+/////////////////////////////START PAGE 5///////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+  Widget selectAppointmentTimeOnboarding() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 16, 20, 80),
+      child: ListView(
+        physics: ScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true, // use this
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.red, width: 2)),
+              child: Icon(
+                Icons.person,
+                size: 250,
+              )),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  color: Colors.white54),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "Hamad",
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 20),
+                      )),
+                  SizedBox(height: 5),
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "This is somewhat a medium sized description of the technician",
+                        maxLines: 2,
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: FloatingActionButton.extended(
+                              heroTag: 1,
+                              label: Text("Full profile"),
+                              onPressed: () => {})),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: FloatingActionButton.extended(
+                              heroTag: 2,
+                              label: Text("portfolio"),
+                              onPressed: () => {})),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Container(
+              height: 150,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  color: Colors.white54),
+              child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Appointment selection here",
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 20),
+                  )),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FrostedGlassBox(
+                  100,
+                  100,
+                  Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "53",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Jobs"),
+                      )
+                    ],
+                  ))),
+              FrostedGlassBox(
+                  100,
+                  100,
+                  Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "4.5",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Rating"),
+                      )
+                    ],
+                  ))),
+              FrostedGlassBox(
+                  100,
+                  100,
+                  Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "99%",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Completion"),
+                      )
+                    ],
+                  ))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END PAGE 5/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START PAGE 4///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,16 +406,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: InkWell(
-                          borderRadius:BorderRadius.all(Radius.circular(15)),
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
                           splashColor: Colors.redAccent,
                           onTap: () =>
                               setState(() => selectTechnicianValue = index),
-                          child: Container(
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 400),
                             decoration: BoxDecoration(
                                 color: selectTechnicianValue == index
                                     ? Colors.redAccent
                                     : Colors.transparent,
-                                borderRadius: BorderRadius.all(Radius.circular(15))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
                             child: Row(children: <Widget>[
                               Expanded(
                                 child: Row(
@@ -272,18 +465,22 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       ),
                                     ),
                                     Text(
-                                      AppStrings
-                                          .techniciansList[index].rating,
+                                      AppStrings.techniciansList[index].rating,
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: AppStrings
-                                              .techniciansList[index].availability == "Available" ?
-                                           FontWeight.bold : FontWeight.normal),
+                                                      .techniciansList[index]
+                                                      .availability ==
+                                                  "Available"
+                                              ? FontWeight.bold
+                                              : FontWeight.normal),
                                     ),
                                     Container(
                                       margin: EdgeInsets.fromLTRB(5, 0, 16, 0),
                                       child: Icon(
-                                        Icons.star
+                                        Icons.star,
+                                        size: 16,
+                                        color: HexColor("FFD700"),
                                       ),
                                     ),
                                   ],
@@ -555,6 +752,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
   void turnOnPrioritySelected() {
     isNextButtonVisible = true;
     setState(
@@ -583,14 +781,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               backgroundColor: Colors.red,
               icon: Icon(Icons.emergency),
               heroTag: 1,
-              onPressed: turnOnPrioritySelected,
+              onPressed: nextPage,
               label: Text(AppStrings.immediately)),
           SizedBox(height: 20),
           FloatingActionButton.extended(
               backgroundColor: Colors.blueGrey,
               heroTag: 2,
               icon: Icon(Icons.lock_clock),
-              onPressed: () => {},
+              onPressed: skipPages,
               label: Text(AppStrings.appointment)),
         ],
       ),
