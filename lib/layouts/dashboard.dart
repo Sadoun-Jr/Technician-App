@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 
 class UserDashboard extends StatefulWidget {
@@ -214,23 +215,23 @@ class _UserDashboardState extends State<UserDashboard> {
                 color: Colors.white,
                 borderRadius:
                 BorderRadius.vertical(top: Radius.circular(borderRadius))),
-            // child: Center(
-            //   child: pendingOrdersBox(),
-            // ),
+            child: Center(
+              child: pendingOrdersBox(),
+            ),
           ),
           Container(
             child: circleInBoxLayoutStats(
-                quizzesCompleted, QUIZZES_COMPLETED, totalScore, TOTAL_SCORE),
+                34, "Jobs", 4500, "Paid"),
           ),
           Container(
             child: circleInBoxLayoutStats(
-                correctAnswers, CORRECT_ANSWERS, wrongAnswers, WRONG_ANSWERS),
+                4.8, "Rating", 00, "..."),
           ),
         ]));
   }
 
   Widget circleInBoxLayoutStats(
-      int firstNumber, String firstStat, int secondNumber, String secondStat) {
+      double firstNumber, String firstStat, double secondNumber, String secondStat) {
     return Container(
       height: 220.0,
       color: secondaryColor,
@@ -253,7 +254,7 @@ class _UserDashboardState extends State<UserDashboard> {
     );
   }
 
-  Widget backGroundSquareForStats(int number, String stat) {
+  Widget backGroundSquareForStats(double number, String stat) {
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       padding: const EdgeInsets.all(15),
@@ -342,22 +343,55 @@ class _UserDashboardState extends State<UserDashboard> {
   }
 
   Widget pendingOrdersBox() {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      elevation: 3,
-      child: Container(
-          padding: const EdgeInsets.all(10),
-          width: double.infinity,
-          color: Colors.transparent,
-          child: Center(
-            child: Text("Pending orders"),
-          )),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            color: HexColor("#D4AF37")
+          ),
+          height: 140,
+            width: 140,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                onTap: () => navigateToPendingOrCompletedOrders(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(child: Text("Pending orders\n(1)")),
+                ),
+              ),
+            )),
+        Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                color: Colors.green
+            ),
+            height: 140,
+            width: 140,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                onTap: () => navigateToPendingOrCompletedOrders(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(child: Text("Completed orders")),
+                ),
+              ),
+            )),
+      ],
     );
   }
 
-
+  navigateToPendingOrCompletedOrders() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PendingAndCompletedOrders()),
+    );
+  }
 
    String schoolName = "TEXAS SCHOOL";
    String LOGIN_SCREEN_HEADER = "Sign in portal";

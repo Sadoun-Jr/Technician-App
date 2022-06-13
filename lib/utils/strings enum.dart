@@ -1,7 +1,6 @@
-import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:technicians/models/technician%20object.dart';
+import 'package:technicians/models/issue%20object.dart';
 
 class AppStrings {
 
@@ -104,4 +103,98 @@ class AppStrings {
 
   //confirm appointment dialog strings
   static String confirmAppointmentDialogTitle = "";
+
+  //list of pending and completed orders page strings
+  static String listOfOrdersString = "Previous orders";
+
+  static List<Issue> listOfIssues = [
+    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3, this is quite the long issue by the way!",
+      timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
+      completedBy: "Ahmed", isCompleted: false, paymentMethod: "In App",
+      technicianReview: "I really loved the work of this guy, he was quick and "
+          "nice. I will definately be ordering him again the next time i need to!",
+      technicianRating: "5", price: 450.50,
+      image:ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),//or 15.0
+        child: Container(
+          height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+          child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+        ),
+      )
+    ),
+    Issue(issueTitle: "Plumber", issueDesc: "Plumber issue #3",
+      timeRequested: "13 August, 2015", timeCompleted: "25 August, 2015",
+      completedBy: "Samir", isCompleted: true, paymentMethod: "In Hand",
+        technicianReview: "Amazing and super long descreption here just because"
+           " I want to test how this super long text will fit, for testing "
+          "purposes of course, this is just a test and nothing else, absolutely "
+          "nothing else as i would say. Ok I think this is long enough isn't it? "
+          "It's about time to stop this review.",
+        technicianRating: "5", price: 200,
+        image: ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),//or 15.0
+        child: Container(
+          height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+          child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+        ),
+      )
+    ),
+    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+        timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
+        completedBy: "Ahmed", isCompleted: false, paymentMethod: "In Hand",
+        technicianReview: "I really loved the work of this guy, he was quick and "
+            "nice. I will definately be ordering him again the next time i need to!",
+        technicianRating: "5", price: 152.22,
+        image:ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),//or 15.0
+          child: Container(
+            height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+            child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+          ),
+        )
+    ),
+    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+        timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
+        completedBy: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
+        technicianReview: "I really loved the work of this guy, he was quick and "
+            "nice. I will definately be ordering him again the next time i need to!",
+        technicianRating: "5",price: 152.22,
+        image:ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),//or 15.0
+          child: Container(
+            height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+            child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+          ),
+        )
+    ),
+    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+        timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
+        completedBy: "Ahmed", isCompleted: false, paymentMethod: "In App",
+        technicianReview: "I really loved the work of this guy, he was quick and "
+            "nice. I will definately be ordering him again the next time i need to!",
+        technicianRating: "5",price: 152.22,
+        image:ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),//or 15.0
+          child: Container(
+            height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+            child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+          ),
+        )
+    ),
+    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+        timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
+        completedBy: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
+        technicianReview: "I really loved the work of this guy, he was quick and "
+            "nice. I will definately be ordering him again the next time i need to!",
+        technicianRating: "5",price: 152.22,
+        image:ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),//or 15.0
+          child: Container(
+            height: 75.0, width: 75.0, color: Color(0xffFF0E58),
+            child: Icon(Icons.gps_not_fixed_rounded, color: Colors.white, size: 50.0),
+          ),
+        )
+    ),
+  ];
+
 }

@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added Confirmation/Retry dialog layout, this shows up after confirming appointment
+- Added completed and pending issues layout
 
 ## (  ) Creating and Styling the layouts
 
@@ -27,7 +27,9 @@ Consumer:<br />
 ( ✓ ) Step 4: Choose technician layout<br />
 ( ✓ ) Step 5: Choose appointment date from technician profile page<br />
 (  ) Step 6: Confirm receipt with appointment info<br />
-(  ) Consumer dashboard<br />
+( ✓ ) Consumer dashboard<br />
+( ✓ ) Pending and completed orders list<br />
+
 
 Technician:<br />
 (  ) Setup profile layout<br />
@@ -70,8 +72,7 @@ solved by making the button transparent and not clickable
 that for example, if user selects plumber issue #3 but then goes back and chooses a carpenter instead
 the carpenter issue #3 will be highlighted
 
-3. When pressing the back button in the dashboard page, black screen shows up first, then another back
-will exit the app (**FIXED**)
+3. The picture of the issue isn't aligned properly in the orders page
 
 ## New things I learned:
 
