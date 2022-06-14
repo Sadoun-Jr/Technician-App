@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:technicians/layouts/login.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
@@ -251,11 +252,11 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       return;
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(child: slider()),
-    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) => Center(child: slider()),
+    // );
 
     try {
       await FirebaseAuth.instance
@@ -276,7 +277,11 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
       backgroundColor: Colors.green, toastLength: Toast.LENGTH_SHORT);
       // navigatorKey.currentState!.popUntil((route) => route.isFirst);
-      Navigator.pop(context);
+      // navigatorKey.currentState!.popUntil((route) => route.isFirst);
+
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/dashboard or login', (Route<dynamic> route) => false);
+
     } catch (e) {
       debugPrint("Sign up error: " + e.toString());
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
@@ -284,10 +289,4 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
     }
   }
 
-  void navigateToPage(dynamic page) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => page()),
-    );
-  }
 }

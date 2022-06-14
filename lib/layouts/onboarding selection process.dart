@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:technicians/layouts/dashboard.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
@@ -214,7 +213,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       label: Text("To dashboard"),
                       onPressed: () => {
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/dashboard', (Route<dynamic> route) => false)
+                                '/dashboard or login', (Route<dynamic> route) => false)
                           }),
                 ),
               ],

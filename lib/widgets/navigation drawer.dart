@@ -1,7 +1,11 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:technicians/layouts/dashboard.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:technicians/layouts/login.dart';
+import 'package:technicians/main.dart';
+import 'package:technicians/widgets/slider.dart';
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
@@ -78,7 +82,7 @@ class _NavDrawerState extends State<NavDrawer> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => UserDashboard()),
+                                    builder: (context) => LoginLayout()),
                               ),
                             },
                             child: ListTile(
@@ -132,7 +136,7 @@ class _NavDrawerState extends State<NavDrawer> {
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: signOut,
                             child: ListTile(
                               leading: Icon(
                                 Icons.logout,
@@ -153,4 +157,30 @@ class _NavDrawerState extends State<NavDrawer> {
       ),
     );
   }
+
+  void signOut() async {
+    Fluttertoast.cancel();
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) => Center(child: slider()),
+    // );
+
+    try {
+      await FirebaseAuth.instance.signOut();
+      Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          msg: "Logout successful",
+          toastLength: Toast.LENGTH_LONG);
+    } catch (e) {
+      debugPrint(e.toString());
+      Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          msg: e.toString(),
+          toastLength: Toast.LENGTH_LONG);
+    }
+
+    // Navigator.pop(context);
+  }
+
 }

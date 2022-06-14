@@ -6,6 +6,10 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
+- Auto redirect to dashboard from login and register screens after user register/login
+- Merged Dashboard and login to one screen
+- Changed bottom navigation bar in dashboard to become a "Create new order" button
+
 ## (  ) Creating and Styling the layouts
 
 ✓ - placeholder layout completed<br />
@@ -38,7 +42,8 @@ Technician:<br />
 
 ## Creating the logic
 
-( **IN PROGRESS** ) Login and register<br />
+( ✓ ) Login and register<br />
+( ✓ ) Login auto redirect to Dashboard<br />
 
 
 ## Features to implement:

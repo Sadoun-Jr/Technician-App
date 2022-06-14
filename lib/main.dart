@@ -1,18 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
-import 'package:technicians/layouts/dashboard.dart';
+import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'layouts/onboarding selection process.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-Future<void> main() async {
-  runApp(const MyApp(
-  ));
+
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  runApp(const MyApp());
 }
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
@@ -31,12 +34,21 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         "/onboarding selection": (context) => const OnboardingSelection(),
-        "/dashboard" : (context) => const UserDashboard(),
+        "/dashboard or login" : (context) => const LoginLayout(),
         "/technician reviews" : (context) => const TechnicianReviews(),
       },
-      home:
-      // OnboardingSelection(),
-      SelectRegisterMethodLayout(),
+
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return LoginLayout();
+          } else {
+            return SelectRegisterMethodLayout();
+          }
+        },
+      )
+      ,
     );
   }
 }
