@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Review{
+class Review {
   String issueTitle;
   String issueDesc;
   bool isLeftMidWork;
@@ -9,24 +9,22 @@ class Review{
   String timeOfReview;
   String paymentMethod;
   double price;
-  int issueNumber;
+  int issueNumber; //TODO: change to uid
   String reviewGiver;
 
   //v2, don't implement during first
   //String timeModified;
   //String modificationReason
 
-  Review({
-  required  this.issueTitle,
-  required this.issueDesc,
-  required  this.isLeftMidWork,
-  required  this.rating,
-  required  this.reviewDesc,
-  required  this.timeOfReview,
-  required  this.paymentMethod,
-  required  this.price,
-  required  this.issueNumber,
-  required  this.reviewGiver
-});
-
+  Review(
+      {required this.issueTitle,
+      required this.issueDesc,
+      required this.isLeftMidWork,
+      required this.rating,
+      required this.reviewDesc,
+      required this.timeOfReview,
+      required this.paymentMethod,
+      required this.price,
+      required this.issueNumber,
+      required this.reviewGiver});
 }

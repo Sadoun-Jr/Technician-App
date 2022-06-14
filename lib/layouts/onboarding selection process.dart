@@ -179,7 +179,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected');
+        debugPrint('connected');
       }
     } on SocketException catch (_) {
       Fluttertoast.showToast(
@@ -189,35 +189,38 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
     try {
       //create an empty issue with a uid
-      await FirebaseFirestore.instance.collection("issues").doc().set({
-        AppStrings.completedByKey: AppStrings.notCompletedYet,
-        AppStrings.isAcceptedByTechnicianKey: false,
-        AppStrings.isCanceledByUserKey: false,
-        AppStrings.isCompletedKey: false,
-        AppStrings.isEmergencyKey: _isEmergency,
-        AppStrings.isPaidKey: false,
-        AppStrings.issueCategoryKey: _issueCategory,
-        AppStrings.issueDescKey: _issueDesc,
-        AppStrings.issuedByKey: "Anon", //TODO: make it the username/display
-        AppStrings.paymentMethodKey: AppStrings.notCompletedYet,
-        AppStrings.priceKey: 100, //TODO: add price to most common issues
-        AppStrings.technicianRatingKey: -1,
-        AppStrings.technicianReviewKey: AppStrings.notCompletedYet,
-        AppStrings.timeCompletedKey: -1,
-        AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
-        AppStrings.uidKey: "",
-
+      await FirebaseFirestore.instance.collection("issues").add({
+        AppStrings.uidKey: " ",
+      }).then((value) async {
+        debugPrint("Issue made with ID# " + value.id);
+        await FirebaseFirestore.instance.collection("issues").doc(value.id).set({
+          AppStrings.uidKey : value.id,
+          AppStrings.completedByKey: AppStrings.notCompletedYet,
+          AppStrings.isAcceptedByTechnicianKey: false,
+          AppStrings.isCanceledByUserKey: false,
+          AppStrings.isCompletedKey: false,
+          AppStrings.isEmergencyKey: _isEmergency,
+          AppStrings.isPaidKey: false,
+          AppStrings.issueCategoryKey: _issueCategory,
+          AppStrings.issueDescKey: _issueDesc,
+          AppStrings.issuedByKey: "Anon", //TODO: make it the username/display
+          AppStrings.paymentMethodKey: AppStrings.notCompletedYet,
+          AppStrings.priceKey: 100, //TODO: add price to most common issues
+          AppStrings.technicianRatingKey: -1,
+          AppStrings.technicianReviewKey: AppStrings.notCompletedYet,
+          AppStrings.timeCompletedKey: -1,
+          AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
+        }
+        );
       });
-
-      Fluttertoast.showToast(
-          msg: "Question saved", backgroundColor: Colors.green);
-
       setState(() {});
+
+      _showMyDialog();
+
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
     }
 
-    _showMyDialog();
   }
 
 ////////////////////////////////////////////////////////////////////////////////

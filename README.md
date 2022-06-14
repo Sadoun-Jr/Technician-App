@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added ability to add an issue request in the database based on user choices
+- Added UID for each issue, saved in Database
 
 ## (  ) Creating and Styling the layouts
 
@@ -18,8 +18,6 @@ I will add various info down as I think of it<br />
    ( ✓ ) Select register/login layout<br />
 (   ) Onboarding layout (Explanation of App)<br />
 ( ✓ ) Login and register layout<br />
-
-Consumer:<br />
 ( ✓ ) Step 1: Choose priority (appointment/emergency)<br />
 ( ✓ ) Step 2a: Choose category by technician (plumber, carpenter, etc...)<br />
 ( ✓ ) Step 2b: Choose category by appliance (Washer, AC, Drier, etc...)<br />
@@ -32,17 +30,12 @@ Consumer:<br />
 ( ✓ ) Navigation drawer<br />
 ( ✓ ) Technician reviews<br />
 
-Technician:<br />
-(  ) Setup profile layout<br />
-(  ) Profile page layout<br />
-(  ) Upload previous works layout<br />
-(  ) Technician dashboard<br />
-
 ## Creating the logic
 
 ( ✓ ) Login and register<br />
 ( ✓ ) Login auto redirect to Dashboard<br />
 ( ✓ ) Add issue to database<br />
+( ✓ ) Added UID to each issue in the database<br />
 
 ## Features to implement:
 
@@ -81,7 +74,7 @@ the carpenter issue #3 will be highlighted
 4. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
 
-## New things I learned:
+[comment]: <> (## New things I learned:)
 
 ## TODO:
 
