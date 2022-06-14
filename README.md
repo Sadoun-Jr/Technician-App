@@ -6,8 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added navigation drawer as a separate class
-- Added Technician reviews rough layout
+- Added Firebase to the project
+- Added Register with username and password
 
 ## (  ) Creating and Styling the layouts
 
@@ -40,6 +40,8 @@ Technician:<br />
 (  ) Technician dashboard<br />
 
 ## Creating the logic
+
+( **IN PROGRESS** ) Login and register<br />
 
 
 ## Features to implement:

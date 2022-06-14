@@ -4,7 +4,7 @@ import 'package:technicians/models/issue%20object.dart';
 
 class AppStrings {
 
-     //login and register pages strings
+  //login and register pages strings
   static const loginScreenHeader = "Sign in portal";
   static const forgotPassword = "Forgot password";
   static const schoolName = "TEXAS SCHOOL";
@@ -18,6 +18,7 @@ class AppStrings {
   static String registerNewAccountString = "Register a new Account";
   static var confirmPasswordString = "Confirm password";
   static String createAccountButton = "CREATE ACCOUNT";
+  static String userRegistered = "Registered successfully";
 
   //login and register FAB hero tags
   static int heroLogin = 111;

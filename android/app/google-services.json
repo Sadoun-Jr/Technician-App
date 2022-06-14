@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1026033139455",
+    "project_id": "technicians-2d714",
+    "storage_bucket": "technicians-2d714.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026033139455:android:1d1b86a4ae02e43b9356ca",
+        "android_client_info": {
+          "package_name": "com.example.technicians"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026033139455-6o6kfinge929fj3k0pp9dfvu1mutkv81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6fhIjt7vns3p9c61AZYvhhnfGq0XEmww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026033139455-6o6kfinge929fj3k0pp9dfvu1mutkv81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
