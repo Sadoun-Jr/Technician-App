@@ -6,9 +6,6 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added Firebase to the project
-- Added Register with username and password
-
 ## (  ) Creating and Styling the layouts
 
 ✓ - placeholder layout completed<br />

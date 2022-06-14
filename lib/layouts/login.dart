@@ -1,10 +1,14 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
+import 'package:technicians/widgets/slider.dart';
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
 
@@ -18,6 +22,9 @@ class LoginLayout extends StatefulWidget {
 Color _primaryColor = HexColor("#1D4EAB");
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
+TextEditingController emailController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
+
 
 class _LoginLayoutState extends State<LoginLayout> {
   @override
@@ -77,8 +84,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Widget loginBoxContents() {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+
 
     return SingleChildScrollView(
       child: Column(children: [
@@ -172,8 +178,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-            onPressed: navigateToChoosePriority,
-            // onPressed: signIn,
+            onPressed: signIn,
           ),
         ),
 
@@ -181,10 +186,72 @@ class _LoginLayoutState extends State<LoginLayout> {
           child: Text(
             AppStrings.forgotPassword,
           ),
-          onPressed: () => {},
+          onPressed: signOut,
         )
       ]),
     );
+  }
+
+  void signOut() async {
+    Fluttertoast.cancel();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: slider()),
+    );
+
+    try {
+      await FirebaseAuth.instance.signOut();
+      Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          msg: "Logout successful",
+          toastLength: Toast.LENGTH_LONG);
+    } catch (e) {
+      debugPrint(e.toString());
+      Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          msg: e.toString(),
+          toastLength: Toast.LENGTH_LONG);
+    }
+
+    Navigator.pop(context);
+  }
+
+  Future signIn() async {
+    Fluttertoast.cancel();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: slider()),
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim()
+      );
+
+      var collection = FirebaseFirestore.instance.collection("users");
+      User? user = FirebaseAuth.instance.currentUser;
+      var docSnapshot = await collection.doc(user?.uid).get();
+      debugPrint("Role is ""${docSnapshot["role"]} for user ${docSnapshot["email"]}");
+
+      Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          msg: "Logged in Successfully as ${FirebaseAuth.instance.currentUser?.email}",
+          toastLength: Toast.LENGTH_LONG);
+
+    } catch (e) {
+
+      debugPrint(e.toString());
+      Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          msg: e.toString(),
+          toastLength: Toast.LENGTH_LONG);
+    }
+
+    Navigator.pop(context);
   }
 
   void navigateToRegisterPage() {
@@ -194,7 +261,7 @@ class _LoginLayoutState extends State<LoginLayout> {
     );
   }
 
-  void navigateToChoosePriority() {
+  void navigateToOnboardingSelection() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => OnboardingSelection()),
