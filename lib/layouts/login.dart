@@ -22,8 +22,8 @@ class LoginLayout extends StatefulWidget {
 Color _primaryColor = HexColor("#1D4EAB");
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
-TextEditingController emailController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
+TextEditingController _emailController = TextEditingController();
+TextEditingController _passwordController = TextEditingController();
 
 
 class _LoginLayoutState extends State<LoginLayout> {
@@ -109,7 +109,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: TextFormField(
-            controller: emailController,
+            controller: _emailController,
             maxLines: 1,
             style: TextStyle(color: _whiteText),
             decoration: InputDecoration(
@@ -140,7 +140,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           padding: const EdgeInsets.all(10),
           child: TextFormField(
-            controller: passwordController,
+            controller: _passwordController,
             maxLines: 1,
             style: TextStyle(color: _whiteText),
             decoration: InputDecoration(
@@ -209,8 +209,8 @@ class _LoginLayoutState extends State<LoginLayout> {
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim()
       );
 
       var collection = FirebaseFirestore.instance.collection("users");

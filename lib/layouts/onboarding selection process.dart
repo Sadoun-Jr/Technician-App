@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/utils/hex%20colors.dart';
@@ -95,10 +99,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               child: Row(
                 children: [
                   FloatingActionButton.extended(
-                      onPressed: sortByTrades, label: Text("Appliances")),
+                      heroTag: 99,
+                      onPressed: sortByTrades,
+                      label: Text("Appliances")),
                   Spacer(),
                   FloatingActionButton.extended(
-                      onPressed: sortByApplicances, label: Text("Trades"))
+                      heroTag: 98,
+                      onPressed: sortByApplicances,
+                      label: Text("Trades"))
                 ],
               ),
             ),
@@ -111,7 +119,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             selectTechnicianOnboarding(),
             selectAppointmentTimeOnboarding(),
           ],
-          onDone: () => _showMyDialog(),
+          onDone: requestOrder,
           //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
           skipOrBackFlex: 0,
           nextFlex: 0,
@@ -140,8 +148,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             Icons.arrow_forward,
           ),
 
-          done:
-              const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
+          done: Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
           controlsMargin: const EdgeInsets.all(16),
           controlsPadding: kIsWeb
               ? const EdgeInsets.all(12.0)
@@ -165,6 +172,54 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
+  void requestOrder() async {
+    Fluttertoast.cancel();
+
+    //check if there is connection
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
+    try {
+      //create an empty issue with a uid
+      await FirebaseFirestore.instance.collection("issues").doc().set({
+        AppStrings.completedByKey: AppStrings.notCompletedYet,
+        AppStrings.isAcceptedByTechnicianKey: false,
+        AppStrings.isCanceledByUserKey: false,
+        AppStrings.isCompletedKey: false,
+        AppStrings.isEmergencyKey: _isEmergency,
+        AppStrings.isPaidKey: false,
+        AppStrings.issueCategoryKey: _issueCategory,
+        AppStrings.issueDescKey: _issueDesc,
+        AppStrings.issuedByKey: "Anon", //TODO: make it the username/display
+        AppStrings.paymentMethodKey: AppStrings.notCompletedYet,
+        AppStrings.priceKey: 100, //TODO: add price to most common issues
+        AppStrings.technicianRatingKey: -1,
+        AppStrings.technicianReviewKey: AppStrings.notCompletedYet,
+        AppStrings.timeCompletedKey: -1,
+        AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
+        AppStrings.uidKey: "",
+
+      });
+
+      Fluttertoast.showToast(
+          msg: "Question saved", backgroundColor: Colors.green);
+
+      setState(() {});
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+    }
+
+    _showMyDialog();
+  }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +227,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -213,7 +267,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       label: Text("To dashboard"),
                       onPressed: () => {
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/dashboard or login', (Route<dynamic> route) => false)
+                                '/dashboard or login',
+                                (Route<dynamic> route) => false)
                           }),
                 ),
               ],
@@ -231,7 +286,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +293,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
   Widget selectAppointmentTimeOnboarding() {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 16, 20, 80),
@@ -289,16 +342,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Align(
-                          alignment: Alignment.centerLeft,
-                          child: FloatingActionButton.extended(
-                              heroTag: 3,
-                              label: Text("Reviews"),
-                              onPressed: () => {
-                              Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => TechnicianReviews()),
-                              )
-                              }),
+                        alignment: Alignment.centerLeft,
+                        child: FloatingActionButton.extended(
+                            heroTag: 3,
+                            label: Text("Reviews"),
+                            onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TechnicianReviews()),
+                                  )
+                                }),
                       ),
                       Align(
                           alignment: Alignment.centerRight,
@@ -421,7 +476,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -429,7 +483,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
   int selectTechnicianValue = -1;
 
   Widget selectTechnicianOnboarding() {
@@ -491,8 +544,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         child: InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                           splashColor: Colors.redAccent,
-                          onTap: () =>
-                              setState(() => selectTechnicianValue = index),
+                          onTap: () => {setAssignedTo(index)},
                           child: AnimatedContainer(
                             duration: Duration(milliseconds: 200),
                             decoration: BoxDecoration(
@@ -580,6 +632,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
+  void setAssignedTo(int index) {
+    _assignedTo = AppStrings.techniciansList[index].name;
+    nextPage();
+    debugPrint("Assigned to " + _assignedTo);
+    setState(() => selectTechnicianValue = index);
+  }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -587,7 +646,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -598,9 +656,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   List<String> selectKindOfIssuesArray() {
     List<String> returnedList = [];
 
-    if (selectCategoryValue == 2) {
+    //TODO:make this dynamic
+    if (selectCategoryValue == 0) {
       returnedList = AppStrings.plumberIssues;
-    } else if (selectCategoryValue == 5) {
+    } else if (selectCategoryValue == 2) {
       returnedList = AppStrings.carpenterIssues;
     } else {
       returnedList = ["no", "issue", "found"];
@@ -609,7 +668,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     return returnedList;
   }
 
-  int selectIssueValue = -1;
+  int selectIssueValue = 134;
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
     return Container(
@@ -629,9 +688,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(15),
-                  onTap: () {
-                    setState(() => selectIssueValue = index);
-                  },
+                  onTap: () => setIssueDesc(index),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
@@ -652,7 +709,47 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  int selectCategoryValue = -1;
+  void setIssueDesc(int index) {
+    if (_issueCategory == "Plumber") {
+      _issueDesc = AppStrings.plumberIssues[index];
+      nextPage();
+      debugPrint("Issue desc is " + _issueDesc);
+    }
+    setState(() => selectIssueValue = index);
+  }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////END ONBOARDING PAGE 3//////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////START ONBOARDING PAGE 2////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+  int selectCategoryValue = 9;
+
+  void sortByApplicances() {
+    selectCategoryValue = 9;
+    isSortedByTrades = false;
+    setState(() => isSortedByAppliance = true);
+  }
+
+  void sortByTrades() {
+    isSortedByAppliance = false;
+    selectCategoryValue = 9;
+    setState(() => isSortedByTrades = true);
+  }
+
+  void categorySelected() {
+    isNextButtonVisible = true;
+    setState(() => isCategoryChosen = true);
+  }
 
   Widget selectCategoryOnboarding() {
     return Container(
@@ -664,46 +761,87 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               SizedBox(
                 height: 20,
               ),
-              appliancesItemRow(1, "Electricians", 2, "Plumbers"),
-              appliancesItemRow(3, "Builders", 4, "Painters"),
-              appliancesItemRow(5, "Carpenters", 6, "Cleaners"),
-              appliancesItemRow(7, "Butcher", 8, "Mechanic"),
-              appliancesItemRow(9, ".....", 10, "....."),
-              tradesItemRow(101, "AC", 102, "Refrigirator"),
-              tradesItemRow(103, "Computer", 104, "Dry Cleaner"),
-              tradesItemRow(105, "Drier", 106, "Mobile phone"),
-              tradesItemRow(107, "Drier", 108, "other"),
-              tradesItemRow(109, "/////", 1010, "/////"),
+              appliancesItemRow(
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[0]),
+                AppStrings.listOfTechnicianCategories[0],
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[1]),
+                AppStrings.listOfTechnicianCategories[1],
+              ),
+              appliancesItemRow(
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[2]),
+                AppStrings.listOfTechnicianCategories[2],
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[3]),
+                AppStrings.listOfTechnicianCategories[3],
+              ),
+              appliancesItemRow(
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[4]),
+                AppStrings.listOfTechnicianCategories[4],
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[5]),
+                AppStrings.listOfTechnicianCategories[5],
+              ),
+              appliancesItemRow(
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[6]),
+                AppStrings.listOfTechnicianCategories[6],
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[7]),
+                AppStrings.listOfTechnicianCategories[7],
+              ),
+              appliancesItemRow(
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[8]),
+                AppStrings.listOfTechnicianCategories[8],
+                AppStrings.listOfTechnicianCategories
+                    .indexOf(AppStrings.listOfTechnicianCategories[9]),
+                AppStrings.listOfTechnicianCategories[9],
+              ),
+              tradesItemRow(
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[0]),
+                AppStrings.listOfAppliancesCategories[0],
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[1]),
+                AppStrings.listOfAppliancesCategories[1],
+              ),
+              tradesItemRow(
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[2]),
+                AppStrings.listOfAppliancesCategories[2],
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[3]),
+                AppStrings.listOfAppliancesCategories[3],
+              ),
+              tradesItemRow(
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[4]),
+                AppStrings.listOfAppliancesCategories[4],
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[5]),
+                AppStrings.listOfAppliancesCategories[5],
+              ),
+              tradesItemRow(
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[6]),
+                AppStrings.listOfAppliancesCategories[6],
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[7]),
+                AppStrings.listOfAppliancesCategories[7],
+              ),
+              tradesItemRow(
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[8]),
+                AppStrings.listOfAppliancesCategories[8],
+                AppStrings.listOfAppliancesCategories
+                    .indexOf(AppStrings.listOfAppliancesCategories[9]),
+                AppStrings.listOfAppliancesCategories[9],
+              ),
             ]));
-  }
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////END ONBOARDING PAGE 3//////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////START ONBOARDING PAGE 2////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-  void sortByApplicances() {
-    isSortedByTrades = false;
-    setState(() => isSortedByAppliance = true);
-  }
-
-  void sortByTrades() {
-    isSortedByAppliance = false;
-    setState(() => isSortedByTrades = true);
-  }
-
-  void categorySelected() {
-    isNextButtonVisible = true;
-    setState(() => isCategoryChosen = true);
   }
 
   Widget appliancesItemRow(int selectedValueFirst, String textFirst,
@@ -720,8 +858,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () =>
-                  setState(() => selectCategoryValue = selectedValueFirst),
+              onTap: () => {
+                setState(() => selectCategoryValue = selectedValueFirst),
+                setIssueCategory(selectCategoryValue, false),
+              },
               child: Container(
                 height: 56,
                 width: 56,
@@ -743,8 +883,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () =>
-                  setState(() => selectCategoryValue = selectedValueSecond),
+              onTap: () => {
+                setState(() => selectCategoryValue = selectedValueSecond),
+                setIssueCategory(selectCategoryValue, false),
+              },
               child: Container(
                 height: 56,
                 width: 56,
@@ -777,8 +919,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () =>
-                  setState(() => selectCategoryValue = selectedValueFirst),
+              onTap: () => {
+                setState(() => selectCategoryValue = selectedValueFirst),
+                setIssueCategory(selectCategoryValue, true),
+              },
               child: Container(
                 height: 56,
                 width: 56,
@@ -800,8 +944,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: InkWell(
-              onTap: () =>
-                  setState(() => selectCategoryValue = selectedValueSecond),
+              onTap: () => {
+                setState(() => selectCategoryValue = selectedValueSecond),
+                setIssueCategory(selectCategoryValue, true),
+              },
               child: Container(
                 height: 56,
                 width: 56,
@@ -819,6 +965,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
+
+  void setIssueCategory(int category, bool isSortedByTechnician) {
+    if (!isSortedByTechnician) {
+      setState(() =>
+          _issueCategory = AppStrings.listOfTechnicianCategories[category]);
+    } else {
+      setState(() =>
+          _issueCategory = AppStrings.listOfAppliancesCategories[category]);
+    }
+    debugPrint("Category set to $_issueCategory");
+
+    nextPage();
+  }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -826,7 +986,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -834,12 +993,17 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
   void turnOnPrioritySelected() {
     isNextButtonVisible = true;
     setState(
       () => prioritySelected = true,
     );
+  }
+
+  void setEmergencyBool(bool isEmergency) {
+    debugPrint("Emergency set to $isEmergency");
+    _isEmergency = isEmergency;
+    nextPage();
   }
 
   Widget selectEmergencyOnboarding() {
@@ -863,14 +1027,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               backgroundColor: Colors.red,
               icon: Icon(Icons.emergency),
               heroTag: 1,
-              onPressed: nextPage,
+              onPressed: () => setEmergencyBool(true),
               label: Text(AppStrings.immediately)),
           SizedBox(height: 20),
           FloatingActionButton.extended(
               backgroundColor: Colors.blueGrey,
               heroTag: 2,
               icon: Icon(Icons.lock_clock),
-              onPressed: skipPages,
+              onPressed: () => setEmergencyBool(false),
               label: Text(AppStrings.appointment)),
         ],
       ),
@@ -884,4 +1048,21 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+  String _issueCategory = " ";
+  String _issueDesc = " ";
+  bool _isCompleted = false;
+  String _assignedTo = " ";
+  String _technicianRating = " ";
+  String _technicianReview = " ";
+  String _timeRequested = " ";
+  String _timeCompleted = " ";
+  String _paymentMethod = " ";
+  double _price = 0.01;
+  String _issueUid = " ";
+  bool _isEmergency = false;
+  bool _isPaid = false;
+  String _issuedBy = " ";
+  String _isAcceptedByTechnician = " ";
+  bool isCanceledByUser = false;
+  bool isDeclinedByTechnician = false;
 }

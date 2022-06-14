@@ -135,7 +135,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                           alignment: Alignment.topLeft,
                                           child: Text(
                                             AppStrings
-                                                .listOfIssues[index].issueTitle,
+                                                .listOfIssues[index].issueCategory,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 20),
@@ -199,7 +199,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                                         ..onTap = () => {},
                                                   text: AppStrings
                                                       .listOfIssues[index]
-                                                      .completedBy,
+                                                      .assignedTo,
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,

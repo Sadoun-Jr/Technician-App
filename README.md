@@ -6,9 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Auto redirect to dashboard from login and register screens after user register/login
-- Merged Dashboard and login to one screen
-- Changed bottom navigation bar in dashboard to become a "Create new order" button
+- Added ability to add an issue request in the database based on user choices
 
 ## (  ) Creating and Styling the layouts
 
@@ -44,7 +42,7 @@ Technician:<br />
 
 ( ✓ ) Login and register<br />
 ( ✓ ) Login auto redirect to Dashboard<br />
-
+( ✓ ) Add issue to database<br />
 
 ## Features to implement:
 
@@ -84,4 +82,9 @@ the carpenter issue #3 will be highlighted
 need to close it.
 
 ## New things I learned:
+
+## TODO:
+
+- Implement loading circular bar while doing database actions
+- Convert the list of common issues to a map
 

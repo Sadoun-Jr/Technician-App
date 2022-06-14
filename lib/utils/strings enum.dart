@@ -25,14 +25,24 @@ class AppStrings {
   static int heroRegister = 222;
   static int heroConnectwithFb = 333;
 
-  //strings for the onboarding page
+  //strings for the priority page
   static String selectPriorityString = "When do you need the technician?";
   static String immediately = "Right now";
   static String appointment = "Appointment";
 
-  //TODO: create values for technicians choices for page 2 onboarding
+  //strings for the category page
+  //IMPORTANT: NEVER CHANGE THE ARRANGEMENT OF THE CATEGORIES LISTS, JUST ADD IF NEEDED
+  //TODO: convert to static strings
+  static List<String> listOfTechnicianCategories = [
+    "Plumber", "Electrician", "Carpenter", "Painter", "Builder",
+    "Cleaner", "Butcher", "Mechanic", "...", "..."
+  ];
+  //TODO: convert to static strings
+  static List<String> listOfAppliancesCategories = [
+    "AC", "Refrigirator", "Computer", "Dry cleaner", "Drier",
+    "Mobile phone", "Drier", "Other", "///", "///"
+  ];
 
-  //arrays of issues
   static List<String> plumberIssues = [
     "plumber issue 1",
     "plumber issue 2",
@@ -68,6 +78,44 @@ class AppStrings {
     "carpenter issue 14",
     "carpenter issue 15",
   ];
+
+
+  static Map<String, List> listOfAllApplianceIssues = {
+    listOfAppliancesCategories[0]: [
+      "AC issue 1",
+      "AC issue 2",
+      "AC issue 3",
+      "AC issue 4",
+      "AC issue 5",
+      "AC issue 6",
+      "AC issue 7",
+      "AC issue 8",
+      "AC issue 9",
+      "AC issue 10",
+      "AC issue 11",
+      "AC issue 12",
+      "AC issue 13",
+      "AC issue 14",
+      "AC issue 15",
+    ],
+    listOfTechnicianCategories[2]: [
+      "Computer issue 1",
+      "Computer issue 2",
+      "Computer issue 3",
+      "Computer issue 4",
+      "Computer issue 5",
+      "Computer issue 6",
+      "Computer issue 7",
+      "Computer issue 8",
+      "Computer issue 9",
+      "Computer issue 10",
+      "Computer issue 11",
+      "Computer issue 12",
+      "Computer issue 13",
+      "Computer issue 14",
+      "Computer issue 15",
+    ]
+  };
 
   //select technician page strings
   static String selectTechnicianString = "Select a technician";
@@ -109,9 +157,9 @@ class AppStrings {
   static String listOfOrdersString = "Previous orders";
 
   static List<Issue> listOfIssues = [
-    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3, this is quite the long issue by the way!",
+    Issue(issueCategory: "Carpenter", issueDesc: "Carpenter issue #3, this is quite the long issue by the way!",
       timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
-      completedBy: "Ahmed", isCompleted: false, paymentMethod: "In App",
+        assignedTo: "Ahmed", isCompleted: false, paymentMethod: "In App",
       technicianReview: "I really loved the work of this guy, he was quick and "
           "nice. I will definately be ordering him again the next time i need to!",
       technicianRating: "5", price: 450.50,
@@ -123,9 +171,9 @@ class AppStrings {
         ),
       )
     ),
-    Issue(issueTitle: "Plumber", issueDesc: "Plumber issue #3",
+    Issue(issueCategory: "Plumber", issueDesc: "Plumber issue #3",
       timeRequested: "13 August, 2015", timeCompleted: "25 August, 2015",
-      completedBy: "Samir", isCompleted: true, paymentMethod: "In Hand",
+        assignedTo: "Samir", isCompleted: true, paymentMethod: "In Hand",
         technicianReview: "Amazing and super long descreption here just because"
            " I want to test how this super long text will fit, for testing "
           "purposes of course, this is just a test and nothing else, absolutely "
@@ -140,9 +188,9 @@ class AppStrings {
         ),
       )
     ),
-    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+    Issue(issueCategory: "Carpenter", issueDesc: "Carpenter issue #3",
         timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
-        completedBy: "Ahmed", isCompleted: false, paymentMethod: "In Hand",
+        assignedTo: "Ahmed", isCompleted: false, paymentMethod: "In Hand",
         technicianReview: "I really loved the work of this guy, he was quick and "
             "nice. I will definately be ordering him again the next time i need to!",
         technicianRating: "5", price: 152.22,
@@ -154,9 +202,9 @@ class AppStrings {
           ),
         )
     ),
-    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+    Issue(issueCategory: "Carpenter", issueDesc: "Carpenter issue #3",
         timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
-        completedBy: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
+        assignedTo: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
         technicianReview: "I really loved the work of this guy, he was quick and "
             "nice. I will definately be ordering him again the next time i need to!",
         technicianRating: "5",price: 152.22,
@@ -168,9 +216,9 @@ class AppStrings {
           ),
         )
     ),
-    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+    Issue(issueCategory: "Carpenter", issueDesc: "Carpenter issue #3",
         timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
-        completedBy: "Ahmed", isCompleted: false, paymentMethod: "In App",
+        assignedTo: "Ahmed", isCompleted: false, paymentMethod: "In App",
         technicianReview: "I really loved the work of this guy, he was quick and "
             "nice. I will definately be ordering him again the next time i need to!",
         technicianRating: "5",price: 152.22,
@@ -182,9 +230,9 @@ class AppStrings {
           ),
         )
     ),
-    Issue(issueTitle: "Carpenter", issueDesc: "Carpenter issue #3",
+    Issue(issueCategory: "Carpenter", issueDesc: "Carpenter issue #3",
         timeRequested: "22 July, 2015", timeCompleted: "25 July, 2015",
-        completedBy: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
+        assignedTo: "Ahmed", isCompleted: true, paymentMethod: "In Hand",
         technicianReview: "I really loved the work of this guy, he was quick and "
             "nice. I will definately be ordering him again the next time i need to!",
         technicianRating: "5",price: 152.22,
@@ -197,5 +245,27 @@ class AppStrings {
         )
     ),
   ];
+
+  //firestore keys
+  static String issueCategoryKey = "issueCategory";
+  static String issueDescKey = "issueDesc";
+  static String completedByKey = "completedBy";
+  static String isCompletedKey = "isCompleted";
+  static String assignedToKey = "assignedTo";
+  static String technicianRatingKey = "technicianRating";
+  static String technicianReviewKey = "technicianReview";
+  static String timeRequestedKey = "timeRequested";
+  static String timeCompletedKey = "timeCompleted";
+  static String paymentMethodKey = "paymentMethod";
+  static String priceKey = "price";
+  static String issueUidKey = "uid";
+  static String isEmergencyKey = "isEmergency";
+  static String isPaidKey = "isPaid";
+  static String issuedByKey = "issuedBy";
+  static String isAcceptedByTechnicianKey = "isAcceptedByTechnician";
+  static String isCanceledByUserKey = "isCanceledByUser";
+  static String uidKey = "uid";
+
+  static String notCompletedYet = "Not yet";
 
 }

@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
 
-class Issue{
-  String issueTitle;
+class Issue {
+  String issueCategory;
   String issueDesc;
-  Widget image;
+  Widget image; //get it from the category, not in database
   bool isCompleted;
-  String completedBy;
+  String assignedTo;
   String technicianRating;
   String technicianReview;
   String timeRequested;
   String timeCompleted;
   String paymentMethod;
   double price;
-  //Int issueNumber
+  //String  issueUid
+  //bool    isEmergency;
+  //bool    isPaid;
+  //String  issuedBy
+  //String  isAcceptedByTechnician;
+  //bool    isCanceledByUser;
+  //bool    isDeclinedByTechnician;
 
   Issue({
-    required this.issueTitle,
+    required this.issueCategory,
     required this.issueDesc,
     required this.image,
     required this.technicianRating,
     required this.isCompleted,
-    required this.completedBy,
+    required this.assignedTo,
     required this.paymentMethod,
     required this.timeCompleted,
     required this.timeRequested,
     required this.technicianReview,
     required this.price,
-
   });
 }
