@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:technicians/layouts/dashboard.dart';
+import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/glass%20box.dart';
+import 'package:technicians/widgets/navigation%20drawer.dart';
 
 class OnboardingSelection extends StatefulWidget {
   const OnboardingSelection({Key? key}) : super(key: key);
@@ -67,7 +71,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     const bodyStyle = TextStyle(fontSize: 19.0);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      drawer: NavDrawer(),
+      drawerScrimColor: Colors.transparent,
+      //TODO: remove the appBar
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text("widget.title"),
+      ),
       body: Stack(children: [
         Image.asset(
           "assets/blurred_login.png",
@@ -171,40 +181,41 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                side: BorderSide(color: Colors.green, width: 3)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              side: BorderSide(color: Colors.green, width: 3)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-
                 Container(
                   decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0))
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(50.0))),
                   height: 150,
                 ),
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(40),
-                    child: Text('Awesome', style: TextStyle(fontSize: 30),),
+                  child: Text(
+                    'Awesome',
+                    style: TextStyle(fontSize: 30),
+                  ),
                 ),
                 Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.fromLTRB(20,0,20,20),
-                    child: Text('The technician has been notified with your request')),
+                    margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Text(
+                        'The technician has been notified with your request')),
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(40),
                   child: FloatingActionButton.extended(
-                    //TODO: set a key here to prevent user from multiple requests
-                    label: Text("To dashboard"),
-                      onPressed: () =>
-                      {
-                        Navigator.of(context)
-                            .pushNamedAndRemoveUntil('/dashboard', (Route<dynamic> route) => false)
-                      }),
+                      //TODO: set a key here to prevent user from multiple requests
+                      label: Text("To dashboard"),
+                      onPressed: () => {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/dashboard', (Route<dynamic> route) => false)
+                          }),
                 ),
               ],
             ),
@@ -283,7 +294,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           child: FloatingActionButton.extended(
                               heroTag: 3,
                               label: Text("Reviews"),
-                              onPressed: () => {})),
+                              onPressed: () => {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TechnicianReviews()),
+                              )
+                              }),
+                      ),
                       Align(
                           alignment: Alignment.centerRight,
                           child: FloatingActionButton.extended(
@@ -867,4 +884,5 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
 }

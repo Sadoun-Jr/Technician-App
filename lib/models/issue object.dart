@@ -12,6 +12,7 @@ class Issue{
   String timeCompleted;
   String paymentMethod;
   double price;
+  //Int issueNumber
 
   Issue({
     required this.issueTitle,

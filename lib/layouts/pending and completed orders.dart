@@ -82,8 +82,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                   child: Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                        color: AppStrings.listOfIssues[index].isCompleted ?
-                        Colors.green[100] :Colors.yellow[100],
                         borderRadius: BorderRadius.all(Radius.circular(15))),
                     child: Column(
                       children: [

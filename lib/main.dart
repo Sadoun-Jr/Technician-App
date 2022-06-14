@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:technicians/layouts/dashboard.dart';
+import 'package:technicians/layouts/technician%20reviews.dart';
 import 'layouts/onboarding selection process.dart';
 
 
@@ -23,8 +24,9 @@ class MyApp extends StatelessWidget {
       routes: {
         "/onboarding selection": (context) => const OnboardingSelection(),
         "/dashboard" : (context) => const UserDashboard(),
+        "/technician reviews" : (context) => const TechnicianReviews(),
       },
-      home: UserDashboard(),
+      home: OnboardingSelection(),
       // SelectRegisterMethodLayout(),
     );
   }

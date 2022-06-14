@@ -6,6 +6,7 @@ class Technician{
   Widget image;
   String rating;
   String availability;
+  //List<Review>; listOfReviews
 
   Technician({required this.name,
     required this.desc,

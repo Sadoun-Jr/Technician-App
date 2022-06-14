@@ -6,7 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added completed and pending issues layout
+- Added navigation drawer as a separate class
+- Added Technician reviews rough layout
 
 ## (  ) Creating and Styling the layouts
 
@@ -29,7 +30,8 @@ Consumer:<br />
 (  ) Step 6: Confirm receipt with appointment info<br />
 ( ✓ ) Consumer dashboard<br />
 ( ✓ ) Pending and completed orders list<br />
-
+( ✓ ) Navigation drawer<br />
+( ✓ ) Technician reviews<br />
 
 Technician:<br />
 (  ) Setup profile layout<br />
@@ -73,6 +75,9 @@ that for example, if user selects plumber issue #3 but then goes back and choose
 the carpenter issue #3 will be highlighted
 
 3. The picture of the issue isn't aligned properly in the orders page
+
+4. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
+need to close it.
 
 ## New things I learned:
 
