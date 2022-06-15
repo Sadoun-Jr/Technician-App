@@ -276,6 +276,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: FloatingActionButton.extended(
+                                heroTag: index,
                                 label: Text(
                                   "Mark As Complete",
                                   maxLines: 1,

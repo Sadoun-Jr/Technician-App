@@ -47,8 +47,7 @@ class MyApp extends StatelessWidget {
             return SelectRegisterMethodLayout();
           }
         },
-      )
-      ,
+      ),
     );
   }
 }

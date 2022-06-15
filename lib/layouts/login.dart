@@ -432,6 +432,7 @@ class _LoginLayoutState extends State<LoginLayout> {
      Container(
        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
        child: FloatingActionButton.extended(
+         heroTag: 100,
          backgroundColor: Colors.transparent,
            onPressed: () => Navigator.push(
              context,

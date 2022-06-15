@@ -188,11 +188,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     }
 
     try {
+      //get the current user uid
+      final auth = FirebaseAuth.instance;
+      final User user = await auth.currentUser!;
+      final userid = user.uid;
+
       //create an empty issue with a uid
       await FirebaseFirestore.instance.collection("issues").add({
         AppStrings.uidKey: " ",
       }).then((value) async {
-        debugPrint("Issue made with ID# " + value.id);
+        debugPrint("Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
         await FirebaseFirestore.instance.collection("issues").doc(value.id).set({
           AppStrings.uidKey : value.id,
           AppStrings.completedByKey: AppStrings.notCompletedYet,
@@ -203,7 +208,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           AppStrings.isPaidKey: false,
           AppStrings.issueCategoryKey: _issueCategory,
           AppStrings.issueDescKey: _issueDesc,
-          AppStrings.issuedByKey: "Anon", //TODO: make it the username/display
+          AppStrings.issuedByKey: userid, //TODO: make it the username/display
           AppStrings.paymentMethodKey: AppStrings.notCompletedYet,
           AppStrings.priceKey: 100, //TODO: add price to most common issues
           AppStrings.technicianRatingKey: -1,
