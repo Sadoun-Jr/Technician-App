@@ -6,7 +6,6 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added static strings for common issues in a new strings file
 
 ## (  ) Creating and Styling the layouts
 
