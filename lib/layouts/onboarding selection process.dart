@@ -43,7 +43,13 @@ var isNextButtonVisible = false;
 var isCategoryChosen = false;
 var isSortedByAppliance = true;
 var isSortedByTrades = false;
-var isHeaderVisible = false;
+var isHeaderForCategoryPageVisible = false;
+var isHeaderForDescPageVisible = false;
+var isHeaderForSelectTechnicianListVisible = false;
+TextEditingController customIssueController = TextEditingController();
+TextEditingController searchTechnicianController = TextEditingController();
+Color _whiteText = Colors.white;
+Color _midWhite = Colors.white54;
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -74,7 +80,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     const bodyStyle = TextStyle(fontSize: 19.0);
-    debugPrint("starting issue category is: " + _issueCategory);
 
     return Scaffold(
       drawer: NavDrawer(),
@@ -95,26 +100,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         IntroductionScreen(
           key: introKey,
           globalBackgroundColor: Colors.transparent,
-          globalHeader: Visibility(
-            visible: isHeaderVisible,
-            child: Container(
-              margin: EdgeInsets.fromLTRB(60, 40, 60, 20),
-              child: Row(
-                children: [
-                  FloatingActionButton.extended(
-                      heroTag: 99,
-                      onPressed: sortByTrades,
-                      label: Text("Appliances")),
-                  Spacer(),
-                  FloatingActionButton.extended(
-                      heroTag: 98,
-                      onPressed: sortByApplicances,
-                      label: Text("Trades"))
-                ],
-              ),
-            ),
-          ),
-
+          globalHeader: checkAppropriateGlobalHeader(),
           rawPages: [
             selectEmergencyOnboarding(),
             selectCategoryOnboarding(),
@@ -135,10 +121,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           freeze: true,
           showBackButton: true,
           onChange: (page) {
+            isHeaderForCategoryPageVisible = false;
+            isHeaderForDescPageVisible = false;
+            isHeaderForSelectTechnicianListVisible = false;
+
             if (page == 1) {
-              setState(() => isHeaderVisible = true);
+              setState(() => isHeaderForCategoryPageVisible = true);
+            } else if (page == 2) {
+              setState(() => isHeaderForDescPageVisible = true);
+            } else if (page == 3) {
+              setState(() => isHeaderForSelectTechnicianListVisible = true);
             } else {
-              setState(() => isHeaderVisible = false);
+              setState(() => {});
             }
           },
 
@@ -200,9 +194,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       await FirebaseFirestore.instance.collection("issues").add({
         AppStrings.uidKey: " ",
       }).then((value) async {
-        debugPrint("Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
-        await FirebaseFirestore.instance.collection("issues").doc(value.id).set({
-          AppStrings.uidKey : value.id,
+        debugPrint(
+            "Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
+        await FirebaseFirestore.instance
+            .collection("issues")
+            .doc(value.id)
+            .set({
+          AppStrings.uidKey: value.id,
           AppStrings.completedByKey: AppStrings.notCompletedYet,
           AppStrings.isAcceptedByTechnicianKey: false,
           AppStrings.isCanceledByUserKey: false,
@@ -218,17 +216,26 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           AppStrings.technicianReviewKey: AppStrings.notCompletedYet,
           AppStrings.timeCompletedKey: -1,
           AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
-        }
-        );
+        });
       });
       setState(() {});
 
       _showMyDialog();
-
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
     }
+  }
 
+  Widget checkAppropriateGlobalHeader() {
+    if (isHeaderForCategoryPageVisible) {
+      return categoryPageHeader();
+    } else if (isHeaderForDescPageVisible) {
+      return customIssueHeader();
+    } else if (isHeaderForSelectTechnicianListVisible) {
+      return selectTechnicianListHeader();
+    } else {
+      return Container();
+    }
   }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -496,46 +503,90 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
   int selectTechnicianValue = -1;
 
+  //search function
+  void searchForTechnician(String searchedValue) async {
+    var techniciansRef = FirebaseFirestore.instance.collection("technicians");
+    var snapshot = techniciansRef
+        .where("name", isEqualTo: searchedValue)
+        .limit(1)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+
+        if(element.data().containsValue(searchedValue)){
+          debugPrint(element.data()["name"]);
+        }
+      });
+    });
+
+  }
+
+  Widget selectTechnicianListHeader() {
+    return Padding(
+      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: searchTechnicianController,
+              maxLines: 1,
+              textInputAction: TextInputAction.next,
+              style: TextStyle(color: _whiteText),
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(
+                    color: _midWhite,
+                    width: 1.25,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                labelText: "Search technicians...",
+                labelStyle: TextStyle(color: _whiteText),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: _midWhite, width: 2.5),
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 15,
+          ),
+          FloatingActionButton(
+            onPressed: () => searchForTechnician(
+                searchTechnicianController.text.toString().trim()),
+            child: Icon(Icons.search),
+            heroTag: 22,
+          )
+        ],
+      ),
+    );
+  }
+
   Widget selectTechnicianOnboarding() {
     return Container(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 80),
+      margin: EdgeInsets.fromLTRB(5, 90, 5, 80),
       child: ListView(
         physics: BouncingScrollPhysics(),
         children: <Widget>[
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    AppStrings.selectTechnicianString,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Search...",
-                hintStyle: TextStyle(color: Colors.grey.shade600),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey.shade600,
-                  size: 20,
-                ),
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                contentPadding: EdgeInsets.all(8),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey.shade100)),
-              ),
-            ),
-          ),
+          // SafeArea(
+          //   child: Padding(
+          //     padding: EdgeInsets.only(left: 16, right: 16),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: <Widget>[
+          //         Text(
+          //           AppStrings.selectTechnicianString,
+          //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
             child: ListView.builder(
@@ -543,99 +594,107 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 physics: BouncingScrollPhysics(),
                 itemCount: AppStrings.techniciansList.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                      height: 100,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 1, horizontal: 4),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          splashColor: Colors.redAccent,
-                          onTap: () => {setAssignedTo(index)},
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                                color: selectTechnicianValue == index
-                                    ? Colors.redAccent
-                                    : Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                            child: Row(children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    CircleAvatar(
-                                      // backgroundImage:
-                                      // AppStrings.techniciansList[index].image,
-                                      backgroundColor: Colors.grey,
-                                      maxRadius: 30,
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(0, 23, 16, 16),
-                                        color: Colors.transparent,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              AppStrings
-                                                  .techniciansList[index].name,
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text(
-                                              AppStrings
-                                                  .techniciansList[index].desc,
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey.shade600,
-                                                  fontWeight: FontWeight.bold),
-                                              maxLines: 1,
-                                            )
-                                          ],
+                  return Visibility(
+                    visible: true,
+                    child: Container(
+                        height: 100,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 1, horizontal: 4),
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            splashColor: Colors.redAccent,
+                            onTap: () => {setAssignedTo(index)},
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 200),
+                              decoration: BoxDecoration(
+                                  color: selectTechnicianValue == index
+                                      ? Colors.redAccent
+                                      : Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(children: <Widget>[
+                                Expanded(
+                                  child: Row(
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      CircleAvatar(
+                                        // backgroundImage:
+                                        // AppStrings.techniciansList[index].image,
+                                        backgroundColor: Colors.grey,
+                                        maxRadius: 30,
+                                      ),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.fromLTRB(
+                                              0, 23, 16, 16),
+                                          color: Colors.transparent,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                AppStrings
+                                                    .techniciansList[index]
+                                                    .name,
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                              SizedBox(
+                                                height: 6,
+                                              ),
+                                              Text(
+                                                AppStrings
+                                                    .techniciansList[index]
+                                                    .desc,
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.grey.shade600,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                maxLines: 1,
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Text(
-                                      AppStrings.techniciansList[index].rating,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: AppStrings
-                                                      .techniciansList[index]
-                                                      .availability ==
-                                                  "Available"
-                                              ? FontWeight.bold
-                                              : FontWeight.normal),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(5, 0, 16, 0),
-                                      child: Icon(
-                                        Icons.star,
-                                        size: 16,
-                                        color: HexColor("FFD700"),
+                                      Text(
+                                        AppStrings
+                                            .techniciansList[index].rating,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: AppStrings
+                                                        .techniciansList[index]
+                                                        .availability ==
+                                                    "Available"
+                                                ? FontWeight.bold
+                                                : FontWeight.normal),
                                       ),
-                                    ),
-                                  ],
+                                      Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(5, 0, 16, 0),
+                                        child: Icon(
+                                          Icons.star,
+                                          size: 16,
+                                          color: HexColor("FFD700"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ]),
+                              ]),
+                            ),
                           ),
-                        ),
-                      ));
+                        )),
+                  );
                 }),
           )
         ],
@@ -667,11 +726,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   List<String> selectKindOfIssuesArray() {
     List<String> returnedList = [];
 
-    if(CommonIssues.mapOfCommonTechnicianIssues.containsKey(_issueCategory)){
-      returnedList = CommonIssues.mapOfCommonTechnicianIssues[_issueCategory]!;
-    } else {
-      returnedList = CommonIssues.mapOfCommonApplianceIssues[_issueCategory]!;
-    }
+    returnedList = CommonIssues.mapAllCommonIssues[_issueCategory]!;
 
     return returnedList;
   }
@@ -680,7 +735,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
     return Container(
-      margin: EdgeInsets.fromLTRB(40, 80, 40, 80),
+      margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
       child: ListView.builder(
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
@@ -718,12 +773,57 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   void setIssueDesc(int index) {
-    if (_issueCategory == "Plumber") {
-      _issueDesc = CommonIssues.plumberIssues[index];
-      nextPage();
-      debugPrint("Issue desc is " + _issueDesc);
-    }
+    List<String>? listOfRespectiveIssuesFromMap =
+        CommonIssues.mapAllCommonIssues[_issueCategory];
+
+    _issueDesc = listOfRespectiveIssuesFromMap![index];
+    debugPrint("issue desc is " + _issueDesc.toString());
+
+    nextPage();
+
     setState(() => selectIssueValue = index);
+  }
+
+  Widget customIssueHeader() {
+    List<String>? listOfRespectiveIssuesFromMap =
+        CommonIssues.mapAllCommonIssues[_issueCategory];
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      padding: const EdgeInsets.all(10),
+      child: TextFormField(
+        controller: customIssueController,
+        maxLines: 1,
+        textInputAction: TextInputAction.next,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) => (listOfRespectiveIssuesFromMap!.contains(value))
+            ? "Please select the issue from the list"
+            : null,
+        style: TextStyle(color: _whiteText),
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: BorderSide(
+              color: _midWhite,
+              width: 1.25,
+            ),
+          ),
+          prefixIcon: Icon(
+            Icons.lock,
+            color: _midWhite,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          labelText: "Custom issue...",
+          labelStyle: TextStyle(color: _whiteText),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: _midWhite, width: 2.5),
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+        ),
+      ),
+    );
   }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -985,6 +1085,28 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     debugPrint("Category set to $_issueCategory");
 
     nextPage();
+  }
+
+  Widget categoryPageHeader() {
+    return Visibility(
+      visible: isHeaderForCategoryPageVisible,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(60, 40, 60, 20),
+        child: Row(
+          children: [
+            FloatingActionButton.extended(
+                heroTag: 99,
+                onPressed: sortByTrades,
+                label: Text("Appliances")),
+            Spacer(),
+            FloatingActionButton.extended(
+                heroTag: 98,
+                onPressed: sortByApplicances,
+                label: Text("Trades"))
+          ],
+        ),
+      ),
+    );
   }
 
 ////////////////////////////////////////////////////////////////////////////////

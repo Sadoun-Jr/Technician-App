@@ -91,7 +91,7 @@ class CommonIssues{
   ];
 
   //map linking technician issues with their respective common issues
-  static Map<String, List<String>> mapOfCommonTechnicianIssues = {
+  static Map<String, List<String>> mapAllCommonIssues = {
     technicianCategory0 : listTechnicianCategory0CommonIssues,
     technicianCategory1 : listTechnicianCategory1CommonIssues,
     technicianCategory2 : listTechnicianCategory2CommonIssues,
@@ -102,10 +102,6 @@ class CommonIssues{
     technicianCategory7 : listTechnicianCategory7CommonIssues,
     technicianCategory8 : listTechnicianCategory8CommonIssues,
     technicianCategory9 : listTechnicianCategory9CommonIssues,
-  };
-
-  //map linking technician issues with their respective common issues
-  static Map<String, List<String>> mapOfCommonApplianceIssues = {
     applianceCategory0 : listApplianceCategory0CommonIssues,
     applianceCategory1 : listApplianceCategory1CommonIssues,
     applianceCategory2 : listApplianceCategory2CommonIssues,

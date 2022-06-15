@@ -6,8 +6,11 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Mapped lists to keys and displayed them using the map
-- Fixed some static issue strings, were listing wrong values
+- Selected issue now is dynamic,
+- Added global header for custom issue,
+- Added global header for search technician (will probably put this elsewhere later)
+- Implementing custom issue, need to send it when creating a new issue
+- Implemented search function
 
 ## (  ) Creating and Styling the layouts
 
@@ -71,21 +74,17 @@ I will add various info down as I think of it<br />
 1. The bottom navigator from the "github.com/Pyozer/introduction_screen" lib moves slightly up in
 position when the next button is revealed for the first time, it is very minimal though and can be
 solved by making the button transparent and not clickable
-
-2. When switching between onboarding pages, the variables for selection remain the same which means
-that for example, if user selects plumber issue #3 but then goes back and chooses a carpenter instead
-the carpenter issue #3 will be highlighted
-
-3. The picture of the issue isn't aligned properly in the orders page
-
-4. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
+2. The picture of the issue isn't aligned properly in the orders page
+3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
+4. Default selected technician value is static, meaning that when a user navigates to the select
+technician category, one of them will already be highlighted
 
 [comment]: <> (## New things I learned:)
 
 ## TODO:
 
 - Implement loading circular bar while doing database actions
-- Convert the list of common issues to a map
 - Pressing back while making an order should give a confirmation dialogue
+- ( ✓ ) Convert the list of common issues to a map
 

@@ -12,13 +12,15 @@ class Issue {
   String timeCompleted;
   String paymentMethod;
   double price;
-  //String  issueUid
-  //bool    isEmergency;
-  //bool    isPaid;
-  //String  issuedBy
-  //String  isAcceptedByTechnician;
-  //bool    isCanceledByUser;
-  //bool    isDeclinedByTechnician;
+  // String issueUid;
+  // bool isEmergency;
+  // bool isPaid;
+  // String issuedBy;
+  // String isAcceptedByTechnician;
+  // bool isCanceledByUser;
+  // bool isDeclinedByTechnician;
+  // bool isCustomIssue;
+  // String issuedBy;
 
   Issue({
     required this.issueCategory,
