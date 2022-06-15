@@ -74,6 +74,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     const bodyStyle = TextStyle(fontSize: 19.0);
+    debugPrint("starting issue category is: " + _issueCategory);
+
     return Scaffold(
       drawer: NavDrawer(),
       drawerScrimColor: Colors.transparent,
@@ -665,13 +667,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   List<String> selectKindOfIssuesArray() {
     List<String> returnedList = [];
 
-    //TODO:make this dynamic
-    if (selectCategoryValue == 0) {
-      returnedList = CommonIssues.plumberIssues;
-    } else if (selectCategoryValue == 2) {
-      returnedList = CommonIssues.carpenterIssues;
+    if(CommonIssues.mapOfCommonTechnicianIssues.containsKey(_issueCategory)){
+      returnedList = CommonIssues.mapOfCommonTechnicianIssues[_issueCategory]!;
     } else {
-      returnedList = ["no", "issue", "found"];
+      returnedList = CommonIssues.mapOfCommonApplianceIssues[_issueCategory]!;
     }
 
     return returnedList;
@@ -1057,7 +1056,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-  String _issueCategory = " ";
+  String _issueCategory = CommonIssues.applianceCategory9;
   String _issueDesc = " ";
   bool _isCompleted = false;
   String _assignedTo = " ";

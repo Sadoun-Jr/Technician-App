@@ -6,6 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
+- Mapped lists to keys and displayed them using the map
+- Fixed some static issue strings, were listing wrong values
 
 ## (  ) Creating and Styling the layouts
 

@@ -11,7 +11,7 @@ class CommonIssues{
   static String technicianCategory5 = "Cleaner";
   static String technicianCategory6 = "Butcher";
   static String technicianCategory7 = "Mechanic";
-  static String technicianCategory8 = "...";
+  static String technicianCategory8 = ".!!.";
   static String technicianCategory9 = "...";
 
   //static strings for appliance categories
@@ -23,7 +23,7 @@ class CommonIssues{
   static String applianceCategory5 = "Mobile phone";
   static String applianceCategory6 = "Drier";
   static String applianceCategory7 = "Other";
-  static String applianceCategory8 = "///";
+  static String applianceCategory8 = "---";
   static String applianceCategory9 = "///";
 
   //strings for the category page
@@ -91,7 +91,7 @@ class CommonIssues{
   ];
 
   //map linking technician issues with their respective common issues
-  Map<String, List<String>> mapOfCommonTechnicianIssues = {
+  static Map<String, List<String>> mapOfCommonTechnicianIssues = {
     technicianCategory0 : listTechnicianCategory0CommonIssues,
     technicianCategory1 : listTechnicianCategory1CommonIssues,
     technicianCategory2 : listTechnicianCategory2CommonIssues,
@@ -105,7 +105,7 @@ class CommonIssues{
   };
 
   //map linking technician issues with their respective common issues
-  Map<String, List<String>> mapOfCommonApplianceIssues = {
+  static Map<String, List<String>> mapOfCommonApplianceIssues = {
     applianceCategory0 : listApplianceCategory0CommonIssues,
     applianceCategory1 : listApplianceCategory1CommonIssues,
     applianceCategory2 : listApplianceCategory2CommonIssues,
@@ -120,133 +120,133 @@ class CommonIssues{
 
   //lists for common applianceCategoryIssues
   static List<String> listApplianceCategory0CommonIssues = [
+    applianceCategory0CommonIssue0,
     applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
-    applianceCategory0CommonIssue1,
+    applianceCategory0CommonIssue2,
+    applianceCategory0CommonIssue3,
+    applianceCategory0CommonIssue4,
+    applianceCategory0CommonIssue5,
+    applianceCategory0CommonIssue6,
+    applianceCategory0CommonIssue7,
+    applianceCategory0CommonIssue8,
+    applianceCategory0CommonIssue9,
   ];
 
   static List<String> listApplianceCategory1CommonIssues = [
+    applianceCategory1CommonIssue0,
     applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
-    applianceCategory1CommonIssue1,
+    applianceCategory1CommonIssue2,
+    applianceCategory1CommonIssue3,
+    applianceCategory1CommonIssue4,
+    applianceCategory1CommonIssue5,
+    applianceCategory1CommonIssue6,
+    applianceCategory1CommonIssue7,
+    applianceCategory1CommonIssue8,
+    applianceCategory1CommonIssue9,
   ];
 
   static List<String> listApplianceCategory2CommonIssues = [
+    applianceCategory2CommonIssue0,
     applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
-    applianceCategory2CommonIssue1,
+    applianceCategory2CommonIssue2,
+    applianceCategory2CommonIssue3,
+    applianceCategory2CommonIssue4,
+    applianceCategory2CommonIssue5,
+    applianceCategory2CommonIssue6,
+    applianceCategory2CommonIssue7,
+    applianceCategory2CommonIssue8,
+    applianceCategory2CommonIssue9,
   ];
 
   static List<String> listApplianceCategory3CommonIssues = [
+    applianceCategory3CommonIssue0,
     applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
-    applianceCategory3CommonIssue1,
+    applianceCategory3CommonIssue2,
+    applianceCategory3CommonIssue3,
+    applianceCategory3CommonIssue4,
+    applianceCategory3CommonIssue5,
+    applianceCategory3CommonIssue6,
+    applianceCategory3CommonIssue7,
+    applianceCategory3CommonIssue8,
+    applianceCategory3CommonIssue9,
   ];
 
   static List<String> listApplianceCategory4CommonIssues = [
+    applianceCategory4CommonIssue0,
     applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
-    applianceCategory4CommonIssue1,
+    applianceCategory4CommonIssue2,
+    applianceCategory4CommonIssue3,
+    applianceCategory4CommonIssue4,
+    applianceCategory4CommonIssue5,
+    applianceCategory4CommonIssue6,
+    applianceCategory4CommonIssue7,
+    applianceCategory4CommonIssue8,
+    applianceCategory4CommonIssue9,
   ];
 
   static List<String> listApplianceCategory5CommonIssues = [
+    applianceCategory5CommonIssue0,
     applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
-    applianceCategory5CommonIssue1,
+    applianceCategory5CommonIssue2,
+    applianceCategory5CommonIssue3,
+    applianceCategory5CommonIssue4,
+    applianceCategory5CommonIssue5,
+    applianceCategory5CommonIssue6,
+    applianceCategory5CommonIssue7,
+    applianceCategory5CommonIssue8,
+    applianceCategory5CommonIssue9,
   ];
 
   static List<String> listApplianceCategory6CommonIssues = [
+    applianceCategory6CommonIssue0,
     applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
-    applianceCategory6CommonIssue1,
+    applianceCategory6CommonIssue2,
+    applianceCategory6CommonIssue3,
+    applianceCategory6CommonIssue4,
+    applianceCategory6CommonIssue5,
+    applianceCategory6CommonIssue6,
+    applianceCategory6CommonIssue7,
+    applianceCategory6CommonIssue8,
+    applianceCategory6CommonIssue9,
   ];
 
   static List<String> listApplianceCategory7CommonIssues = [
+    applianceCategory7CommonIssue0,
     applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
-    applianceCategory7CommonIssue1,
+    applianceCategory7CommonIssue2,
+    applianceCategory7CommonIssue3,
+    applianceCategory7CommonIssue4,
+    applianceCategory7CommonIssue5,
+    applianceCategory7CommonIssue6,
+    applianceCategory7CommonIssue7,
+    applianceCategory7CommonIssue8,
+    applianceCategory7CommonIssue9,
   ];
 
   static List<String> listApplianceCategory8CommonIssues = [
+    applianceCategory8CommonIssue0,
     applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
-    applianceCategory8CommonIssue1,
+    applianceCategory8CommonIssue2,
+    applianceCategory8CommonIssue3,
+    applianceCategory8CommonIssue4,
+    applianceCategory8CommonIssue5,
+    applianceCategory8CommonIssue6,
+    applianceCategory8CommonIssue7,
+    applianceCategory8CommonIssue8,
+    applianceCategory8CommonIssue9,
   ];
 
   static List<String> listApplianceCategory9CommonIssues = [
+    applianceCategory9CommonIssue0,
     applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
-    applianceCategory9CommonIssue1,
+    applianceCategory9CommonIssue2,
+    applianceCategory9CommonIssue3,
+    applianceCategory9CommonIssue4,
+    applianceCategory9CommonIssue5,
+    applianceCategory9CommonIssue6,
+    applianceCategory9CommonIssue7,
+    applianceCategory9CommonIssue8,
+    applianceCategory9CommonIssue9,
   ];
 
 
