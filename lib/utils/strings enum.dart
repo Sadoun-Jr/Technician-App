@@ -24,6 +24,9 @@ class AppStrings {
   static int heroRegister = 222;
   static int heroConnectwithFb = 333;
 
+  //global header in onboarding selection hero tag
+  static int globalHeaderHero = 90;
+
   //strings for the priority page
   static String selectPriorityString = "When do you need the technician?";
   static String immediately = "Right now";

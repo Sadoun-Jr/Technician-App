@@ -6,11 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Selected issue now is dynamic,
-- Added global header for custom issue,
-- Added global header for search technician (will probably put this elsewhere later)
-- Implementing custom issue, need to send it when creating a new issue
-- Implemented search function
+- Implemented custom issue saved into database and de-select other issues if it is custom
+- Fixed starting technician page with a category already selected
 
 ## (  ) Creating and Styling the layouts
 
@@ -77,8 +74,7 @@ solved by making the button transparent and not clickable
 2. The picture of the issue isn't aligned properly in the orders page
 3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
-4. Default selected technician value is static, meaning that when a user navigates to the select
-technician category, one of them will already be highlighted
+
 
 [comment]: <> (## New things I learned:)
 

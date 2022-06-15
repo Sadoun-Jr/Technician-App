@@ -17,7 +17,6 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: reviewsListView(),
-
     );
   }
 

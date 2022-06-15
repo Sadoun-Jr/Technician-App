@@ -58,14 +58,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     Navigator.pop(context);
   }
 
-  void switchNextButtonVisibility(bool visibile) {
-    if (visibile) {
-      isNextButtonVisible = true;
-    } else {
-      isNextButtonVisible = false;
-    }
-    setState(() => isCategoryChosen = true);
-  }
+  // void switchNextButtonVisibility(bool visibile) {
+  //   if (visibile) {
+  //     isNextButtonVisible = true;
+  //   } else {
+  //     isNextButtonVisible = false;
+  //   }
+  //   setState(() => isCategoryChosen = true);
+  // }
 
   void nextPage() {
     introKey.currentState?.next();
@@ -120,6 +120,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           showSkipButton: false,
           freeze: true,
           showBackButton: true,
+          showDoneButton: true,
           onChange: (page) {
             isHeaderForCategoryPageVisible = false;
             isHeaderForDescPageVisible = false;
@@ -141,8 +142,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           back: const Icon(Icons.arrow_back),
           skip:
               const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
-          next: Icon(
-            Icons.arrow_forward,
+          next: Visibility(
+            visible: isNextButtonVisible,
+            maintainState: true,
+            maintainSize: true,
+            maintainAnimation: true,
+            child: Icon(
+              Icons.arrow_forward,
+            ),
           ),
 
           done: Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
@@ -725,9 +732,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
   List<String> selectKindOfIssuesArray() {
     List<String> returnedList = [];
-
     returnedList = CommonIssues.mapAllCommonIssues[_issueCategory]!;
-
     return returnedList;
   }
 
@@ -735,7 +740,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
     return Container(
-      margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
+      margin: EdgeInsets.fromLTRB(16, 100, 16, 80),
       child: ListView.builder(
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
@@ -751,8 +756,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(15),
-                  onTap: () => setIssueDesc(index),
-                  child: Container(
+                  onTap: () => setIssueDesc(index, false, ""),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       color: selectIssueValue == index
@@ -772,16 +778,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  void setIssueDesc(int index) {
-    List<String>? listOfRespectiveIssuesFromMap =
-        CommonIssues.mapAllCommonIssues[_issueCategory];
+  void setIssueDesc(int index, bool isCustomIssue, String customIssueTyped) {
+    if(!isCustomIssue){
+      List<String>? listOfRespectiveIssuesFromMap =
+      CommonIssues.mapAllCommonIssues[_issueCategory];
 
-    _issueDesc = listOfRespectiveIssuesFromMap![index];
-    debugPrint("issue desc is " + _issueDesc.toString());
+      _issueDesc = listOfRespectiveIssuesFromMap![index];
+      debugPrint("issue desc is " + _issueDesc.toString());
 
-    nextPage();
+      nextPage();
+      setState(() => selectIssueValue = index);
 
-    setState(() => selectIssueValue = index);
+    } else if (isCustomIssue) {
+      _issueDesc = customIssueTyped;
+      setState(() => selectIssueValue = 134);
+      nextPage();
+    }
+
   }
 
   Widget customIssueHeader() {
@@ -791,37 +804,53 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       padding: const EdgeInsets.all(10),
-      child: TextFormField(
-        controller: customIssueController,
-        maxLines: 1,
-        textInputAction: TextInputAction.next,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: (value) => (listOfRespectiveIssuesFromMap!.contains(value))
-            ? "Please select the issue from the list"
-            : null,
-        style: TextStyle(color: _whiteText),
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
-            borderSide: BorderSide(
-              color: _midWhite,
-              width: 1.25,
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: customIssueController,
+              maxLines: 1,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => (listOfRespectiveIssuesFromMap!.contains(value))
+                  ? "Don't type an issue that already exists in the list"
+                  : null,
+              style: TextStyle(color: _whiteText),
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(
+                    color: _midWhite,
+                    width: 1.25,
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: _midWhite,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                labelText: "Custom issue...",
+                labelStyle: TextStyle(color: _whiteText),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: _midWhite, width: 2.5),
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
             ),
           ),
-          prefixIcon: Icon(
-            Icons.lock,
-            color: _midWhite,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          labelText: "Custom issue...",
-          labelStyle: TextStyle(color: _whiteText),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: _midWhite, width: 2.5),
-            borderRadius: BorderRadius.circular(25.0),
-          ),
-        ),
+          SizedBox(width: 15,),
+          Container(
+            width: 50,
+            height: 50,
+            child: FloatingActionButton(onPressed: () => {
+              setIssueDesc(-1, true, customIssueController.text.toString().trim())
+            },
+              heroTag: AppStrings.globalHeaderHero,
+            child: Icon(Icons.arrow_forward),),
+          )
+        ],
       ),
     );
   }
@@ -840,24 +869,24 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-  int selectCategoryValue = 9;
+  int selectCategoryValue = 14;
 
   void sortByApplicances() {
-    selectCategoryValue = 9;
+    selectCategoryValue = 222222;
     isSortedByTrades = false;
     setState(() => isSortedByAppliance = true);
   }
 
   void sortByTrades() {
     isSortedByAppliance = false;
-    selectCategoryValue = 9;
+    selectCategoryValue = 2222222;
     setState(() => isSortedByTrades = true);
   }
 
-  void categorySelected() {
-    isNextButtonVisible = true;
-    setState(() => isCategoryChosen = true);
-  }
+  // void categorySelected() {
+  //   isNextButtonVisible = true;
+  //   setState(() => isCategoryChosen = true);
+  // }
 
   Widget selectCategoryOnboarding() {
     return Container(
@@ -1095,7 +1124,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         child: Row(
           children: [
             FloatingActionButton.extended(
-                heroTag: 99,
+                heroTag: AppStrings.globalHeaderHero,
                 onPressed: sortByTrades,
                 label: Text("Appliances")),
             Spacer(),
