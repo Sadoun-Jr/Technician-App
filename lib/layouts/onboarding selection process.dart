@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/utils/hex%20colors.dart';
+import 'package:technicians/utils/strings%20common%20issues.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/navigation%20drawer.dart';
@@ -666,9 +667,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
     //TODO:make this dynamic
     if (selectCategoryValue == 0) {
-      returnedList = AppStrings.plumberIssues;
+      returnedList = CommonIssues.plumberIssues;
     } else if (selectCategoryValue == 2) {
-      returnedList = AppStrings.carpenterIssues;
+      returnedList = CommonIssues.carpenterIssues;
     } else {
       returnedList = ["no", "issue", "found"];
     }
@@ -719,7 +720,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   void setIssueDesc(int index) {
     if (_issueCategory == "Plumber") {
-      _issueDesc = AppStrings.plumberIssues[index];
+      _issueDesc = CommonIssues.plumberIssues[index];
       nextPage();
       debugPrint("Issue desc is " + _issueDesc);
     }
@@ -770,84 +771,84 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 height: 20,
               ),
               appliancesItemRow(
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[0]),
-                AppStrings.listOfTechnicianCategories[0],
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[1]),
-                AppStrings.listOfTechnicianCategories[1],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[0]),
+                CommonIssues.listOfTechnicianCategories[0],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[1]),
+                CommonIssues.listOfTechnicianCategories[1],
               ),
               appliancesItemRow(
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[2]),
-                AppStrings.listOfTechnicianCategories[2],
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[3]),
-                AppStrings.listOfTechnicianCategories[3],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[2]),
+                CommonIssues.listOfTechnicianCategories[2],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[3]),
+                CommonIssues.listOfTechnicianCategories[3],
               ),
               appliancesItemRow(
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[4]),
-                AppStrings.listOfTechnicianCategories[4],
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[5]),
-                AppStrings.listOfTechnicianCategories[5],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[4]),
+                CommonIssues.listOfTechnicianCategories[4],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[5]),
+                CommonIssues.listOfTechnicianCategories[5],
               ),
               appliancesItemRow(
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[6]),
-                AppStrings.listOfTechnicianCategories[6],
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[7]),
-                AppStrings.listOfTechnicianCategories[7],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[6]),
+                CommonIssues.listOfTechnicianCategories[6],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[7]),
+                CommonIssues.listOfTechnicianCategories[7],
               ),
               appliancesItemRow(
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[8]),
-                AppStrings.listOfTechnicianCategories[8],
-                AppStrings.listOfTechnicianCategories
-                    .indexOf(AppStrings.listOfTechnicianCategories[9]),
-                AppStrings.listOfTechnicianCategories[9],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[8]),
+                CommonIssues.listOfTechnicianCategories[8],
+                CommonIssues.listOfTechnicianCategories
+                    .indexOf(CommonIssues.listOfTechnicianCategories[9]),
+                CommonIssues.listOfTechnicianCategories[9],
               ),
               tradesItemRow(
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[0]),
-                AppStrings.listOfAppliancesCategories[0],
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[1]),
-                AppStrings.listOfAppliancesCategories[1],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[0]),
+                CommonIssues.listOfAppliancesCategories[0],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[1]),
+                CommonIssues.listOfAppliancesCategories[1],
               ),
               tradesItemRow(
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[2]),
-                AppStrings.listOfAppliancesCategories[2],
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[3]),
-                AppStrings.listOfAppliancesCategories[3],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[2]),
+                CommonIssues.listOfAppliancesCategories[2],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[3]),
+                CommonIssues.listOfAppliancesCategories[3],
               ),
               tradesItemRow(
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[4]),
-                AppStrings.listOfAppliancesCategories[4],
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[5]),
-                AppStrings.listOfAppliancesCategories[5],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[4]),
+                CommonIssues.listOfAppliancesCategories[4],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[5]),
+                CommonIssues.listOfAppliancesCategories[5],
               ),
               tradesItemRow(
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[6]),
-                AppStrings.listOfAppliancesCategories[6],
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[7]),
-                AppStrings.listOfAppliancesCategories[7],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[6]),
+                CommonIssues.listOfAppliancesCategories[6],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[7]),
+                CommonIssues.listOfAppliancesCategories[7],
               ),
               tradesItemRow(
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[8]),
-                AppStrings.listOfAppliancesCategories[8],
-                AppStrings.listOfAppliancesCategories
-                    .indexOf(AppStrings.listOfAppliancesCategories[9]),
-                AppStrings.listOfAppliancesCategories[9],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[8]),
+                CommonIssues.listOfAppliancesCategories[8],
+                CommonIssues.listOfAppliancesCategories
+                    .indexOf(CommonIssues.listOfAppliancesCategories[9]),
+                CommonIssues.listOfAppliancesCategories[9],
               ),
             ]));
   }
@@ -977,10 +978,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void setIssueCategory(int category, bool isSortedByTechnician) {
     if (!isSortedByTechnician) {
       setState(() =>
-          _issueCategory = AppStrings.listOfTechnicianCategories[category]);
+          _issueCategory = CommonIssues.listOfTechnicianCategories[category]);
     } else {
       setState(() =>
-          _issueCategory = AppStrings.listOfAppliancesCategories[category]);
+          _issueCategory = CommonIssues.listOfAppliancesCategories[category]);
     }
     debugPrint("Category set to $_issueCategory");
 

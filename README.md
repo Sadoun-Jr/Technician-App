@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added UID for each issue, saved in Database
+- Added static strings for common issues in a new strings file
 
 ## (  ) Creating and Styling the layouts
 
@@ -37,27 +37,33 @@ I will add various info down as I think of it<br />
 ( ✓ ) Add issue to database<br />
 ( ✓ ) Added UID to each issue in the database<br />
 
-## Features to implement:
+[comment]: <> (## Features to implement:)
 
-1. Ability for technician to choose if they can serve emergencies or not<br />
+[comment]: <> (1. Ability for technician to choose if they can serve emergencies or not<br />)
 
-2. Technician setup profile will include<br />
-   a. Selecting category<br />
-   b. Selecting availability for emergencies<br />
-   c. Selecting charge rate<br />
-   d. How much time average per job<br />
-   e. Contact info<br />
+[comment]: <> (2. Technician setup profile will include<br />)
 
-3. Auto-booking system for technician to prevent conflicts<br />
+[comment]: <> (   a. Selecting category<br />)
 
-4. Confirm identity of technician using national ID<br />
+[comment]: <> (   b. Selecting availability for emergencies<br />)
 
-5. Online and physical payment available<br />
+[comment]: <> (   c. Selecting charge rate<br />)
 
-6. Technician profile page will contain previous work photos and reviews,this is the 
-same page that the consumer will be able to book an appointment from.<br />
+[comment]: <> (   d. How much time average per job<br />)
 
-7. NO CHAT SYSTEM<br />
+[comment]: <> (   e. Contact info<br />)
+
+[comment]: <> (3. Auto-booking system for technician to prevent conflicts<br />)
+
+[comment]: <> (4. Confirm identity of technician using national ID<br />)
+
+[comment]: <> (5. Online and physical payment available<br />)
+
+[comment]: <> (6. Technician profile page will contain previous work photos and reviews,this is the )
+
+[comment]: <> (same page that the consumer will be able to book an appointment from.<br />)
+
+[comment]: <> (7. NO CHAT SYSTEM<br />)
 
 ## Known bugs:
 
@@ -80,4 +86,5 @@ need to close it.
 
 - Implement loading circular bar while doing database actions
 - Convert the list of common issues to a map
+- Pressing back while making an order should give a confirmation dialogue
 
