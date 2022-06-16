@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
-import 'package:technicians/models/test%20technician%20object.dart';
+import 'package:technicians/models/test%20issue%20object.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 
@@ -16,7 +17,7 @@ class PendingAndCompletedOrders extends StatefulWidget {
 }
 
 class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
-  List<TestTechnician> listOfAllIssues = [];
+  List<TestIssue> listOfAllIssues = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
   void initState() {
     debugPrint("Calling data fetch");
     listOfAllIssues.clear();
-    getData();
     super.initState();
   }
 
@@ -51,7 +51,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
         .get()
         .then((value) {
       for (var element in value.docs) {
-        TestTechnician i = TestTechnician(
+        TestIssue i = TestIssue(
           technicianRating: double.parse(element.data()[AppStrings.technicianRatingKey].toString()),
           isCompleted: element.data()[AppStrings.isCompletedKey],
           timeCompleted: element.data()[AppStrings.timeCompletedKey],
@@ -259,7 +259,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                                               ? Colors.green
                                                               : HexColor(
                                                                   "FFD700"))),
-
                                                 ],
                                               ),
                                             ),

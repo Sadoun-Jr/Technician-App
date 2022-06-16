@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TestTechnician {
+class TestIssue {
   String issueCategory;
   String issueDesc;
   bool isCompleted;
@@ -17,7 +17,7 @@ class TestTechnician {
   bool isAcceptedByTechnician;
   bool isCanceledByUser;
 
-  TestTechnician(
+  TestIssue(
       {required this.issueCategory,
       required this.issueDesc,
       required this.isCompleted,
