@@ -486,16 +486,16 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Widget pendingOrdersBox() {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
+          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 color: HexColor("#D4AF37")
             ),
-            height: 140,
-            width: 140,
+            height: 50,
             child: Material(
               color: Colors.transparent,
               child: InkWell(
@@ -503,17 +503,17 @@ class _LoginLayoutState extends State<LoginLayout> {
                 onTap: () => navigateToPendingOrCompletedOrders(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Center(child: Text("Pending orders\n(1)")),
+                  child: Center(child: Text("Pending orders (1)")),
                 ),
               ),
             )),
         Container(
+            margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 color: Colors.green
             ),
-            height: 140,
-            width: 140,
+            height: 50,
             child: Material(
               color: Colors.transparent,
               child: InkWell(

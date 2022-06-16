@@ -28,6 +28,7 @@ class Technician{
   // List<double> pricesForCommonIssues;
   // List<double> pricesForCommonIssuesDuringEmergencies;
   // int numberOfFavourites;
+  // String location;
 
   Technician({required this.name,
     required this.desc,

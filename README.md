@@ -6,8 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Implemented custom issue saved into database and de-select other issues if it is custom
-- Fixed starting technician page with a category already selected
+- Pending and completed orders page fetches data from firestore now
 
 ## (  ) Creating and Styling the layouts
 
@@ -74,6 +73,7 @@ solved by making the button transparent and not clickable
 2. The picture of the issue isn't aligned properly in the orders page
 3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
+4. ListOfAllIssues in the pending and completed orders tab somehow loads twice at the initState()
 
 
 [comment]: <> (## New things I learned:)

@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
+import 'package:technicians/models/test%20technician%20object.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 
@@ -12,9 +16,65 @@ class PendingAndCompletedOrders extends StatefulWidget {
 }
 
 class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
+  List<TestTechnician> listOfAllIssues = [];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: ordersList());
+    return Scaffold(
+        body: FutureBuilder(
+          future: getData(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if(snapshot.connectionState == ConnectionState.done){
+                return ordersList();
+              } else {
+                return Center(child: Text("Loading data..."),);
+              }
+            },
+           ));
+  }
+
+  @override
+  void initState() {
+    debugPrint("Calling data fetch");
+    listOfAllIssues.clear();
+    getData();
+    super.initState();
+  }
+
+  Future<void> getData() async {
+    debugPrint("Started fetching data");
+    var issueCollection = FirebaseFirestore.instance.collection("issues");
+    var user = FirebaseAuth.instance.currentUser;
+
+    await issueCollection
+        .where(AppStrings.issuedByKey, isEqualTo: user!.uid)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        TestTechnician i = TestTechnician(
+          technicianRating: double.parse(element.data()[AppStrings.technicianRatingKey].toString()),
+          isCompleted: element.data()[AppStrings.isCompletedKey],
+          timeCompleted: element.data()[AppStrings.timeCompletedKey],
+          timeRequested: element.data()[AppStrings.timeRequestedKey],
+          issueDesc: element.data()[AppStrings.issueDescKey],
+          isAcceptedByTechnician: element.data()[AppStrings.isAcceptedByTechnicianKey],
+          isCanceledByUser: element.data()[AppStrings.isCanceledByUserKey],
+          isEmergency: element.data()[AppStrings.isEmergencyKey],
+          isPaid: element.data()[AppStrings.isPaidKey],
+          issueCategory: element.data()[AppStrings.issueCategoryKey],
+          issuedBy: element.data()[AppStrings.issuedByKey],
+          //TODO: add "issued to"
+          issueUid: element.data()[AppStrings.issueUidKey],
+          paymentMethod: element.data()[AppStrings.paymentMethodKey],
+          price: double.parse(element.data()[AppStrings.priceKey].toString()),
+          technicianReview: element.data()[AppStrings.technicianReviewKey],
+        );
+
+        listOfAllIssues.add(i);
+      }
+    });
+    debugPrint("===============${listOfAllIssues.length}===================");
+
   }
 
   Widget ordersList() {
@@ -108,11 +168,9 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                   child: Align(
                                     alignment: Alignment.topLeft,
                                     child: Text(
-                                      AppStrings
-                                          .listOfIssues[index].paymentMethod,
+                                      listOfAllIssues[index].paymentMethod,
                                       style: TextStyle(
-                                          color: AppStrings.listOfIssues[index]
-                                                      .paymentMethod ==
+                                          color: listOfAllIssues[index].paymentMethod ==
                                                   "In App"
                                               ? Colors.green
                                               : Colors.red),
@@ -134,8 +192,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                         child: Align(
                                           alignment: Alignment.topLeft,
                                           child: Text(
-                                            AppStrings
-                                                .listOfIssues[index].issueCategory,
+                                            listOfAllIssues[index].issueCategory,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 20),
@@ -149,7 +206,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                         child: Align(
                                           alignment: Alignment.topRight,
                                           child: Text(
-                                            "\$${AppStrings.listOfIssues[index].price}",
+                                            "\$${listOfAllIssues[index].price}",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 25),
@@ -163,57 +220,55 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        AppStrings
-                                            .listOfIssues[index].issueDesc,
+                                        listOfAllIssues[index].issueDesc,
                                         maxLines: 1,
                                       ),
                                     ),
                                   ),
                                   Row(
                                     children: [
-                                      Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(16, 5, 5, 5),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text.rich(
-                                            TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                    text: AppStrings
-                                                            .listOfIssues[index]
-                                                            .isCompleted
-                                                        ? 'Completed by: '
-                                                        : "Pending...  ",
+                                      Expanded(
+                                        child: Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(16, 5, 5, 5),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: RichText(
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    recognizer:
+                                                    TapGestureRecognizer()
+                                                      ..onTap = () => {},
+                                                    //todo: change to issuedTo
+                                                    text: listOfAllIssues[index].issuedBy,
                                                     style: TextStyle(
-                                                        color: AppStrings
-                                                                .listOfIssues[
-                                                                    index]
-                                                                .isCompleted
-                                                            ? Colors.green
-                                                            : HexColor(
-                                                                "FFD700"))),
-                                                TextSpan(
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () => {},
-                                                  text: AppStrings
-                                                      .listOfIssues[index]
-                                                      .assignedTo,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blue),
-                                                ),
-                                              ],
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                        color: Colors.blue),
+                                                  ),
+                                                  TextSpan(
+                                                      text: listOfAllIssues[index].
+                                                      isCompleted
+                                                          ? 'Completed by: '
+                                                          : "Pending...  ",
+                                                      style: TextStyle(
+                                                          color: listOfAllIssues[index].isCompleted
+                                                              ? Colors.green
+                                                              : HexColor(
+                                                                  "FFD700"))),
+
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                       Spacer(),
                                       Text(
-                                        AppStrings.listOfIssues[index]
-                                            .technicianRating,
+                                        listOfAllIssues[index].technicianRating.toString(),
                                         style: TextStyle(
                                           fontSize: 16,
                                         ),
@@ -234,27 +289,23 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        AppStrings
-                                                .listOfIssues[index].isCompleted
-                                            ? AppStrings.listOfIssues[index]
-                                                .timeCompleted
-                                            : AppStrings.listOfIssues[index]
-                                                .timeRequested,
+                                        //TODO: convert this to date/timestamp
+                                        listOfAllIssues[index].isCompleted
+                                            ? listOfAllIssues[index].timeCompleted.toString()
+                                            : listOfAllIssues[index].timeRequested.toString(),
                                         style: TextStyle(color: Colors.grey),
                                       ),
                                     ),
                                   ),
                                   Visibility(
-                                    visible: AppStrings
-                                        .listOfIssues[index].isCompleted,
+                                    visible: listOfAllIssues[index].isCompleted,
                                     child: Container(
                                       padding:
                                           EdgeInsets.fromLTRB(16, 5, 16, 0),
                                       child: Align(
                                         alignment: Alignment.topLeft,
                                         child: Text(
-                                          AppStrings.listOfIssues[index]
-                                              .technicianReview,
+                                          listOfAllIssues[index].technicianReview,
                                           maxLines: 4,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 19),
@@ -262,15 +313,15 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                       ),
                                     ),
                                   ),
-
                                 ],
                               ),
                             )
                           ],
                         ),
                         Spacer(),
+                        Visibility(visible: false, child: Text("Hello world")),
                         Visibility(
-                          visible: !AppStrings.listOfIssues[index].isCompleted,
+                          visible: !listOfAllIssues[index].isCompleted,
                           child: Container(
                             padding: EdgeInsets.fromLTRB(16, 5, 16, 0),
                             child: Align(
@@ -284,7 +335,13 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.white),
                                 ),
-                                onPressed: () => {},
+                                onPressed: () => {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MarkOrderFinished())),
+                                },
                                 backgroundColor: Colors.green,
                               ),
                             ),

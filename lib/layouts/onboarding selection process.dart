@@ -225,11 +225,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
         });
       });
-      setState(() {});
 
+      setState(() {});
+      // Navigator.of(context).pushNamedAndRemoveUntil(
+      //     '/dashboard or login',
+      //         (Route<dynamic> route) => false);
+      Navigator.pop(context);
       _showMyDialog();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+      debugPrint(e.toString());
     }
   }
 
