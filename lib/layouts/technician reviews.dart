@@ -20,125 +20,149 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
     );
   }
 
-  Widget reviewsListView() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 80),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Reviews of widgets.name",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: ListView.builder(
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                itemCount: AppStrings.techniciansList.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                      height: 150,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 1, horizontal: 4),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          splashColor: Colors.redAccent,
-                          onTap: () =>{},
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                            child: Row(children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin:
-                                        EdgeInsets.fromLTRB(0, 23, 16, 16),
-                                        color: Colors.transparent,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  AppStrings.techniciansList[index].rating,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: AppStrings
-                                                          .techniciansList[index]
-                                                          .availability ==
-                                                          "Available"
-                                                          ? FontWeight.bold
-                                                          : FontWeight.normal),
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.fromLTRB(5, 0, 16, 0),
-                                                  child: Icon(
-                                                    Icons.star,
-                                                    size: 16,
-                                                    color: HexColor("FFD700"),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 5,),
-                                            Text(
-                                              AppStrings
-                                                  .techniciansList[index].name,
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text(
-                                              AppStrings
-                                                  .techniciansList[index].desc,
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey.shade600,
-                                                  fontWeight: FontWeight.bold),
-                                              maxLines: 1,
-                                            ),
+  Future<void> getReviews() async {
 
-                                          ],
-                                        ),
+  }
+
+  var list = [];
+
+  Widget reviewsListView() {
+    return FutureBuilder(
+      future: getReviews(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Container(
+            margin: EdgeInsets.fromLTRB(5, 5, 5, 80),
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: <Widget>[
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Reviews of widgets.name",
+                          style: TextStyle(fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                            height: 150,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1, horizontal: 4),
+                            child: Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: InkWell(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(15)),
+                                splashColor: Colors.redAccent,
+                                onTap: () => {},
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 200),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                                  child: Row(children: <Widget>[
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          SizedBox(
+                                            width: 16,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              margin:
+                                              EdgeInsets.fromLTRB(
+                                                  0, 23, 16, 16),
+                                              color: Colors.transparent,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        list[index].rating,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight: list[index]
+                                                                .isAvailable ==
+                                                                "Available"
+                                                                ? FontWeight
+                                                                .bold
+                                                                : FontWeight
+                                                                .normal),
+                                                      ),
+                                                      Container(
+                                                        margin: EdgeInsets
+                                                            .fromLTRB(5, 0, 16,
+                                                            0),
+                                                        child: Icon(
+                                                          Icons.star,
+                                                          size: 16,
+                                                          color: HexColor(
+                                                              "FFD700"),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    list[index].name,
+                                                    style: TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Text(
+                                                    list[index].desc,
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.grey
+                                                            .shade600,
+                                                        fontWeight: FontWeight
+                                                            .bold),
+                                                    maxLines: 1,
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ]),
                                 ),
                               ),
-                            ]),
-                          ),
-                        ),
-                      ));
-                }),
-          )
-        ],
-      ),
-    );
+                            ));
+                      }),
+                )
+              ],
+            ),
+          );
+        }
+        else {
+          return Center(child: Text("Loading reviews..."));
+        }
+      });
+
   }
 
 }

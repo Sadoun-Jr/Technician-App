@@ -248,6 +248,16 @@ class _MarkOrderFinishedState extends State<MarkOrderFinished> {
               });
             },
           ),
+          CheckboxListTile(
+            title: Text("Do you recommend this technician?"),
+            value: isWillingToRecommend,
+            checkboxShape: CircleBorder(),
+            onChanged: (value) {
+              setState(() {
+                isWillingToRecommend = value!;
+              });
+            },
+          ),
 
 
         ],

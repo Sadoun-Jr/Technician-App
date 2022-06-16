@@ -21,6 +21,7 @@ class Issue {
   // bool isDeclinedByTechnician;
   // bool isCustomIssue;
   // String issuedBy;
+  // bool isTerminated;
 
   Issue({
     required this.issueCategory,
