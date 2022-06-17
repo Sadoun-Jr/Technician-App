@@ -1,30 +1,94 @@
-import 'dart:ui';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:technicians/models/review%20object.dart';
 
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 
 class TechnicianReviews extends StatefulWidget {
-  const TechnicianReviews({Key? key}) : super(key: key);
+  final String selectedTechnicianUid;
+  const TechnicianReviews(this.selectedTechnicianUid,{Key? key}) : super(key: key);
 
   @override
   State<TechnicianReviews> createState() => _TechnicianReviewsState();
 }
 
 class _TechnicianReviewsState extends State<TechnicianReviews> {
-  @override
+
+  List<Review> listOfReviews = [];
+
   Widget build(BuildContext context) {
     return Scaffold(
-      body: reviewsListView(),
-    );
+        body: FutureBuilder(
+          future: getReviews(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.connectionState == ConnectionState.done){
+              return reviewsListView();
+              // return FloatingActionButton(onPressed: insertMockIssues);
+            } else {
+              return Center(child: Text("Loading data..."),);
+            }
+          },
+        ));
+  }
+
+  Future<String> changeUidToName(String uid, bool isUser) async {
+    String? firstName;
+    String? familyName;
+
+    var myRef = isUser? FirebaseFirestore.instance.collection("users") :
+        FirebaseFirestore.instance.collection("technicians");
+    await myRef.where(isUser ? AppStrings.userUidKey : AppStrings.technicianUidKey,
+    isEqualTo: uid).get().then((value) => {
+    for (var element in value.docs) {
+      firstName =
+        element.data()[AppStrings.firstNameKey],
+      familyName =
+      element.data()[AppStrings.familyNameKey],
+    }
+    });
+
+    return "$firstName $familyName";
   }
 
   Future<void> getReviews() async {
+    try{
+
+      debugPrint("Started getting reviews for uid ${widget.selectedTechnicianUid}");
+      var issuesRef = FirebaseFirestore.instance.collection("issues");
+      await issuesRef
+          .where(AppStrings.issuedToKey, isEqualTo: widget.selectedTechnicianUid)
+          .get()
+          .then((value) async {
+
+        value.docs.forEach((element) {
+          Review i = Review(
+            price: element.data()[AppStrings.priceKey],
+            paymentMethod: element.data()[AppStrings.paymentMethodKey],
+            issueUid: element.data()[AppStrings.issueUidKey],
+            issuedBy: element.data()[AppStrings.issuedByKey],
+            issueDesc: element.data()[AppStrings.issueDescKey],
+            //TODO: unify the var and key names
+            issueTitle: element.data()[AppStrings.issueCategoryKey],
+            isLeftMidWork: element.data()[AppStrings.isTerminatedMidWork],
+            issuedTo: element.data()[AppStrings.issuedToKey],
+            rating: element.data()[AppStrings.technicianRatingKey].toString(),
+            reviewDesc: element.data()[AppStrings.technicianReviewKey],
+            timeOfReview: element.data()[AppStrings.timeCompletedKey],
+          );
+          listOfReviews.add(i);
+
+        });
+
+      });
+      debugPrint("the technician has ${listOfReviews.length} reviews");
+
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
   }
 
-  var list = [];
 
   Widget reviewsListView() {
     return FutureBuilder(
@@ -56,10 +120,10 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                   child: ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      itemCount: list.length,
+                      itemCount: listOfReviews.length,
                       itemBuilder: (context, index) {
                         return Container(
-                            height: 150,
+                            height: 175,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 1, horizontal: 4),
                             child: Card(
@@ -97,16 +161,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        list[index].rating,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight: list[index]
-                                                                .isAvailable ==
-                                                                "Available"
-                                                                ? FontWeight
-                                                                .bold
-                                                                : FontWeight
-                                                                .normal),
+                                                        listOfReviews[index].rating!,
                                                       ),
                                                       Container(
                                                         margin: EdgeInsets
@@ -123,7 +178,8 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                                   ),
                                                   SizedBox(height: 5,),
                                                   Text(
-                                                    list[index].name,
+                                                    listOfReviews[index].issuedBy!
+                                                     ,
                                                     style: TextStyle(
                                                         fontSize: 16),
                                                   ),
@@ -131,7 +187,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                                     height: 6,
                                                   ),
                                                   Text(
-                                                    list[index].desc,
+                                                    listOfReviews[index].issueDesc!,
                                                     style: TextStyle(
                                                         fontSize: 13,
                                                         color: Colors.grey
@@ -139,6 +195,19 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                                         fontWeight: FontWeight
                                                             .bold),
                                                     maxLines: 1,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Text(
+                                                    listOfReviews[index].reviewDesc!,
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.grey
+                                                            .shade600,
+                                                        fontWeight: FontWeight
+                                                            .bold),
+                                                    maxLines: 3,
                                                   ),
 
                                                 ],

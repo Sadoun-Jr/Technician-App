@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class Review {
-  String issueTitle;
-  String issueDesc;
-  bool isLeftMidWork;
-  String rating;
-  String reviewDesc;
-  String timeOfReview;
-  String paymentMethod;
-  double price;
-  int issueNumber; //TODO: change to uid
-  String reviewGiver;
+  String? issueTitle;
+  String? issueDesc;
+  bool? isLeftMidWork;
+  String? rating;
+  String? reviewDesc;
+  int? timeOfReview;
+  String? paymentMethod;
+  dynamic price;
+  String? issueUid;
+  String? issuedBy;
+  String? issuedTo;
 
   //v2, don't implement during first
   //String timeModified;
@@ -25,6 +26,7 @@ class Review {
       required this.timeOfReview,
       required this.paymentMethod,
       required this.price,
-      required this.issueNumber,
-      required this.reviewGiver});
+      required this.issueUid,
+      required this.issuedTo,
+      required this.issuedBy});
 }

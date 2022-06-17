@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -258,6 +260,11 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
     //   builder: (context) => Center(child: slider()),
     // );
 
+    Random random = Random();
+    List booleanList = [true,false];
+    var firstName = (AppStrings.firstNamesList.toList()..shuffle()).first;
+    var lastName=  (AppStrings.lastNamesList.toList()..shuffle()).first;
+
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -269,9 +276,19 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               .collection("users")
               .doc(user?.uid)
               .set({
-            "uid": user?.uid,
-            "email": emailController.text.trim(),
-            "role": "user"
+            AppStrings.userUidKey                 : user!.uid,//TODO: TEXT CONTROLLER
+            AppStrings.firstNameKey               : firstName, //TODO: TEXT CONTROLLER
+            AppStrings.familyNameKey              : lastName,
+            AppStrings.imageKey                   : null, //TODO: GET THIS LATER
+            AppStrings.accountCreationTimeStampKey: DateTime.now().millisecondsSinceEpoch,
+            AppStrings.phoneNumberKey             : random.nextInt(123456789),
+            AppStrings.emailKey                   : ("$firstName$lastName@gmail.com"),//TODO: TEXT CONTROLLER
+            AppStrings.jobsPaidPhysicallyKey      : 0,
+            AppStrings.jobsPaidThroughAppKey      : 0,
+            AppStrings.isVerifiedByIdKey          : (booleanList.toList()..shuffle()).first,
+            AppStrings.numberOfFavouritesKey      : 0,
+            AppStrings.numberOfReviewsKey         : 0,
+            AppStrings.locationKey                : (AppStrings.locationsList.toList()..shuffle()).first,
           });
       });
       Fluttertoast.showToast(msg: AppStrings.userRegistered,

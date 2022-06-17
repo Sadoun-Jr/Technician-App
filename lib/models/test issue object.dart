@@ -14,6 +14,7 @@ class TestIssue {
   bool isEmergency;
   bool isPaid;
   String issuedBy;
+  String issuedTo;
   bool isAcceptedByTechnician;
   bool isCanceledByUser;
 
@@ -31,6 +32,7 @@ class TestIssue {
       required this.isEmergency,
       required this.isPaid,
       required this.issuedBy,
+      required this.issuedTo,
       required this.isAcceptedByTechnician,
       required this.isCanceledByUser,
       });

@@ -54,42 +54,6 @@ class CommonIssues{
     applianceCategory9,
   ];
 
-  static List<String> plumberIssues = [
-    "plumber issue 1",
-    "plumber issue 2",
-    "plumber issue 3",
-    "plumber issue 4",
-    "plumber issue 5",
-    "plumber issue 6",
-    "plumber issue 7",
-    "plumber issue 8",
-    "plumber issue 9",
-    "plumber issue 10",
-    "plumber issue 11",
-    "plumber issue 12",
-    "plumber issue 13",
-    "plumber issue 14",
-    "plumber issue 15",
-  ];
-
-  static List<String> carpenterIssues = [
-    "carpenter issue 1",
-    "carpenter issue 2",
-    "carpenter issue 3",
-    "carpenter issue 4",
-    "carpenter issue 5",
-    "carpenter issue 6",
-    "carpenter issue 7",
-    "carpenter issue 8",
-    "carpenter issue 9",
-    "carpenter issue 10",
-    "carpenter issue 11",
-    "carpenter issue 12",
-    "carpenter issue 13",
-    "carpenter issue 14",
-    "carpenter issue 15",
-  ];
-
   //map linking technician issues with their respective common issues
   static Map<String, List<String>> mapAllCommonIssues = {
     technicianCategory0 : listTechnicianCategory0CommonIssues,

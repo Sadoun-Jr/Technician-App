@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Technician {
-  String? firstName;  //TODO: change to firstName
+  String? firstName;
   String? familyName;
+  String? technicianUid;
   String? jobTitle;
   String? personalDesc; //NOT IN DATABASE
   Widget? image; //TODO: change to bitmap...?
-  double? rating; //TODO: change to double
+  double? rating;
   bool isAvailable;
   int? jobsCompleted;
   int? jobsDeclined;
@@ -22,7 +23,8 @@ class Technician {
   int? numberOfJobsPaidThroughApp;
   bool isVerifiedById;
   List? appliancesSubscribedTo;
-  Map? pricesForCommonIssues;
+  Map? pricesForJobIssues;
+  Map? pricesForAppliancesSubscribedToIssues;
   int? numberOfFavourites;
   List? favouritedBy;
   String? location;
@@ -32,6 +34,7 @@ class Technician {
       required this.firstName,
       required this.familyName,
       required this.jobTitle,
+    required this.technicianUid,
       required this.personalDesc,
       required this.image,
       required this.rating,
@@ -50,8 +53,9 @@ class Technician {
       required this.numberOfJobsPaidThroughApp,
       required this.isVerifiedById,
       required this.appliancesSubscribedTo,
-      required this.pricesForCommonIssues,
-      required this.numberOfFavourites,
+      required this.pricesForJobIssues,
+    required this.pricesForAppliancesSubscribedToIssues,
+    required this.numberOfFavourites,
       required this.favouritedBy,
       required this.location,
       required this.numberOfJobsTerminatedMidWork});

@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
       routes: {
         "/onboarding selection": (context) => const OnboardingSelection(),
         "/dashboard or login" : (context) => const LoginLayout(),
-        "/technician reviews" : (context) => const TechnicianReviews(),
       },
 
       home: StreamBuilder<User?>(

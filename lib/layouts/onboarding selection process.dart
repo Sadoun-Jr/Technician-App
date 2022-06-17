@@ -26,11 +26,30 @@ class OnboardingSelection extends StatefulWidget {
 class _OnboardingSelectionState extends State<OnboardingSelection> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Introduction screen',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: OnBoardingPage(),
+    return WillPopScope(
+      onWillPop: () async {
+        return (await showDialog(context: context, builder: (context) => AlertDialog(
+          title: new Text('Are you sure?'),
+          content: new Text('This will delete your current issue'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
+              child: new Text('No'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // <-- SEE HERE
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+        ));
+      },
+      child: MaterialApp(
+        title: 'Introduction screen',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: OnBoardingPage(),
+      ),
     );
   }
 }
@@ -52,6 +71,8 @@ TextEditingController customIssueController = TextEditingController();
 TextEditingController searchTechnicianController = TextEditingController();
 Color _whiteText = Colors.white;
 Color _midWhite = Colors.white54;
+var isSkipVisible = true;
+var isPrevVisible = false;
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -71,6 +92,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   void nextPage() {
     introKey.currentState?.next();
+  }
+
+  void prevPage() {
+    introKey.currentState?.previous();
   }
 
   void skipPages() {
@@ -104,37 +129,45 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           globalBackgroundColor: Colors.transparent,
           globalHeader: checkAppropriateGlobalHeader(),
           rawPages: [
-            selectEmergencyOnboarding(),
+            // selectEmergencyOnboarding(),
             selectCategoryOnboarding(),
             selectIssueTypeOnboarding(selectKindOfIssuesArray()),
             selectTechnicianOnboarding(),
-            selectAppointmentTimeOnboarding(),
+            assignedTechnicianProfileOnBoarding(),
           ],
           onDone: requestOrder,
           //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
-          skipOrBackFlex: 0,
-          nextFlex: 0,
+          skipOrBackFlex: 1,
+          nextFlex: 1,
+
           //prevent scrolling by swiping
           // freeze: true,
 
           isProgressTap: false,
-          showNextButton: true,
-          showSkipButton: false,
+          showNextButton: false,
+          showSkipButton: isSkipVisible,
           freeze: true,
-          showBackButton: true,
+          showBackButton: isPrevVisible,
           showDoneButton: true,
+          onSkip: prevPage,
           onChange: (page) {
+            isSkipVisible = true;
+            isPrevVisible = false;
             isHeaderForCategoryPageVisible = false;
             isHeaderForDescPageVisible = false;
             isHeaderForSelectTechnicianListVisible = false;
 
-            if (page == 1) {
+            if (page == 0) {
               setState(() => isHeaderForCategoryPageVisible = true);
-            } else if (page == 2) {
+            } else if (page == 1) {
               setState(() => isHeaderForDescPageVisible = true);
-            } else if (page == 3) {
+            } else if (page == 2) {
               setState(() => isHeaderForSelectTechnicianListVisible = true);
-            } else {
+            } else if(page ==3){
+              isSkipVisible = false;
+              setState(() => isPrevVisible = true);
+            }
+            else {
               setState(() => {});
             }
           },
@@ -145,7 +178,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           skip:
               const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
           next: Visibility(
-            visible: isNextButtonVisible,
+            visible: false,
             maintainState: true,
             maintainSize: true,
             maintainAnimation: true,
@@ -201,7 +234,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
       //create an empty issue with a uid
       await FirebaseFirestore.instance.collection("issues").add({
-        AppStrings.uidKey: " ",
+        AppStrings.issueUidKey: " ",
       }).then((value) async {
         debugPrint(
             "Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
@@ -209,7 +242,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             .collection("issues")
             .doc(value.id)
             .set({
-          AppStrings.uidKey: value.id,
+          AppStrings.issueUidKey: value.id,
           AppStrings.completedByKey: AppStrings.notCompletedYet,
           AppStrings.isAcceptedByTechnicianKey: false,
           AppStrings.isCanceledByUserKey: false,
@@ -325,7 +358,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-  Widget selectAppointmentTimeOnboarding() {
+  Technician? myAssignedTech;
+
+  Widget assignedTechnicianProfileOnBoarding() {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 16, 20, 80),
       child: ListView(
@@ -336,9 +371,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.red, width: 2)),
-              child: Icon(
+              child: Icon( //TODO: CHANGE THIS TO TECH IMAGE
                 Icons.person,
-                size: 250,
+                size: 75,
               )),
           Card(
             elevation: 4,
@@ -356,15 +391,25 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Align(
                       alignment: Alignment.topCenter,
                       child: Text(
-                        "Hamad",
+                        "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
                         maxLines: 1,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       )),
                   SizedBox(height: 5),
                   Align(
                       alignment: Alignment.center,
                       child: Text(
-                        "This is somewhat a medium sized description of the technician",
+                        myAssignedTech?.jobTitle  ?? "null",
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 18, ),
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "a short desc", //TODO: add in db
                         maxLines: 2,
                       )),
                   SizedBox(
@@ -383,7 +428,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            TechnicianReviews()),
+                                            TechnicianReviews(myAssignedTech!.technicianUid!)),
                                   )
                                 }),
                       ),
@@ -399,26 +444,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               ),
             ),
           ),
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Container(
-              height: 150,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white54),
-              child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Appointment selection here",
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 20),
-                  )),
-            ),
-          ),
+
           SizedBox(
             height: 10,
           ),
@@ -431,11 +457,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Center(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          "53",
+                          myAssignedTech?.jobsCompleted?.toString() ?? "-1",
                           style: TextStyle(fontSize: 30),
                         ),
                       ),
@@ -454,11 +480,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Center(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          "4.5",
+                          myAssignedTech?.rating?.toString() ?? "-1",
                           style: TextStyle(fontSize: 30),
                         ),
                       ),
@@ -477,11 +503,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Center(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children:  [
                       Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          "99%",
+                          "${myAssignedTech?.completionRate?.toString()}" "%",
                           style: TextStyle(fontSize: 30),
                         ),
                       ),
@@ -500,6 +526,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -586,18 +613,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     listOfAppropriateTechnicians = [];
     var technicianCollection =
     FirebaseFirestore.instance.collection("technicians");
-    var num = 0;
 
+    bool isAppliance = CommonIssues.listOfAppliancesCategories.contains(_issueCategory);
     debugPrint("issue category is $_issueCategory");
+
+    //looking by trades
+    if(!isAppliance){
     await technicianCollection.where(
         AppStrings.jobTitleKey, isEqualTo: _issueCategory).orderBy(
       AppStrings.overallRatingKey, descending: true
     )
     .get().then((value) => {
-
       value.docs.forEach((element) {
-
         Technician i = Technician(
+          technicianUid: element.data()[AppStrings.technicianUidKey],
           accountCreationTimeStamp: element.data()[AppStrings.accountCreationTimeStampKey],
           appliancesSubscribedTo: element.data()[AppStrings.appliancesSubscribedToKey],
           completionRate: element.data()[AppStrings.completionRateKey],
@@ -615,7 +644,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           numberOfJobsTerminatedMidWork: element.data()[AppStrings.jobsTerminatedMidWorkKey],
           location: element.data()[AppStrings.locationKey],
           jobTitle: element.data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
-          pricesForCommonIssues: element.data()[AppStrings.mapPricesOfIssuesKey],
+          pricesForJobIssues: element.data()[AppStrings.mapPricesOfJobIssuesKey],
+          pricesForAppliancesSubscribedToIssues: element.data()[AppStrings.mapPricesOfApplianceIssuesKey],
           numberOfFavourites: element.data()[AppStrings.numberOfFavouritesKey],
           rating: double.parse(element.data()[AppStrings.overallRatingKey].toString()),
           phoneNumber: element.data()[AppStrings.phoneNumberKey],
@@ -626,14 +656,55 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           numberOfReviews: element.data()[AppStrings.numberOfReviewsKey],
         );
         listOfAppropriateTechnicians.add(i);
-
-        debugPrint(listOfAppropriateTechnicians[num].firstName);
-        num++;
       })
     });
     debugPrint("list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
+    }
 
-  }
+    //looking by appliances
+    else {
+      await technicianCollection.where(
+        AppStrings.appliancesSubscribedToKey, arrayContains: _issueCategory)
+          .orderBy(AppStrings.overallRatingKey, descending: true)
+          .get().then((value) => {
+        value.docs.forEach((element) {
+          Technician i = Technician(
+            technicianUid: element.data()[AppStrings.technicianUidKey],
+            accountCreationTimeStamp: element.data()[AppStrings.accountCreationTimeStampKey],
+            appliancesSubscribedTo: element.data()[AppStrings.appliancesSubscribedToKey],
+            completionRate: element.data()[AppStrings.completionRateKey],
+            email: element.data()[AppStrings.emailKey],
+            familyName: element.data()[AppStrings.familyNameKey],
+            favouritedBy: element.data()[AppStrings.listOfFavouritedByKey],
+            image: element.data()[AppStrings.imageKey],
+            isAvailable: element.data()[AppStrings.isAvailableKey], //CHECK THIS
+            isVerifiedById: element.data()[AppStrings.isVerifiedByIdKey],
+            isPreferred: element.data()[AppStrings.isPreferredKey],
+            jobsCompleted: element.data()[AppStrings.jobsCompletedKey],
+            jobsDeclined: element.data()[AppStrings.jobsDeclinedKey],
+            numberOfJobsPaidPhysically: element.data()[AppStrings.jobsPaidPhysicallyKey],
+            numberOfJobsPaidThroughApp: element.data()[AppStrings.jobsPaidThroughAppKey],
+            numberOfJobsTerminatedMidWork: element.data()[AppStrings.jobsTerminatedMidWorkKey],
+            location: element.data()[AppStrings.locationKey],
+            jobTitle: element.data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
+            pricesForJobIssues: element.data()[AppStrings.mapPricesOfJobIssuesKey],
+            pricesForAppliancesSubscribedToIssues: element.data()[AppStrings.mapPricesOfApplianceIssuesKey],
+            numberOfFavourites: element.data()[AppStrings.numberOfFavouritesKey],
+            rating: double.parse(element.data()[AppStrings.overallRatingKey].toString()),
+            phoneNumber: element.data()[AppStrings.phoneNumberKey],
+            requestAcceptanceRate: element.data()[AppStrings.requestAcceptanceRateKey],
+            firstName: element.data()[AppStrings.firstNameKey],
+            personalDesc: element.data()[AppStrings.issueDescKey],
+            numberOfPortfolioItems: element.data()[AppStrings.portfolioItemsKey],
+            numberOfReviews: element.data()[AppStrings.numberOfReviewsKey],
+          );
+          listOfAppropriateTechnicians.add(i);
+        })
+      });
+      debugPrint("list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
+    }
+    }
+
 
   Widget selectTechnicianOnboarding() {
     return FutureBuilder(
@@ -697,11 +768,29 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                             SizedBox(
                                               width: 16,
                                             ),
-                                            CircleAvatar(
-                                              // backgroundImage:
-                                              // AppStrings.techniciansList[index].image,
-                                              backgroundColor: Colors.grey,
-                                              maxRadius: 30,
+                                            Container(
+                                              margin: EdgeInsets.fromLTRB(0, 16, 0, 16),
+                                              child: Stack(
+                                                children:[
+                                                  CircleAvatar(
+                                                    // backgroundImage:
+                                                    // AppStrings.techniciansList[index].image,
+                                                    backgroundColor: Colors.grey,
+                                                    maxRadius: 30,
+                                                  ),
+                                                  Align(
+                                                    alignment: Alignment.bottomCenter,
+                                                    child: Visibility(
+                                                      visible: listOfAppropriateTechnicians[index]
+                                                          .isAvailable,
+                                                      child: CircleAvatar(
+                                                        maxRadius: 7,
+                                                        backgroundColor: Colors.green
+                                                      ),
+                                                    ),
+                                                  )
+                                                ]
+                                              ),
                                             ),
                                             SizedBox(
                                               width: 16,
@@ -739,26 +828,47 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                                 ),
                                               ),
                                             ),
-                                            Text(
-                                              listOfAppropriateTechnicians[index]
-                                                  .rating.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: listOfAppropriateTechnicians[index]
-                                                      .isAvailable ==
-                                                      "Available"
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal),
-                                            ),
                                             Container(
-                                              margin:
-                                              EdgeInsets.fromLTRB(5, 0, 16, 0),
-                                              child: Icon(
-                                                Icons.star,
-                                                size: 16,
-                                                color: HexColor("FFD700"),
-                                  ),
+                                              padding: EdgeInsets.fromLTRB(16,16,0,16),
+                                              child: Column(
+                                                children: [
+                                                  Align(
+                                                    alignment: Alignment.topLeft,
+                                                    child: Text(
+                                                      listOfAppropriateTechnicians[index]
+                                                          .pricesForJobIssues![_issueDesc].toString() + "\$",
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          listOfAppropriateTechnicians[index]
+                                                              .rating.toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight: listOfAppropriateTechnicians[index]
+                                                                  .isAvailable
+                                                                  ? FontWeight.bold
+                                                                  : FontWeight.normal),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                          EdgeInsets.fromLTRB(5, 0, 16, 0),
+                                                          child: Icon(
+                                                            Icons.star,
+                                                            size: 16,
+                                                            color: HexColor("FFD700"),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
+
                                           ],
                                         ),
                                       ),
@@ -781,6 +891,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   void setAssignedTo(int index) {
+    myAssignedTech = listOfAppropriateTechnicians[index];
     _assignedTo = listOfAppropriateTechnicians[index].firstName! + " " +
     listOfAppropriateTechnicians[index].familyName!;
     nextPage();

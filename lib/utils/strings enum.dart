@@ -41,151 +41,10 @@ class AppStrings {
   //list of pending and completed orders page strings
   static String listOfOrdersString = "Previous orders";
 
-  // static List<Issue> listOfIssues = [
-  //   Issue(
-  //       issueCategory: "Carpenter",
-  //       issueDesc:
-  //           "Carpenter issue #3, this is quite the long issue by the way!",
-  //       timeRequested: "22 July, 2015",
-  //       timeCompleted: "25 July, 2015",
-  //       assignedTo: "Ahmed",
-  //       isCompleted: false,
-  //       paymentMethod: "In App",
-  //       technicianReview:
-  //           "I really loved the work of this guy, he was quick and "
-  //           "nice. I will definately be ordering him again the next time i need to!",
-  //       technicianRating: "5",
-  //       price: 450.50,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  //   Issue(
-  //       issueCategory: "Plumber",
-  //       issueDesc: "Plumber issue #3",
-  //       timeRequested: "13 August, 2015",
-  //       timeCompleted: "25 August, 2015",
-  //       assignedTo: "Samir",
-  //       isCompleted: true,
-  //       paymentMethod: "In Hand",
-  //       technicianReview: "Amazing and super long descreption here just because"
-  //           " I want to test how this super long text will fit, for testing "
-  //           "purposes of course, this is just a test and nothing else, absolutely "
-  //           "nothing else as i would say. Ok I think this is long enough isn't it? "
-  //           "It's about time to stop this review.",
-  //       technicianRating: "5",
-  //       price: 200,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  //   Issue(
-  //       issueCategory: "Carpenter",
-  //       issueDesc: "Carpenter issue #3",
-  //       timeRequested: "22 July, 2015",
-  //       timeCompleted: "25 July, 2015",
-  //       assignedTo: "Ahmed",
-  //       isCompleted: false,
-  //       paymentMethod: "In Hand",
-  //       technicianReview:
-  //           "I really loved the work of this guy, he was quick and "
-  //           "nice. I will definately be ordering him again the next time i need to!",
-  //       technicianRating: "5",
-  //       price: 152.22,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  //   Issue(
-  //       issueCategory: "Carpenter",
-  //       issueDesc: "Carpenter issue #3",
-  //       timeRequested: "22 July, 2015",
-  //       timeCompleted: "25 July, 2015",
-  //       assignedTo: "Ahmed",
-  //       isCompleted: true,
-  //       paymentMethod: "In Hand",
-  //       technicianReview:
-  //           "I really loved the work of this guy, he was quick and "
-  //           "nice. I will definately be ordering him again the next time i need to!",
-  //       technicianRating: "5",
-  //       price: 152.22,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  //   Issue(
-  //       issueCategory: "Carpenter",
-  //       issueDesc: "Carpenter issue #3",
-  //       timeRequested: "22 July, 2015",
-  //       timeCompleted: "25 July, 2015",
-  //       assignedTo: "Ahmed",
-  //       isCompleted: false,
-  //       paymentMethod: "In App",
-  //       technicianReview:
-  //           "I really loved the work of this guy, he was quick and "
-  //           "nice. I will definately be ordering him again the next time i need to!",
-  //       technicianRating: "5",
-  //       price: 152.22,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  //   Issue(
-  //       issueCategory: "Carpenter",
-  //       issueDesc: "Carpenter issue #3",
-  //       timeRequested: "22 July, 2015",
-  //       timeCompleted: "25 July, 2015",
-  //       assignedTo: "Ahmed",
-  //       isCompleted: true,
-  //       paymentMethod: "In Hand",
-  //       technicianReview:
-  //           "I really loved the work of this guy, he was quick and "
-  //           "nice. I will definately be ordering him again the next time i need to!",
-  //       technicianRating: "5",
-  //       price: 152.22,
-  //       image: ClipRRect(
-  //         borderRadius: BorderRadius.circular(10.0), //or 15.0
-  //         child: Container(
-  //           height: 75.0,
-  //           width: 75.0,
-  //           color: Color(0xffFF0E58),
-  //           child: Icon(Icons.gps_not_fixed_rounded,
-  //               color: Colors.white, size: 50.0),
-  //         ),
-  //       )),
-  // ];
+  //consumer database keys
+  static String userUidKey = "userUid"; //TODO: CHANGE TO userUid both var and value
 
-  //firestore issue collection keys
+  //issue database keys
   static String issueCategoryKey = "issueCategory";
   static String issueDescKey = "issueDesc";
   static String completedByKey = "completedBy";
@@ -201,14 +60,16 @@ class AppStrings {
   static String isEmergencyKey = "isEmergency";
   static String isPaidKey = "isPaid";
   static String issuedByKey = "issuedBy";
+  static String issuedToKey = "issuedTo";
+  static String isTerminatedMidWork = "isTerminatedMidWork";
   static String isAcceptedByTechnicianKey = "isAcceptedByTechnician";
   static String isCanceledByUserKey = "isCanceledByUser";
-  static String uidKey = "uid";
 
   //firestore technician collection keys
   static String firstNameKey = "firstName";
   static String familyNameKey = "familyName";
-  static String jobTitleKey = "mainDesc"; //TODO: change to "jobTitle"
+  static String technicianUid = "technicianUid";
+  static String jobTitleKey = "jobTitle";
   static String profileDescKey = "profileDesc";
   static String technicianUidKey = "technicianUid";
   static String imageKey = "image";
@@ -233,7 +94,23 @@ class AppStrings {
   static String listOfFavouritedByKey = "favouritedBy";
   static String numberOfReviewsKey = "numberOfReviews";
   static String locationKey = "location";
-  static String mapPricesOfIssuesKey = "mapPricesOfIssues";
+  static String mapPricesOfJobIssuesKey = "pricesOfJobIssues";
+  static String mapPricesOfApplianceIssuesKey = "pricesOfApplianceIssues";
+
+  static List<String> listOfReviews = [
+    "Condimentum sagittis laoreet nullam curabitur lorem adipiscing viverra at dolor ipsum id libero dolor sit amet a consectetur nunc in libero",
+    "Nullam curabitur auctor in elit euismod nunc lorem ipsum laoreet condimentum viverra est libero tincidunt id consectetur sit adipiscing",
+    "Nullam dolor odio at viverra id sagittis elit in amet auctor a vel lorem laoreet euismod tincidunt",
+    "Consectetur odio nunc nullam viverra curabitur vitae dolor amet euismod enim id libero libero sit ipsum elit nec sagittis id auctor lorem at vel adipiscing est",
+    "Lorem libero curabitur tincidunt ipsum viverra est id dolor at laoreet auctor nec nunc sagittis vitae libero condimentum dolor euismod sit nullam elit amet vel odio enim consectetur",
+    "Libero lorem curabitur amet in elit ipsum est odio a euismod condimentum laoreet libero nullam consectetur viverra id nec sagittis sit at dolor dolor enim nunc auctor vel tincidunt vitae",
+    "Elit lorem adipiscing curabitur consectetur id laoreet id viverra in at libero auctor sit tincidunt vitae amet a nec est vel",
+    "Ipsum laoreet lorem viverra condimentum est libero enim adipiscing dolor nunc libero elit auctor id vitae nullam nec vel consectetur",
+    "Dolor sit dolor consectetur curabitur nunc est at tincidunt ipsum lorem libero adipiscing libero laoreet",
+    "Ipsum a lorem libero at consectetur vitae odio id sagittis nullam nunc enim elit libero amet nec",
+    "Ipsum in elit odio id condimentum viverra lorem amet curabitur dolor dolor sit libero adipiscing nunc auctor enim id libero est nullam euismod nec a vitae consectetur",
+    "Consectetur viverra lorem sit ipsum in libero nullam dolor auctor tincidunt libero vel amet adipiscing elit euismod est condimentum"
+  ];
 
   static List<String> firstNamesList = [
     "Adam",
