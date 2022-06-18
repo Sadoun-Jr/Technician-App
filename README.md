@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added user favourites and linked those favourites to the relevant technician profile page
+- Suggestions for most common issues hidden when issue is not found tickbox is on
 
 ## (  ) Creating and Styling the layouts
 

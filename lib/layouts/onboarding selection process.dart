@@ -28,6 +28,7 @@ class _OnboardingSelectionState extends State<OnboardingSelection> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        isHeaderForCategoryPageVisible = true;
         return (await showDialog(context: context, builder: (context) => AlertDialog(
           title: new Text('Are you sure?'),
           content: new Text('This will delete your current issue'),
@@ -55,6 +56,8 @@ class _OnboardingSelectionState extends State<OnboardingSelection> {
 }
 
 class OnBoardingPage extends StatefulWidget {
+  const OnBoardingPage({Key? key}) : super(key: key);
+
   @override
   _OnBoardingPageState createState() => _OnBoardingPageState();
 }
@@ -367,8 +370,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         shrinkWrap: true, // use this
         children: [
           Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.red, width: 2)),
               child: Icon( //TODO: CHANGE THIS TO TECH IMAGE
                 Icons.person,
                 size: 75,
@@ -737,7 +738,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       itemCount: listOfAppropriateTechnicians.length,
                       itemBuilder: (context, index) {
                         return Visibility(
-                          visible: listOfAppropriateTechnicians[index]
+                          visible: !isAppliance ? true : listOfAppropriateTechnicians[index]
                               .pricesForAppliancesSubscribedToIssues![_issueDesc] != null,
                           child: Container(
                               height: 100,
@@ -947,6 +948,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   int selectIssueValue = 134;
+  bool _visible = true;
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
     return Visibility(
