@@ -19,7 +19,7 @@ class CommonIssues{
   static String applianceCategory1 = "Refrigirator";
   static String applianceCategory2 = "Computer";
   static String applianceCategory3 = "Dry cleaner";
-  static String applianceCategory4 = "Drier";
+  static String applianceCategory4 = "Wet Drier";
   static String applianceCategory5 = "Mobile phone";
   static String applianceCategory6 = "Drier";
   static String applianceCategory7 = "Other";

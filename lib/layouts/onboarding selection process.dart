@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -65,7 +64,7 @@ var isNextButtonVisible = false;
 var isCategoryChosen = false;
 var isSortedByAppliance = true;
 var isSortedByTrades = false;
-var isHeaderForCategoryPageVisible = false;
+var isHeaderForCategoryPageVisible = true;
 var isHeaderForDescPageVisible = false;
 var isHeaderForSelectTechnicianListVisible = false;
 TextEditingController customIssueController = TextEditingController();
@@ -157,13 +156,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             isHeaderForCategoryPageVisible = false;
             isHeaderForDescPageVisible = false;
             isHeaderForSelectTechnicianListVisible = false;
-
             if (page == 0) {
               setState(() => isHeaderForCategoryPageVisible = true);
             } else if (page == 1) {
               setState(() => isHeaderForDescPageVisible = true);
             } else if (page == 2) {
-              setState(() => isHeaderForSelectTechnicianListVisible = true);
+              setState(() => isHeaderForSelectTechnicianListVisible = false);
             } else if(page ==3){
               isSkipVisible = false;
               setState(() => isPrevVisible = true);
@@ -230,7 +228,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     try {
       //get the current user uid
       final auth = FirebaseAuth.instance;
-      final User user = await auth.currentUser!;
+      final User user = auth.currentUser!;
       final userid = user.uid;
 
       //create an empty issue with a uid
@@ -243,22 +241,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             .collection("issues")
             .doc(value.id)
             .set({
-          AppStrings.issueUidKey: value.id,
-          AppStrings.completedByKey: AppStrings.notCompletedYet,
-          AppStrings.isAcceptedByTechnicianKey: false,
-          AppStrings.isCanceledByUserKey: false,
-          AppStrings.isCompletedKey: false,
-          AppStrings.isEmergencyKey: _isEmergency,
-          AppStrings.isPaidKey: false,
-          AppStrings.issueCategoryKey: _issueCategory,
-          AppStrings.issueDescKey: _issueDesc,
-          AppStrings.issuedByKey: userid, //TODO: make it the username/display
-          AppStrings.paymentMethodKey: AppStrings.notCompletedYet,
-          AppStrings.priceKey: 100, //TODO: add price to most common issues
-          AppStrings.technicianRatingKey: -1,
-          AppStrings.technicianReviewKey: AppStrings.notCompletedYet,
-          AppStrings.timeCompletedKey: -1,
-          AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
+          AppStrings.issueCategoryKey     : _issueCategory,
+          AppStrings.issueDescKey         : _issueDesc,
+          AppStrings.isCompletedKey       : false,
+          AppStrings.technicianRatingKey  : -1,
+          AppStrings.technicianReviewKey  : " ",
+          AppStrings.timeCompletedKey     : -1,
+          AppStrings.timeRequestedKey     : DateTime.now().millisecondsSinceEpoch,
+          AppStrings.paymentMethodKey     : " ",
+          AppStrings.priceKey             : _price,
+          AppStrings.issueUidKey          : value.id,
+          AppStrings.isEmergencyKey       : false,
+          AppStrings.isPaidKey            : false,
+          AppStrings.issuedByKey          : userid,
+          AppStrings.isAcceptedByTechnicianKey : false,
+          AppStrings.isCanceledByUserKey    : false,
+          AppStrings.isTerminatedMidWork  : false,
+          AppStrings.issuedToKey          : myAssignedTech!.technicianUid
         });
       });
 
@@ -279,9 +278,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       return categoryPageHeader();
     } else if (isHeaderForDescPageVisible) {
       return customIssueHeader();
-    } else if (isHeaderForSelectTechnicianListVisible) {
-      return selectTechnicianListHeader();
-    } else {
+    }  else {
       return Container();
     }
   }
@@ -545,6 +542,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
   int selectTechnicianValue = -1;
   List<Technician> listOfAppropriateTechnicians = [];
+  bool isAppliance = false;
 
   //search function
   void searchForTechnician(String searchedValue) async {
@@ -615,7 +613,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     var technicianCollection =
     FirebaseFirestore.instance.collection("technicians");
 
-    bool isAppliance = CommonIssues.listOfAppliancesCategories.contains(_issueCategory);
+    isAppliance = CommonIssues.listOfAppliancesCategories.contains(_issueCategory);
     debugPrint("issue category is $_issueCategory");
 
     //looking by trades
@@ -713,7 +711,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Container(
-            margin: EdgeInsets.fromLTRB(5, 90, 5, 80),
+            margin: EdgeInsets.fromLTRB(5, 10, 5, 80),
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: <Widget>[
@@ -739,7 +737,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       itemCount: listOfAppropriateTechnicians.length,
                       itemBuilder: (context, index) {
                         return Visibility(
-                          visible: true,
+                          visible: listOfAppropriateTechnicians[index]
+                              .pricesForAppliancesSubscribedToIssues![_issueDesc] != null,
                           child: Container(
                               height: 100,
                               padding: const EdgeInsets.symmetric(
@@ -833,11 +832,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                               padding: EdgeInsets.fromLTRB(16,16,0,16),
                                               child: Column(
                                                 children: [
-                                                  Align(
-                                                    alignment: Alignment.topLeft,
-                                                    child: Text(
+                                                  Visibility(
+                                                    visible: !_isCustomIssue,
+                                                    child: Align(
+                                                      alignment: Alignment.topLeft,
+                                                      child: Text( isAppliance ?
                                                       listOfAppropriateTechnicians[index]
-                                                          .pricesForJobIssues![_issueDesc].toString() + "\$",
+                                                          .pricesForAppliancesSubscribedToIssues![_issueDesc].toString() + "\$"
+                                                      :  listOfAppropriateTechnicians[index]
+                                                            .pricesForJobIssues![_issueDesc].toString() + "\$",
+                                                      ),
                                                     ),
                                                   ),
                                                   Container(
@@ -907,6 +911,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     myAssignedTech = listOfAppropriateTechnicians[index];
     _assignedTo = listOfAppropriateTechnicians[index].firstName! + " " +
     listOfAppropriateTechnicians[index].familyName!;
+     if(isAppliance) {
+      _price = listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueCategory];
+    }
+     else if(!isAppliance) {
+      _price = listOfAppropriateTechnicians[index].pricesForJobIssues![_issueCategory];
+    }
+    if(_isCustomIssue) {
+      _price = -1;
+    }
     nextPage();
     debugPrint("Assigned to " + _assignedTo);
     setState(() => selectTechnicianValue = index);
@@ -936,42 +949,45 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   int selectIssueValue = 134;
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(16, 100, 16, 80),
-      child: ListView.builder(
-          shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
-          itemCount: listOfIssues.length,
-          itemBuilder: (context, index) {
-            return Container(
-              height: 50,
-              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () => setIssueDesc(index, false, ""),
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: selectIssueValue == index
-                          ? Colors.grey
-                          : Colors.transparent,
+    return Visibility(
+      visible: !isDontSeeYourIssue,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16, 100, 16, 80),
+        child: ListView.builder(
+            shrinkWrap: true,
+            physics: BouncingScrollPhysics(),
+            itemCount: listOfIssues.length,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 50,
+                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () => setIssueDesc(index, false, ""),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: selectIssueValue == index
+                            ? Colors.grey
+                            : Colors.transparent,
+                      ),
+                      child: Center(
+                          child: Text(
+                        listOfIssues[index],
+                        maxLines: 1,
+                      )),
                     ),
-                    child: Center(
-                        child: Text(
-                      listOfIssues[index],
-                      maxLines: 1,
-                    )),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 
@@ -987,12 +1003,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       setState(() => selectIssueValue = index);
 
     } else if (isCustomIssue) {
+      _isCustomIssue = isCustomIssue;
       _issueDesc = customIssueTyped;
       setState(() => selectIssueValue = 134);
       nextPage();
     }
 
   }
+
+  var isDontSeeYourIssue = false;
 
   Widget customIssueHeader() {
     List<String>? listOfRespectiveIssuesFromMap =
@@ -1001,52 +1020,70 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       padding: const EdgeInsets.all(10),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: TextFormField(
-              controller: customIssueController,
-              maxLines: 1,
-              textInputAction: TextInputAction.next,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => (listOfRespectiveIssuesFromMap!.contains(value))
-                  ? "Don't type an issue that already exists in the list"
-                  : null,
-              style: TextStyle(color: _whiteText),
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(
-                    color: _midWhite,
-                    width: 1.25,
+          CheckboxListTile(
+            title: Text("Don't see your issue?"),
+            value: isDontSeeYourIssue,
+            checkboxShape: CircleBorder(),
+            onChanged: (value) {
+              selectIssueValue = 135;
+              setState(() {
+                isDontSeeYourIssue = value!;
+              });
+            },
+          ),
+          Visibility(
+            visible: isDontSeeYourIssue,
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: customIssueController,
+                    maxLines: 1,
+                    textInputAction: TextInputAction.next,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) => (listOfRespectiveIssuesFromMap!.contains(value))
+                        ? "Don't type an issue that already exists in the list"
+                        : null,
+                    style: TextStyle(color: _whiteText),
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: _midWhite,
+                          width: 1.25,
+                        ),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: _midWhite,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      labelText: "Custom issue...",
+                      labelStyle: TextStyle(color: _whiteText),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: _midWhite, width: 2.5),
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
                   ),
                 ),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: _midWhite,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                labelText: "Custom issue...",
-                labelStyle: TextStyle(color: _whiteText),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _midWhite, width: 2.5),
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-              ),
+                SizedBox(width: 15,),
+                Container(
+                  width: 50,
+                  height: 50,
+                  child: FloatingActionButton(onPressed: () => {
+                    setIssueDesc(-1, true, customIssueController.text.toString().trim())
+                  },
+                    heroTag: AppStrings.globalHeaderHero,
+                  child: Icon(Icons.arrow_forward),),
+                )
+              ],
             ),
           ),
-          SizedBox(width: 15,),
-          Container(
-            width: 50,
-            height: 50,
-            child: FloatingActionButton(onPressed: () => {
-              setIssueDesc(-1, true, customIssueController.text.toString().trim())
-            },
-              heroTag: AppStrings.globalHeaderHero,
-            child: Icon(Icons.arrow_forward),),
-          )
         ],
       ),
     );
@@ -1087,7 +1124,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget selectCategoryOnboarding() {
     return Container(
-        margin: EdgeInsets.fromLTRB(40, 10, 40, 80),
+        margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
         child: ListView(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
@@ -1406,6 +1443,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   String _issueCategory = CommonIssues.applianceCategory9;
   String _issueDesc = " ";
+  bool _isCustomIssue = false;
   bool _isCompleted = false;
   String _assignedTo = " ";
   String _technicianRating = " ";
@@ -1413,7 +1451,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   String _timeRequested = " ";
   String _timeCompleted = " ";
   String _paymentMethod = " ";
-  double _price = 0.01;
+  double? _price = 0.01;
   String _issueUid = " ";
   bool _isEmergency = false;
   bool _isPaid = false;

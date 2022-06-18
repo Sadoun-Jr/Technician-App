@@ -31,7 +31,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if(snapshot.connectionState == ConnectionState.done){
                 return ordersList();
-                // return FloatingActionButton(onPressed: insertMockIssues);
+                // return FloatingActionButton(onPressed: updateJustOneField);
               } else {
                 return Container(
                   height: double.infinity,
@@ -50,6 +50,16 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
               }
             },
            ));
+  }
+
+  Future<void> updateJustOneField() async {
+    var collectionReference =
+    FirebaseFirestore.instance.collection("issues");
+    collectionReference.doc("O9IqTGVpbstNGJRHSTeP")
+        .set({"price": 3242365234}, SetOptions(merge: true))
+        .whenComplete(() async {
+      print("Completed");
+    }).catchError((e) => print(e));
   }
 
   List<String> listOfNamesFromUid = [];
@@ -480,7 +490,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
   await issuesCollection.add({
     AppStrings.userUidKey: " ",
-
   }).then((value) async => await FirebaseFirestore.instance
       .collection("issues")
       .doc(value.id)
@@ -503,8 +512,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
     AppStrings.isCanceledByUserKey    : (booleanList.toList()..shuffle()).first,
     AppStrings.isTerminatedMidWork  : (booleanList.toList()..shuffle()).first,
     AppStrings.issuedToKey          : (listOfAllTechnicians.toList()..shuffle()).first
-
-    ///////////////////////////////
 
   }));
   }
