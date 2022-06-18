@@ -1087,7 +1087,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget selectCategoryOnboarding() {
     return Container(
-        margin: EdgeInsets.fromLTRB(40, 100, 40, 80),
+        margin: EdgeInsets.fromLTRB(40, 10, 40, 80),
         child: ListView(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),

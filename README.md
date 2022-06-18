@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Implemented "My Reviews" functionality
+- Added user favourites and linked those favourites to the relevant technician profile page
 
 ## (  ) Creating and Styling the layouts
 
