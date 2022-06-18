@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/login.dart';
+import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/widgets/slider.dart';
 
@@ -79,6 +80,7 @@ class _NavDrawerState extends State<NavDrawer> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () => {
+                              Navigator.pop(context),
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -110,7 +112,15 @@ class _NavDrawerState extends State<NavDrawer> {
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        TechnicianReviews(true, null)),
+                              );
+                            },
                             child: ListTile(
                               leading: Icon(
                                 Icons.reviews,

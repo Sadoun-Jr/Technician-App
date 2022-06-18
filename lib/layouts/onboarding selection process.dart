@@ -429,7 +429,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            TechnicianReviews(myAssignedTech!.technicianUid!)),
+                                            TechnicianReviews(false, myAssignedTech!.technicianUid!)),
                                   )
                                 }),
                       ),

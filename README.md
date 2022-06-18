@@ -6,8 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Fixed review names not being converted to uid in time bug
-- Added circular slider instead of text when loading data 
+- Implemented "My Reviews" functionality
 
 ## (  ) Creating and Styling the layouts
 
@@ -75,12 +74,7 @@ solved by making the button transparent and not clickable
 3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
 
-
 [comment]: <> (## New things I learned:)
 
-## TODO:
-
-- Implement loading circular bar while doing database actions
-- Pressing back while making an order should give a confirmation dialogue
-- ( ✓ ) Convert the list of common issues to a map
+[comment]: <> (## TODO:)
 

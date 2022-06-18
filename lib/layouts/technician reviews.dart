@@ -6,11 +6,13 @@ import 'package:technicians/models/test%20issue%20object.dart';
 
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20enum.dart';
+import 'package:technicians/widgets/navigation%20drawer.dart';
 import 'package:technicians/widgets/slider.dart';
 
 class TechnicianReviews extends StatefulWidget {
-  final String selectedTechnicianUid;
-  const TechnicianReviews(this.selectedTechnicianUid, {Key? key})
+  final String? selectedTechnicianUid;
+  final bool isUserReviews;
+  const TechnicianReviews(this.isUserReviews, this.selectedTechnicianUid, {Key? key})
       : super(key: key);
 
   @override
@@ -21,11 +23,14 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
   List<TestIssue> listOfReviews = [];
   List<String> listOfNamesFromUid = [];
   List<TestIssue> listOfAllIssues = [];
-  String techNameFromUid = "a";
+  String techNameFromUid = "null";
+  late bool isAccessedFromDashboard;
 
   @override
   void initState() {
-    debugPrint("Calling data fetch");
+    isAccessedFromDashboard = widget.isUserReviews;
+    debugPrint(isAccessedFromDashboard ? "Displaying all user reviews" :
+    "Displaying technician UID: " + widget.selectedTechnicianUid! + " reviews");
     listOfAllIssues.clear();
     super.initState();
   }
@@ -33,8 +38,13 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
+        appBar: isAccessedFromDashboard ? AppBar(
+          elevation: 0.0,
+          title: Text("widget.title"),
+        ) : null,
         body: FutureBuilder(
-      future: getReviews(),
+      future: isAccessedFromDashboard ? getUserReviews() : getTechnicianReviews(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return reviewsListView();
@@ -59,6 +69,51 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
     ));
   }
 
+  Future<void> getTechnicianReviews() async {
+    debugPrint("Started fetching reviews");
+    var issueCollection = FirebaseFirestore.instance.collection("issues");
+    var user = FirebaseAuth.instance.currentUser;
+    techNameFromUid = (await changeUidToName(widget.selectedTechnicianUid!, false));
+
+    await issueCollection
+        .where(AppStrings.issuedToKey,
+        isEqualTo:
+        widget.selectedTechnicianUid) //TODO: change this to dynamic
+        .get()
+        .then((value) async {
+      for (var element in value.docs) {
+        TestIssue i = TestIssue(
+          technicianRating: double.parse(
+              element.data()[AppStrings.technicianRatingKey].toString()),
+          isCompleted: element.data()[AppStrings.isCompletedKey],
+          timeCompleted: element.data()[AppStrings.timeCompletedKey],
+          timeRequested: element.data()[AppStrings.timeRequestedKey],
+          issueDesc: element.data()[AppStrings.issueDescKey],
+          isAcceptedByTechnician:
+          element.data()[AppStrings.isAcceptedByTechnicianKey],
+          isCanceledByUser: element.data()[AppStrings.isCanceledByUserKey],
+          isEmergency: element.data()[AppStrings.isEmergencyKey],
+          isPaid: element.data()[AppStrings.isPaidKey],
+          issueCategory: element.data()[AppStrings.issueCategoryKey],
+          issuedBy: element.data()[AppStrings.issuedByKey],
+          issueUid: element.data()[AppStrings.issueUidKey],
+          paymentMethod: element.data()[AppStrings.paymentMethodKey],
+          price: double.parse(element.data()[AppStrings.priceKey].toString()),
+          technicianReview: element.data()[AppStrings.technicianReviewKey],
+          issuedTo: element.data()[AppStrings.issuedToKey],
+        );
+
+        listOfAllIssues.add(i);
+
+        Future<String> name = changeUidToName(i.issuedBy, true);
+        listOfNamesFromUid.add(await name);
+      }
+    });
+    debugPrint("# of names: ${listOfNamesFromUid.length}");
+    debugPrint("# of issues: ${listOfAllIssues.length}");
+  }
+
+
   Future<String> changeUidToName(String uid, bool isUser) async {
     String? firstName;
     String? familyName;
@@ -81,16 +136,15 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
     return "$firstName $familyName";
   }
 
-  Future<void> getReviews() async {
-    debugPrint("Started fetching reviews");
+  Future<void> getUserReviews() async {
+    debugPrint("Started fetching user reviews");
     var issueCollection = FirebaseFirestore.instance.collection("issues");
     var user = FirebaseAuth.instance.currentUser;
-    techNameFromUid = (await changeUidToName(widget.selectedTechnicianUid, false));
 
     await issueCollection
-        .where(AppStrings.issuedToKey,
+        .where(AppStrings.issuedByKey,
             isEqualTo:
-                widget.selectedTechnicianUid) //TODO: change this to dynamic
+                "Cnhhl65d7vTgo8L9ehKe") //TODO: change this to dynamic
         .get()
         .then((value) async {
       for (var element in value.docs) {
@@ -117,7 +171,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
 
         listOfAllIssues.add(i);
 
-        Future<String> name = changeUidToName(i.issuedBy, true);
+        Future<String> name = changeUidToName(i.issuedTo, false);
         listOfNamesFromUid.add(await name);
       }
     });
@@ -137,9 +191,12 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    "Reviews of " + techNameFromUid,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Visibility(
+                    visible: !isAccessedFromDashboard ,
+                    child: Text(
+                      "Reviews of " + techNameFromUid,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
