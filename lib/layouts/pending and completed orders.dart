@@ -10,6 +10,7 @@ import 'package:technicians/models/test%20issue%20object.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20common%20issues.dart';
 import 'package:technicians/utils/strings%20enum.dart';
+import 'package:technicians/widgets/slider.dart';
 
 class PendingAndCompletedOrders extends StatefulWidget {
   const PendingAndCompletedOrders({Key? key}) : super(key: key);
@@ -32,11 +33,26 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                 return ordersList();
                 // return FloatingActionButton(onPressed: insertMockIssues);
               } else {
-                return Center(child: Text("Loading data..."),);
+                return Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      slider(),
+                      SizedBox(
+                        height: 10.5,
+                      ),
+                      Text("Loading data..."),
+                    ],
+                  ),
+                );
               }
             },
            ));
   }
+
+  List<String> listOfNamesFromUid = [];
 
   Future<void> getData() async {
     debugPrint("Started fetching data");
@@ -44,9 +60,9 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
     var user = FirebaseAuth.instance.currentUser;
 
     await issueCollection
-        .where(AppStrings.issuedByKey, isEqualTo: "N9QiHyDC354z1SsZUegP")
+        .where(AppStrings.issuedByKey, isEqualTo: "dxlRyOKMp3gSWSw5W5Sq") //TODO: change this to dynamic
         .get()
-        .then((value) {
+        .then((value) async {
       for (var element in value.docs) {
         TestIssue i = TestIssue(
           technicianRating: double.parse(element.data()[AppStrings.technicianRatingKey].toString()),
@@ -68,8 +84,13 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
         );
 
         listOfAllIssues.add(i);
+
+        Future<String> name = changeUidToName(i.issuedTo, false);
+        listOfNamesFromUid.add(await name);
+
       }
     });
+    debugPrint("# of names: ${listOfNamesFromUid.length}");
     debugPrint("# of issues: ${listOfAllIssues.length}");
 
   }
@@ -232,7 +253,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                             alignment: Alignment.topLeft,
                                             child: RichText(
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
@@ -240,7 +260,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                                     TapGestureRecognizer()
                                                       ..onTap = () => {},
                                                     //todo: change to issuedTo
-                                                    text: listOfAllIssues[index].issuedTo,
+                                                    text: listOfNamesFromUid[index],
                                                     style: TextStyle(
                                                         fontWeight:
                                                         FontWeight.bold,
@@ -419,7 +439,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
   List<double> listOfRatings = [1,1.5,2,2.5,3,3.5,4,4.5,5];
 
-  for(int i=0;i<100;i++){
+  for(int i=0;i<300;i++){
 
 
   Random random = Random();
@@ -490,7 +510,24 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
   }
 }
 
+Future<String> changeUidToName(String uid, bool isUser) async {
+  String? firstName;
+  String? familyName;
 
+  var myRef = isUser? FirebaseFirestore.instance.collection("users") :
+  FirebaseFirestore.instance.collection("technicians");
+  await myRef.where(isUser ? AppStrings.userUidKey : AppStrings.technicianUidKey,
+      isEqualTo: uid).get().then((value) => {
+    for (var element in value.docs) {
+      firstName =
+      element.data()[AppStrings.firstNameKey],
+      familyName =
+      element.data()[AppStrings.familyNameKey],
+    }
+  });
+
+  return "$firstName $familyName";
+}
 
   Future<void> insertMockTechnicians() async {
     List listAllUserUIDs = [];

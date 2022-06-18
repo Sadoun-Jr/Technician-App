@@ -6,13 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added dummy technicians, users and issues
-- When registering, full user info gets put in db
-- Reviews page links correctly to the supposed technician's reviews
-- Reviews page fetches data from the db correctly
-- Reviews retrived by getting issuedTo and issuedBy from issue item
-- List of appropriate technicians for the job added dynamically
-- Correct technician profile gets shown in the profile page now at the end of selection
+- Fixed review names not being converted to uid in time bug
+- Added circular slider instead of text when loading data 
 
 ## (  ) Creating and Styling the layouts
 

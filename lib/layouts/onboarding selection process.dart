@@ -15,6 +15,7 @@ import 'package:technicians/utils/strings%20common%20issues.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/navigation%20drawer.dart';
+import 'package:technicians/widgets/slider.dart';
 
 class OnboardingSelection extends StatefulWidget {
   const OnboardingSelection({Key? key}) : super(key: key);
@@ -884,8 +885,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           );
 
       } else{
-          return Center(child: Text("Loading Appropriate technicians"),);
-        }
+          return Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                slider(),
+                SizedBox(
+                  height: 10.5,
+                ),
+                Text("Loading data..."),
+              ],
+            ),
+          );        }
       });
 
   }
