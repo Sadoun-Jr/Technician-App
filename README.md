@@ -6,7 +6,10 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Suggestions for most common issues hidden when issue is not found tickbox is on
+- Can add images from gallery in portfolio page
+- Can upload images to firestore
+- Can view all images selected
+- Got a reference to download link of images uploaded
 
 ## (  ) Creating and Styling the layouts
 
@@ -76,5 +79,7 @@ need to close it.
 
 [comment]: <> (## New things I learned:)
 
-[comment]: <> (## TODO:)
+## TODO:
 
+- Add firebase app-check
+- Add google fonts

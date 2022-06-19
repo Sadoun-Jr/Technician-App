@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
+import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'layouts/onboarding selection process.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseAppCheck.instance.activate(
+    webRecaptchaSiteKey: 'recaptcha-v3-site-key',
   );
   runApp(const MyApp());
 }
@@ -42,7 +47,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return LoginLayout();
+            return PortfolioSummary();
           } else {
             return SelectRegisterMethodLayout();
           }
