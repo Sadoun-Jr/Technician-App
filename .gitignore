@@ -30,6 +30,7 @@
 .pub-cache/
 .pub/
 /assets
+.png
 /build/
 build/
 

@@ -6,10 +6,11 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Can add images from gallery in portfolio page
-- Can upload images to firestore
-- Can view all images selected
-- Got a reference to download link of images uploaded
+- Added create portfolio page
+- Added portfolio collection to firestore
+- Added ability to enlarge image to fit screen when clicked
+- Replaced listview that shows the images selected with a gridview
+- Added ability to long press delete image after being received in the app
 
 ## (  ) Creating and Styling the layouts
 

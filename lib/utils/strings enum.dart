@@ -42,7 +42,8 @@ class AppStrings {
   static String listOfOrdersString = "Previous orders";
 
   //consumer database keys
-  static String userUidKey = "userUid"; //TODO: CHANGE TO userUid both var and value
+  static String userUidKey =
+      "userUid"; //TODO: CHANGE TO userUid both var and value
 
   //issue database keys
   static String issueCategoryKey = "issueCategory";
@@ -96,6 +97,16 @@ class AppStrings {
   static String locationKey = "location";
   static String mapPricesOfJobIssuesKey = "pricesOfJobIssues";
   static String mapPricesOfApplianceIssuesKey = "pricesOfApplianceIssues";
+
+  //portfolio database keys
+  static String portfolioUidkey = "portfolioUid";
+  static String titlekey = "title";
+  static String portfolioDesckey = "desc";
+  static String dateAddedkey = "dateAdded";
+  static String numberOfViewskey = "numberOfViews";
+  static String numberOfPictureskey = "numberOfPictures";
+  static String numberOfFavouriteskey = "numberOfFavourites";
+  static String listOfImagePathskey = "listOfImagePaths";
 
   static List<String> listOfReviews = [
     "Condimentum sagittis laoreet nullam curabitur lorem adipiscing viverra at dolor ipsum id libero dolor sit amet a consectetur nunc in libero",

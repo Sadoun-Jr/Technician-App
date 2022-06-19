@@ -5,6 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:technicians/layouts/create%20portfolio%20item.dart';
+import 'package:technicians/layouts/single%20portfolio%20item.dart';
+import 'package:technicians/widgets/slider.dart';
 
 class PortfolioSummary extends StatefulWidget {
   const PortfolioSummary({Key? key}) : super(key: key);
@@ -18,6 +21,7 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        floatingActionButton: addNewPortfolioItem(),
         body: Container(
           padding: EdgeInsets.all(16),
           child: ListView(
@@ -55,55 +59,22 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
                 ),
               ),
               buildProgress(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0,20,0,20),
-                    child: FloatingActionButton(
-                      onPressed: () => uploadImageToFirebase(context, files),
-                      child: Icon(Icons.add),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0,20,0,20),
-                    child: FloatingActionButton(
-                      onPressed: pickMultipleImages,
-                      child: Icon(Icons.save),
-                    ),
-                  ),
-                ],
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                itemCount: files == null ? 1 : files!.length,
-                itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    // child: Text(_imageFile == File("") ? "Getting file" : _imageFile.path)
-                    child: files == null ? Text("Select a file") :
-                    Image.file(
-                      File(files![index].path),
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-
-
-                  ),
-                );
-              },
-              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget addNewPortfolioItem() {
+    return FloatingActionButton(onPressed:
+    () {
+      Navigator.push(this.context, MaterialPageRoute(
+          builder: (context) => CreatePortfolioItem())
+      );
+      },
+      heroTag: 100,
+    child: Icon(Icons.add),);
   }
 
   File _imageFile = File("");
@@ -119,24 +90,13 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
           double progress = data.bytesTransferred / data.totalBytes;
           return Visibility(
             visible: uploadTask != null,
-            child: SizedBox(height: 50,
-            child: Stack(
-              fit: StackFit.expand,
+            child: Column(
               children: [
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor:Colors.grey,
-                  color: Colors.green,
-                ),
-                Center(
-                  child: Text(
-                    "${(100 * progress).roundToDouble()}%",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
+                slider(),
+                SizedBox(height: 10,),
+                Text("Uploading...")
               ],
             )
-              ),
           );
         } else {
           return SizedBox(height: 5,);
