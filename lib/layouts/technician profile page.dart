@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/models/technician%20object.dart';
 import 'package:technicians/utils/strings%20enum.dart';
@@ -162,7 +163,10 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage> {
                               child: FloatingActionButton.extended(
                                   heroTag: 2,
                                   label: Text("portfolio"),
-                                  onPressed: () => {})),
+                                  onPressed: () => {
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => PortfolioSummary(selectedTechnician!.technicianUid!)))
+                                  })),
                         ],
                       ),
                     ],

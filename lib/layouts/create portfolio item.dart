@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,7 +49,7 @@ class _CreatePortfolioItemState extends State<CreatePortfolioItem> {
                       margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
                       child: FloatingActionButton.extended(
                         heroTag: -1,
-                        onPressed: pickMultipleImages,
+                        onPressed: selectMultipleImages,
                         label: Text("Select Images"),
                       ),
                     ),
@@ -285,7 +287,7 @@ class _CreatePortfolioItemState extends State<CreatePortfolioItem> {
     }
   }
 
-  Future pickMultipleImages() async {
+  Future selectMultipleImages() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: true,
         type: FileType.custom,
@@ -333,5 +335,75 @@ class _CreatePortfolioItemState extends State<CreatePortfolioItem> {
         ),
       ),
     );
+  }
+
+  Future<void> insertMockPortfolios() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
+    try {
+      List<String> listOfAllTechnicians = [];
+
+      await FirebaseFirestore.instance.collection("technicians")
+          .get().then((value) =>
+      {
+        for (var element in value.docs) {
+          listOfAllTechnicians.add(element.data()[AppStrings.technicianUid])
+        }
+      });
+
+      var portfolioRef = FirebaseFirestore.instance.collection("portfolios");
+
+      //get the current user uid
+      final auth = FirebaseAuth.instance;
+      final User user = auth.currentUser!;
+      final userid = user.uid;
+
+      for(int i =0; i<500;i++) {
+
+        List<String> randomLinks = [];
+
+        for(int i=0; i<Random().nextInt(4); i++){
+          randomLinks.add((AppStrings.myUris.toList()..shuffle()).first);
+        }
+
+        //create an empty issue with a uid
+        await FirebaseFirestore.instance.collection("portfolios").add({
+          AppStrings.portfolioUidkey: " ",
+        }).then((value) async {
+          debugPrint(
+              "Portfolio made with ID# " + value.id + "\nCreated by ID# " + user.uid);
+          await FirebaseFirestore.instance
+              .collection("portfolios")
+              .doc(value.id)
+              .set({
+            AppStrings.portfolioUidkey : value.id,
+            AppStrings.titlekey : (AppStrings.firstNamesList.toList()..shuffle()).first,
+            AppStrings.portfolioDesckey : (AppStrings.listOfReviews.toList()..shuffle()).first,
+            AppStrings.issuedByKey : (listOfAllTechnicians.toList()..shuffle()).first,
+            AppStrings.dateAddedkey : Random().nextInt(123456789),
+            AppStrings.numberOfViewskey : Random().nextInt(100),
+            AppStrings.numberOfPictureskey : randomLinks.length,
+            AppStrings.numberOfFavouritesKey : Random().nextInt(45),
+            AppStrings.listOfImagePathskey: randomLinks,
+          });
+        });
+      }
+
+
+      setState(() {});
+      Fluttertoast.showToast(msg: "Created portfolio item", backgroundColor: Colors.green);
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+      debugPrint(e.toString());
+    }
   }
 }

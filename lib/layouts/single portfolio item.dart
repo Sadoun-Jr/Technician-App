@@ -15,12 +15,12 @@ class _SinglePortfolioItemState extends State<SinglePortfolioItem> {
     return Material(
       child: Scaffold(
         body: Hero(
-          tag: widget.selectedImage,
-          child: Image.file(
-            File(widget.selectedImage),
-            width: double.infinity,
-            height: double.infinity,
-          )
+            tag: widget.selectedImage,
+            child:  Image.file(
+              File(widget.selectedImage),
+              width: double.infinity,
+              height: double.infinity,
+            )
         ),
       ),
     );

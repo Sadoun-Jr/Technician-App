@@ -123,6 +123,14 @@ class AppStrings {
     "Consectetur viverra lorem sit ipsum in libero nullam dolor auctor tincidunt libero vel amet adipiscing elit euismod est condimentum"
   ];
 
+  static List<String> myUris = [
+    "https://firebasestorage.googleapis.com/v0/b/technicians-2d714.appspot.com/o/portfolios%2Ftech%20uid%2Fportfolio%20%232?alt=media&token=9cfc0ccf-cbeb-404e-80a7-fcfc454ed75f",
+    "https://firebasestorage.googleapis.com/v0/b/technicians-2d714.appspot.com/o/portfolios%2Ftech%20uid%2Fportfolio%20%230?alt=media&token=4bb10a54-aaee-4fcc-ba8f-65d595f83bb7",
+    "https://firebasestorage.googleapis.com/v0/b/technicians-2d714.appspot.com/o/portfolios%2Ftech%20uid%2Fportfolio%20%233?alt=media&token=bf7545e3-a02d-4a24-82ee-791c83b7334c",
+    "https://firebasestorage.googleapis.com/v0/b/technicians-2d714.appspot.com/o/portfolios%2Ftech%20uid%2Fportfolio%20%231?alt=media&token=ad607bf8-0e70-4e71-ae9c-df320a91375c",
+    "https://firebasestorage.googleapis.com/v0/b/technicians-2d714.appspot.com/o/portfolios%2Ftech%20uid%2Fportfolio%20%231?alt=media&token=22d11aff-9399-42b0-b92a-5f6d99838051",
+  ];
+
   static List<String> firstNamesList = [
     "Adam",
     "Alex",

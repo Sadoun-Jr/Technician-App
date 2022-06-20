@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/models/technician%20object.dart';
 import 'package:technicians/utils/hex%20colors.dart';
@@ -436,7 +437,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           child: FloatingActionButton.extended(
                               heroTag: 2,
                               label: Text("portfolio"),
-                              onPressed: () => {})),
+                              onPressed: () => {
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => PortfolioSummary(myAssignedTech!.technicianUid!)))
+                              })),
                     ],
                   ),
                 ],
@@ -610,7 +614,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   Future<void> getAppropriateTechnicians() async {
-    listOfAppropriateTechnicians = [];
+    listOfAppropriateTechnicians.clear();
     var technicianCollection =
     FirebaseFirestore.instance.collection("technicians");
 
@@ -704,7 +708,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       debugPrint("list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
     }
     }
-
 
   Widget selectTechnicianOnboarding() {
     return FutureBuilder(

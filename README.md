@@ -6,11 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added create portfolio page
-- Added portfolio collection to firestore
-- Added ability to enlarge image to fit screen when clicked
-- Replaced listview that shows the images selected with a gridview
-- Added ability to long press delete image after being received in the app
+- User can see multiple portfolios of technician
+- User can see single portfolio images in gallery mode with desc at bototm
 
 ## (  ) Creating and Styling the layouts
 
@@ -77,6 +74,7 @@ solved by making the button transparent and not clickable
 2. The picture of the issue isn't aligned properly in the orders page
 3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
 need to close it.
+4. Onboarding page loads list of appropriate technicians multiple times and repeats them
 
 [comment]: <> (## New things I learned:)
 
@@ -84,3 +82,6 @@ need to close it.
 
 - Add firebase app-check
 - Add google fonts
+- Add facebook login
+- Add payment
+- Add user details like location etc when creating acc.

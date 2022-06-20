@@ -9,7 +9,7 @@ class Portfolio {
   int?          numberOfViews;
   int?          numberOfPictures;
   int?          numberOfFavourites;
-  List<String>? listOfImagePaths;
+  List?         listOfImagePaths;
 
   Portfolio(
       { required this.title,
