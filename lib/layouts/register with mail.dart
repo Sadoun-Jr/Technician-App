@@ -276,13 +276,14 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               .collection("users")
               .doc(user?.uid)
               .set({
+            AppStrings.listOfFavouritesKey        : [],
             AppStrings.userUidKey                 : user!.uid,//TODO: TEXT CONTROLLER
             AppStrings.firstNameKey               : firstName, //TODO: TEXT CONTROLLER
             AppStrings.familyNameKey              : lastName,
             AppStrings.imageKey                   : null, //TODO: GET THIS LATER
             AppStrings.accountCreationTimeStampKey: DateTime.now().millisecondsSinceEpoch,
             AppStrings.phoneNumberKey             : random.nextInt(123456789),
-            AppStrings.emailKey                   : ("$firstName$lastName@gmail.com"),//TODO: TEXT CONTROLLER
+            AppStrings.emailKey                   : emailController.text.trim().toString(),
             AppStrings.jobsPaidPhysicallyKey      : 0,
             AppStrings.jobsPaidThroughAppKey      : 0,
             AppStrings.isVerifiedByIdKey          : (booleanList.toList()..shuffle()).first,

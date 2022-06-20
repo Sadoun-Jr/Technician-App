@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/global%20search.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
+import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/layouts/user%20favourites.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/widgets/slider.dart';
@@ -164,7 +165,11 @@ class _NavDrawerState extends State<NavDrawer> {
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => TestUI(88))
+                              );
+                            },
                             child: ListTile(
                               leading: Icon(
                                 Icons.settings,

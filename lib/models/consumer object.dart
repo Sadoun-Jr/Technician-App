@@ -14,6 +14,7 @@ class Consumer {
   bool? isVerifiedById;
   int? numberOfFavourites;
   String? location;
+  List? listOfFavourites;
 
   Consumer({
      required this.firstName,

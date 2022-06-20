@@ -42,6 +42,7 @@ class AppStrings {
   static String listOfOrdersString = "Previous orders";
 
   //consumer database keys
+  static String listOfFavouritesKey = "listOfFavourites";
   static String userUidKey =
       "userUid"; //TODO: CHANGE TO userUid both var and value
 
@@ -66,7 +67,7 @@ class AppStrings {
   static String isAcceptedByTechnicianKey = "isAcceptedByTechnician";
   static String isCanceledByUserKey = "isCanceledByUser";
 
-  //firestore technician collection keys
+  //technician collection keys
   static String firstNameKey = "firstName";
   static String familyNameKey = "familyName";
   static String technicianUid = "technicianUid";

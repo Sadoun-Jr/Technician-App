@@ -37,7 +37,7 @@ class _UserFavouritesState extends State<UserFavourites> {
 
     //looking by trades
       await technicianCollection.where(
-          AppStrings.listOfFavouritedByKey, arrayContains: "Ccrjx2juHMjCGauVhUwB") //TODO: change to dynamic
+          AppStrings.listOfFavouritedByKey, arrayContains: "E1SRhjYEJuZDsk4Er8nxzciYoAL2") //TODO: change to dynamic
           .get().then((value) => {
         value.docs.forEach((element) {
           Technician technician = Technician(

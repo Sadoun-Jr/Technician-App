@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +50,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return reviewsListView();
-          // return FloatingActionButton(onPressed: insertMockIssues);
+          // return FloatingActionButton(onPressed:() {replaceMockTechnicians();} );
         } else {
           return Container(
             height: double.infinity,
@@ -67,6 +69,40 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
         }
       },
     ));
+  }
+
+  List listOfAllUsers = [];
+  List listOfAllTechs = [];
+
+  Future<void> replaceMockTechnicians() async {
+    var ref = FirebaseFirestore.instance.collection("users");
+    ref.get().then((value) async =>
+    {for (var element in value.docs) {
+        listOfAllUsers.add(element.data()[AppStrings.userUidKey].toString())
+      }
+    });
+
+    var techRef = FirebaseFirestore.instance.collection("technicians");
+    techRef.get().then((value) async =>
+    {for (var element in value.docs) {
+      listOfAllTechs.add(element.data()[AppStrings.technicianUid].toString())
+    }
+    });
+
+
+    for(int i=0; i<listOfAllTechs.length;i++){
+      List listOfRandomUsers = [];
+
+      for(int j=0;j<Random().nextInt(10)+2;j++){
+        listOfRandomUsers.add((listOfAllUsers.toList()..shuffle()).first);
+      }
+
+      techRef.doc(listOfAllTechs[i]).set({
+        AppStrings.listOfFavouritedByKey : listOfRandomUsers,
+        AppStrings.numberOfFavouritesKey : listOfRandomUsers.length,
+      }, SetOptions(merge: true));
+    }
+
   }
 
   Future<void> getTechnicianReviews() async {
@@ -112,7 +148,6 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
     debugPrint("# of names: ${listOfNamesFromUid.length}");
     debugPrint("# of issues: ${listOfAllIssues.length}");
   }
-
 
   Future<String> changeUidToName(String uid, bool isUser) async {
     String? firstName;

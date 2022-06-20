@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/models/technician%20object.dart';
@@ -41,6 +43,7 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage> {
         AppStrings.technicianUidKey, isEqualTo: widget.selectedTechnicianUid) //TODO: change to dynamic
         .get().then((value) => {
       value.docs.forEach((element) {
+
         selectedTechnician = Technician(
           technicianUid: element.data()[AppStrings.technicianUidKey],
           accountCreationTimeStamp: element.data()[AppStrings.accountCreationTimeStampKey],
@@ -76,6 +79,33 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage> {
 
   }
 
+  Future<bool> onLikeButtonTapped(bool isLiked) async{
+    /// send your request here
+    var ref = FirebaseFirestore.instance.collection("technicians");
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    List listFavs = selectedTechnician!.favouritedBy!;
+
+    if(listFavs.contains(uid)){
+
+      listFavs.remove(uid);
+      await ref.doc(selectedTechnician!.technicianUid).set({
+        AppStrings.listOfFavouritedByKey : listFavs ,
+        AppStrings.numberOfFavouritesKey : listFavs.length,
+      }, SetOptions(merge: true)).then((value) => isLiked = false);
+    } else {
+
+      listFavs.add(uid);
+      await ref.doc(selectedTechnician!.technicianUid).set({
+        AppStrings.listOfFavouritedByKey : listFavs ,
+        AppStrings.numberOfFavouritesKey : listFavs.length,
+      }, SetOptions(merge: true)).then((value) => isLiked = true);
+    }
+
+    /// if failed, you can do nothing
+    // return success? !isLiked:isLiked;
+
+    return isLiked;
+  }
 
   Widget assignedTechnicianProfileOnBoarding() {
     return FutureBuilder(
@@ -129,6 +159,11 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage> {
                       SizedBox(
                         height: 10,
                       ),
+                      InkWell(onTap: () {},
+                          child: LikeButton(
+                            onTap: onLikeButtonTapped,
+                            isLiked: true,
+                          )),
                       Align(
                           alignment: Alignment.topCenter,
                           child: Text(

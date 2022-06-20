@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:like_button/like_button.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/models/technician%20object.dart';
@@ -361,6 +362,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
   Technician? myAssignedTech;
+  bool? checkedIsLiked;
 
   Widget assignedTechnicianProfileOnBoarding() {
     return Container(
@@ -414,6 +416,17 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       )),
                   SizedBox(
                     height: 10,
+                  ),
+                  Visibility(
+                    visible: false,
+                    child: InkWell(onTap: () {},
+                        child: LikeButton(
+                          onTap: onLikeButtonTapped,
+                          isLiked: listOfFavourites.contains(_issuedByUid) ,
+                          // isLiked: (myAssignedTech!.favouritedBy!.contains(_issuedByUid)) ?
+                          // true : false,
+                          // isLiked: myAssignedTech!.favouritedBy!.contains(_issuedByUid),
+                        )),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -530,6 +543,39 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
+  Future<bool> onLikeButtonTapped(bool isLiked) async{
+    /// send your request here
+    debugPrint("===========1============");
+    var ref = FirebaseFirestore.instance.collection("technicians");
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    debugPrint("===========2============");
+    debugPrint(myAssignedTech!.technicianUid.toString());
+
+    List listFavs = myAssignedTech!.favouritedBy!;
+    debugPrint("User favs are (from like): " + listFavs.toString());
+    debugPrint("===========3============");
+
+    if(listFavs.contains(uid)){
+
+      listFavs.remove(uid);
+      await ref.doc(myAssignedTech!.technicianUid).set({
+        AppStrings.listOfFavouritedByKey : listFavs ,
+        AppStrings.numberOfFavouritesKey : listFavs.length,
+      }, SetOptions(merge: true)).then((value) => isLiked = false);
+    } else {
+
+      listFavs.add(uid);
+      await ref.doc(myAssignedTech!.technicianUid).set({
+        AppStrings.listOfFavouritedByKey : listFavs ,
+        AppStrings.numberOfFavouritesKey : listFavs.length,
+      }, SetOptions(merge: true)).then((value) => isLiked = true);
+    }
+
+    /// if failed, you can do nothing
+    // return success? !isLiked:isLiked;
+
+    return isLiked;
+  }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -548,6 +594,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   int selectTechnicianValue = -1;
   List<Technician> listOfAppropriateTechnicians = [];
   bool isAppliance = false;
+  List listOfFavourites = [];
 
   //search function
   void searchForTechnician(String searchedValue) async {
@@ -614,12 +661,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   Future<void> getAppropriateTechnicians() async {
+    listOfFavourites.clear();
+
+    _issuedByUid = FirebaseAuth.instance.currentUser!.uid;
     listOfAppropriateTechnicians.clear();
     var technicianCollection =
     FirebaseFirestore.instance.collection("technicians");
 
     isAppliance = CommonIssues.listOfAppliancesCategories.contains(_issueCategory);
     debugPrint("issue category is $_issueCategory");
+
+    //get list of favourites of user to pre highlight like button
+    await technicianCollection.where(
+        AppStrings.listOfFavouritedByKey, arrayContains: _issuedByUid).get().then((value) => {
+          value.docs.forEach((element) {
+            listOfFavourites.add(element.data()[AppStrings.technicianUid]);
+          })
+    });
 
     //looking by trades
     if(!isAppliance){
@@ -703,6 +761,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             numberOfReviews: element.data()[AppStrings.numberOfReviewsKey],
           );
           listOfAppropriateTechnicians.add(i);
+
+
         })
       });
       debugPrint("list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
@@ -714,6 +774,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       future: getAppropriateTechnicians(),
       builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          listOfAppropriateTechnicians.toSet().toList();
+          debugPrint("Filtered list of appropriate techs to: ${listOfAppropriateTechnicians.length}");
           return Container(
             margin: EdgeInsets.fromLTRB(5, 10, 5, 80),
             child: ListView(
@@ -1460,7 +1522,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   String _issueUid = " ";
   bool _isEmergency = false;
   bool _isPaid = false;
-  String _issuedBy = " ";
+  String _issuedByUid = " ";
   String _isAcceptedByTechnician = " ";
   bool isCanceledByUser = false;
   bool isDeclinedByTechnician = false;
