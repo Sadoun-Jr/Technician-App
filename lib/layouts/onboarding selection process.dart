@@ -786,7 +786,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                                     alignment: Alignment.bottomCenter,
                                                     child: Visibility(
                                                       visible: listOfAppropriateTechnicians[index]
-                                                          .isAvailable,
+                                                          .isAvailable!,
                                                       child: CircleAvatar(
                                                         maxRadius: 7,
                                                         backgroundColor: Colors.green
@@ -858,7 +858,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                                           style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight: listOfAppropriateTechnicians[index]
-                                                                  .isAvailable
+                                                                  .isAvailable!
                                                                   ? FontWeight.bold
                                                                   : FontWeight.normal),
                                                         ),

@@ -160,7 +160,7 @@ class _UserFavouritesState extends State<UserFavourites> {
                                                         alignment: Alignment.bottomCenter,
                                                         child: Visibility(
                                                           visible: listOfFavTechnicians[index]
-                                                              .isAvailable,
+                                                              .isAvailable!,
                                                           child: CircleAvatar(
                                                               maxRadius: 7,
                                                               backgroundColor: Colors.green
@@ -220,7 +220,7 @@ class _UserFavouritesState extends State<UserFavourites> {
                                                             style: TextStyle(
                                                                 fontSize: 16,
                                                                 fontWeight: listOfFavTechnicians[index]
-                                                                    .isAvailable
+                                                                    .isAvailable!
                                                                     ? FontWeight.bold
                                                                     : FontWeight.normal),
                                                           ),

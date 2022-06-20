@@ -6,8 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- User can see multiple portfolios of technician
-- User can see single portfolio images in gallery mode with desc at bototm
+- Added global search for all technicians
 
 ## (  ) Creating and Styling the layouts
 

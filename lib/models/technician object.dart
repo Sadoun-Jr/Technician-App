@@ -8,7 +8,7 @@ class Technician {
   String? personalDesc; //NOT IN DATABASE
   Widget? image; //TODO: change to bitmap...?
   double? rating;
-  bool isAvailable;
+  bool? isAvailable;
   int? jobsCompleted;
   int? jobsDeclined;
   int? completionRate;
@@ -16,12 +16,12 @@ class Technician {
   int? requestAcceptanceRate;
   int? accountCreationTimeStamp;
   int? numberOfPortfolioItems;
-  bool isPreferred;
+  bool? isPreferred;
   int? phoneNumber;
   String? email;
   int? numberOfJobsPaidPhysically;
   int? numberOfJobsPaidThroughApp;
-  bool isVerifiedById;
+  bool? isVerifiedById;
   List? appliancesSubscribedTo;
   Map? pricesForJobIssues;
   Map? pricesForAppliancesSubscribedToIssues;
@@ -29,6 +29,17 @@ class Technician {
   List? favouritedBy;
   String? location;
   int? numberOfJobsTerminatedMidWork;
+
+  Technician.mini({
+    required this.location,
+    required this.firstName,
+    required this.familyName,
+    required this.jobTitle,
+    required this.technicianUid,
+    required this.personalDesc,
+    required this.image,
+    required this.rating,
+    required this.isAvailable,});
 
   Technician({
       required this.firstName,
@@ -60,3 +71,4 @@ class Technician {
       required this.location,
       required this.numberOfJobsTerminatedMidWork});
 }
+
