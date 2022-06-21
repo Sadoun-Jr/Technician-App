@@ -175,7 +175,7 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
           final desc = listOfPortfolioItems[index].desc;
           if(urlImages!.isNotEmpty){
             Navigator.push(this.context, MaterialPageRoute(builder: (context) =>
-                ViewDetailedPortfolioItem(urlImages, index, desc!)));
+                ViewDetailedPortfolioItem(urlImages, index, desc!, false)));
           } else {
             Fluttertoast.cancel();
             Fluttertoast.showToast(msg: "No images in this portfolio item", backgroundColor: Colors.red);

@@ -18,6 +18,7 @@ class Issue {
   bool isCanceledByUser;
   bool isTerminatedMidWork;
   String issuedTo;
+  //List<String> listOfImagePaths;
 
   Issue(
       {required this.issueCategory,

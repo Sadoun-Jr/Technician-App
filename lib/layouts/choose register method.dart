@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/register%20with%20mail.dart';
+import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/utils/hex%20colors.dart';
-
+import 'package:http/http.dart' as http;
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
 import 'login.dart';
@@ -121,6 +125,7 @@ class _SelectRegisterMethodLayoutState
             // onPressed: signIn,
           ),
         ),
+
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -142,13 +147,18 @@ class _SelectRegisterMethodLayoutState
               AppStrings.connectWithFb,
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
             ),
-            onPressed: () => {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+              TestUI()));
+              // signInWithFacebook();
+            },
             // onPressed: navigateToResetPassLayout,
           ),
         ),
       ]),
     );
   }
+
 
   void navigateToRegisterWithMail() {
     Navigator.push(

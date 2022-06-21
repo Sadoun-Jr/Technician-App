@@ -5,7 +5,9 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technicians/layouts/login.dart';
+import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
@@ -28,7 +30,19 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  late var prefs;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    prefs = await SharedPreferences.getInstance();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +256,8 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   }
 
   Future signUp() async {
+    await prefs.setBool(AppStrings.isSetBasicInfo, false);
+
     Fluttertoast.cancel();
     final isValid = formKey.currentState!.validate();
 
@@ -278,8 +294,8 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               .set({
             AppStrings.listOfFavouritesKey        : [],
             AppStrings.userUidKey                 : user!.uid,//TODO: TEXT CONTROLLER
-            AppStrings.firstNameKey               : firstName, //TODO: TEXT CONTROLLER
-            AppStrings.familyNameKey              : lastName,
+            AppStrings.firstNameKey               : "...", //TODO: TEXT CONTROLLER
+            AppStrings.familyNameKey              : "...",
             AppStrings.imageKey                   : null, //TODO: GET THIS LATER
             AppStrings.accountCreationTimeStampKey: DateTime.now().millisecondsSinceEpoch,
             AppStrings.phoneNumberKey             : random.nextInt(123456789),
@@ -297,14 +313,25 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       // navigatorKey.currentState!.popUntil((route) => route.isFirst);
       // navigatorKey.currentState!.popUntil((route) => route.isFirst);
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          '/dashboard or login', (Route<dynamic> route) => false);
+
+      // Navigator.of(context).pushNamedAndRemoveUntil(
+      //     '/dashboard or login', (Route<dynamic> route) => false);
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SetPersonalDetails(false)));
 
     } catch (e) {
       debugPrint("Sign up error: " + e.toString());
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
           backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
     }
+
+
+        // await FirebaseFirestore.instance.collection('users')
+        // .doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) async {
+        //   for (var element in value.docs)
+        // }
+        // );
+
   }
 
 

@@ -6,14 +6,17 @@ class Consumer {
   String? userUid;
   int? jobsPaidPhysically;
   int? jobsPaidThroughApp;
+  String? profilePicUrl;
   Widget? image; //TODO: change to bitmap...?
   int? numberOfReviews;
   int? accountCreationTimeStamp;
-  int? phoneNumber;
+  String? phoneNumber;
   String? email;
   bool? isVerifiedById;
   int? numberOfFavourites;
   String? location;
+  String? subLocation;
+  int? age;
   List? listOfFavourites;
 
   Consumer({
@@ -28,6 +31,9 @@ class Consumer {
     required this.phoneNumber,
     required this.email,
     required this.isVerifiedById,
+    required this.subLocation,
+    required this.profilePicUrl,
+    required this.age,
     required this.numberOfFavourites,
     required this.location});
 }

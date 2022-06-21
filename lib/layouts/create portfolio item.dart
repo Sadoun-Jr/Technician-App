@@ -35,8 +35,8 @@ class _CreatePortfolioItemState extends State<CreatePortfolioItem> {
         body: Container(
           child: ListView(
             children: [
-              myController(titleController, 1, "Title..."),
-              myController(descController, 10, "Description of the work..."),
+              myTextForm(titleController, 1, "Title..."),
+              myTextForm(descController, 10, "Description of the work..."),
               Container(
                 margin: const EdgeInsets.fromLTRB(25, 10, 25, 10),
                 child: Text("Pictures"),
@@ -301,7 +301,7 @@ class _CreatePortfolioItemState extends State<CreatePortfolioItem> {
     }
   }
 
-  Widget myController(
+  Widget myTextForm(
       TextEditingController controller, int maxLines, String labelText) {
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),

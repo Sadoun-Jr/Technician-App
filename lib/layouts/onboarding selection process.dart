@@ -2,14 +2,18 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:like_button/like_button.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
+import 'package:technicians/layouts/view%20detailed%20portfolio%20item.dart';
 import 'package:technicians/models/technician%20object.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/utils/strings%20common%20issues.dart';
@@ -218,6 +222,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void requestOrder() async {
     Fluttertoast.cancel();
 
+    await uploadImageToFirebase(files);
+
+    Fluttertoast.showToast(msg: "Creating request...");
+
     //check if there is connection
     try {
       final result = await InternetAddress.lookup('example.com');
@@ -246,6 +254,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             .collection("issues")
             .doc(value.id)
             .set({
+          AppStrings.listOfImagePathskey  : listOfFilePaths,
           AppStrings.issueCategoryKey     : _issueCategory,
           AppStrings.issueDescKey         : _issueDesc,
           AppStrings.isCompletedKey       : false,
@@ -1019,7 +1028,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     return Visibility(
       visible: !isDontSeeYourIssue,
       child: Container(
-        margin: EdgeInsets.fromLTRB(16, 100, 16, 80),
+        margin: EdgeInsets.fromLTRB(16, 130, 16, 80),
         child: ListView.builder(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
@@ -1079,6 +1088,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   var isDontSeeYourIssue = false;
+
+  File _imageFile = File("");
+  final picker = ImagePicker();
+  List<File>? files;
+  UploadTask? uploadTask;
+  List<String> listOfFilePaths = [];
 
   Widget customIssueHeader() {
     List<String>? listOfRespectiveIssuesFromMap =
@@ -1151,9 +1166,65 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               ],
             ),
           ),
+          Row(
+            children: [
+              ElevatedButton(onPressed: selectMultipleImages, child: Text("Add pictures")),
+              Text(files == null ? "No Images added" : "Added ${files!.length} images"),
+              TextButton(child: Text("Click to see"), onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    ViewDetailedPortfolioItem(files, 12345, _issueDesc, true)));
+              },)
+            ],
+          ),
         ],
       ),
     );
+  }
+
+  Future uploadImageToFirebase(
+      dynamic listOfFiles) async {
+    try{
+      Fluttertoast.showToast(msg: "Uploading attached images...");
+      // Create a Reference to the file
+      var currentTime = DateTime.now().millisecondsSinceEpoch;
+      for (int i = 0; i < files!.length; i++) {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('issues')
+            .child("/issues by user: ${FirebaseAuth.instance.currentUser!.uid}")
+            .child("/$_issueDesc on $currentTime")
+            .child(_imageFile.path);
+
+        uploadTask = ref.putFile(listOfFiles[i]);
+
+        final snapShot = await uploadTask!.whenComplete(() => {});
+        final urlDownload = await snapShot.ref.getDownloadURL();
+        listOfFilePaths.add(urlDownload);
+
+        uploadTask = null;
+
+      }
+      Fluttertoast.showToast(msg: "Finished Uploading", backgroundColor: Colors.green);
+
+    } catch (e) {
+      debugPrint(e.toString());
+      Fluttertoast.showToast(msg: "Failed to upload images", backgroundColor: Colors.redAccent);
+    }
+
+  }
+
+  Future selectMultipleImages() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png', 'svg']);
+
+    if (result != null) {
+      setState(
+              () => {files = result.paths.map((path) => File(path!)).toList()});
+    } else {
+      // User canceled the picker
+    }
   }
 
 ////////////////////////////////////////////////////////////////////////////////

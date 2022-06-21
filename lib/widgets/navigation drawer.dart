@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/global%20search.dart';
 import 'package:technicians/layouts/login.dart';
+import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/layouts/user%20favourites.dart';
@@ -79,6 +80,26 @@ class _NavDrawerState extends State<NavDrawer> {
                   Expanded(
                     child: ListView(
                       children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => {
+                              Navigator.pop(context),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SetPersonalDetails(true)),
+                              ),
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.person,
+                                color: Colors.black,
+                              ),
+                              title: Text("My Profile"),
+                            ),
+                          ),
+                        ),
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -166,9 +187,6 @@ class _NavDrawerState extends State<NavDrawer> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => TestUI(88))
-                              );
                             },
                             child: ListTile(
                               leading: Icon(

@@ -17,10 +17,11 @@ import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/slider.dart';
 
 class ViewDetailedPortfolioItem extends StatefulWidget {
-  final int index;
+  final int? index;
   final List<dynamic>? urlImages;
-  final String desc;
-  const ViewDetailedPortfolioItem(this.urlImages, this.index, this.desc,
+  final String? desc;
+  final bool isIssueImage;
+  const ViewDetailedPortfolioItem(this.urlImages, this.index, this.desc,this.isIssueImage,
       {Key? key})
       : super(key: key);
 
@@ -38,7 +39,7 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
     return Material(
         child: Scaffold(
       body: Hero(
-        tag: widget.index,
+        tag: widget.index ?? 1234,
         child: Stack(children: [
           PhotoViewGallery.builder(
             itemCount: widget.urlImages!.length,
@@ -46,7 +47,9 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
               final urlImage = widget.urlImages![index];
 
               return PhotoViewGalleryPageOptions(
-                imageProvider: NetworkImage(urlImage),
+                imageProvider: widget.isIssueImage ? FileImage(urlImage) as ImageProvider
+                    : NetworkImage(urlImage),
+
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.contained * 4,
               );
@@ -61,7 +64,7 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   color: Colors.black54,
-                  child: Text(widget.desc, style: TextStyle(color: Colors.white),),
+                  child: Text(widget.desc ?? "", style: TextStyle(color: Colors.white),),
                 ),
               ),
             ),

@@ -18,6 +18,7 @@ class AppStrings {
   static var confirmPasswordString = "Confirm password";
   static String createAccountButton = "CREATE ACCOUNT";
   static String userRegistered = "Registered successfully";
+  static String isSetBasicInfo = "user set basic info already";
 
   //login and register FAB hero tags
   static int heroLogin = 111;
@@ -98,6 +99,8 @@ class AppStrings {
   static String locationKey = "location";
   static String mapPricesOfJobIssuesKey = "pricesOfJobIssues";
   static String mapPricesOfApplianceIssuesKey = "pricesOfApplianceIssues";
+  static String ageKey= "age";
+  static String subLocationKey = "subLocation";
 
   //portfolio database keys
   static String portfolioUidkey = "portfolioUid";

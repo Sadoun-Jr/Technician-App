@@ -6,7 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added global search for all technicians
+- Added ability to attach images with the issue by user
+- Added ability to view said images by the user to confirm
 
 ## (  ) Creating and Styling the layouts
 
@@ -28,6 +29,10 @@ I will add various info down as I think of it<br />
 ( ✓ ) Consumer dashboard<br />
 ( ✓ ) Pending and completed orders list<br />
 ( ✓ ) Navigation drawer<br />
+( ✓ ) User favourites<br />
+( ✓ ) Setup initial user details<br />
+( ✓ ) Standalone technician profile<br />
+( ✓ ) Technician portfolio with gallery for every single item<br />
 ( ✓ ) Technician reviews<br />
 
 ## Creating the logic
@@ -84,3 +89,9 @@ need to close it.
 - Add facebook login
 - Add payment
 - Add user details like location etc when creating acc.
+
+[comment]: <> (Visit Facebook Developer Account and click on the app you have created, )
+
+[comment]: <> (and at the top of the dashboard change it to Live App.)
+
+[comment]: <> (facebook data deletion link is a problem, try to fix it later)
