@@ -26,14 +26,14 @@ class FrostedGlassBox extends StatelessWidget {
               ),
               child: Container(width: width, height: height, child: Text(" ")),
             ),
-            Opacity(
-                opacity: 0.15,
-                child: Image.asset(
-                  "assets/noise.png",
-                  fit: BoxFit.cover,
-                  width: width,
-                  height: height,
-                )),
+            // Opacity(
+            //     opacity: 0.15,
+            //     child: Image.asset(
+            //       "assets/noise.png",
+            //       fit: BoxFit.cover,
+            //       width: width,
+            //       height: height,
+            //     )),
             Container(
               decoration: BoxDecoration(
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15),

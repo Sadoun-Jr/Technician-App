@@ -104,12 +104,15 @@ class _NavDrawerState extends State<NavDrawer> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () => {
-                              Navigator.pop(context),
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginLayout()),
-                              ),
+                            Navigator.of(context)
+                                .pushNamedAndRemoveUntil('/dashboard or login',
+                            (Route<dynamic> route) => false)
+                              // Navigator.pop(context),
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => LoginLayout()),
+                              // ),
                             },
                             child: ListTile(
                               leading: Icon(
@@ -124,13 +127,16 @@ class _NavDrawerState extends State<NavDrawer> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserFavourites()), //TODO: pass user uid here
-                              );
+                              Navigator.of(context)
+                                  .pushNamedAndRemoveUntil('/dashboard or login',
+                                      (Route<dynamic> route) => false);
+                              // Navigator.pop(context);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           UserFavourites()), //TODO: pass user uid here
+                              // );
                             },
                             child: ListTile(
                               leading: Icon(
@@ -187,6 +193,9 @@ class _NavDrawerState extends State<NavDrawer> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              TestUI()));
                             },
                             child: ListTile(
                               leading: Icon(

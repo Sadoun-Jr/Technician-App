@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:technicians/layouts/create%20portfolio%20item.dart';
+import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/layouts/single%20portfolio%20item.dart';
 import 'package:technicians/layouts/view%20detailed%20portfolio%20item.dart';
 import 'package:technicians/models/portfolio%20object.dart';
@@ -91,75 +92,79 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        floatingActionButton: addNewPortfolioItem(),
-        body: FutureBuilder(
-          future: getPortfolioItems(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.all(16),
-                child: ListView(
-                  physics: ScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        shape: BoxShape.circle,
-                      ),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Stack(children: const [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: CircleAvatar(
-                              maxRadius: 100,
-                              backgroundColor: Colors.grey,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 15,
-                            left: 250,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.green,
-                              maxRadius: 10,
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0,20,0,20),
-                      child: Text(
-                        "$techNameFromUid's Portfolio", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3),
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      itemCount: listOfPortfolioItems.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return portFolioGridItem(index);
-                      },
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return Center(
+    return WillPopScope(
+      onWillPop: () async {
+        return true;},
 
-                   child: slider(),
-
-              );
-            }},
+      child: Material(
+        child: Scaffold(
+          floatingActionButton: addNewPortfolioItem(),
+          body: FutureBuilder(
+            future: getPortfolioItems(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.all(16),
+                  child: ListView(
+                    physics: ScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          shape: BoxShape.circle,
+                        ),
+                        child: InkWell(
+                          onTap: () {},
+                          child: Stack(children: const [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: CircleAvatar(
+                                maxRadius: 100,
+                                backgroundColor: Colors.grey,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 15,
+                              left: 250,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.green,
+                                maxRadius: 10,
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0,20,0,20),
+                        child: Text(
+                          "$techNameFromUid's Portfolio", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3),
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemCount: listOfPortfolioItems.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return portFolioGridItem(index);
+                        },
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                     child: slider(),
+                );
+              }},
+          ),
         ),
       ),
     );

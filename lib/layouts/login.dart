@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
@@ -19,9 +20,9 @@ class LoginLayout extends StatefulWidget {
   State<LoginLayout> createState() => _LoginLayoutState();
 }
 
-Color _primaryColor = HexColor("#1D4EAB");
-Color _whiteText = Colors.white;
-Color _midWhite = Colors.white54;
+Color _primaryColor = HexColor("##1651db");
+Color _textClr = HexColor("#052163");
+Color _borderColor = HexColor("#0d3fb5");
 TextEditingController _emailController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 
@@ -49,42 +50,90 @@ class _LoginLayoutState extends State<LoginLayout> {
         Align(
             alignment: Alignment.topCenter,
             child: Column(
-              children: const [
-                SizedBox(
-                  height: 100,
+              children: [
+                Hero(
+                  tag: "lottie",
+                  child: SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: Lottie.asset(
+                        'assets/29410-technical-assistance.json'),
+                  ),
                 ),
-                Logo(75, 75),
               ],
             )),
         Align(
           child: glassyLoginBox(),
           alignment: Alignment.bottomCenter,
         ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            // decoration: BoxDecoration(
+            //   border: Border.all(width: 2, color: Colors.brown)
+            // ),
+            width: 310,
+            margin: EdgeInsets.fromLTRB(0, 40, 0, 130),
+            child: FloatingActionButton.extended(
+              heroTag: AppStrings.heroLogin,
+              splashColor: Colors.white,
+              backgroundColor: _primaryColor,
+              label: Text(
+                AppStrings.loginString,
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              onPressed: signIn,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 40, 0, 80),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: TextButton(
+              child: Text(
+                AppStrings.forgotPassword,
+                style: TextStyle(color: _textClr),
+              ),
+              onPressed: () => {},
+            ),
+          ),
+        )
         // loginBoxContents(),
       ],
     );
   }
 
   Widget loginLayoutBackGroundImage() {
-    return Image.asset(
-      "assets/Login.png",
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
+    return Hero(
+      tag: "bg",
+      child: Image.asset(
+        "assets/cyan_bg.jpg",
+        fit: BoxFit.fitHeight,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
+      ),
     );
   }
 
   Widget glassyLoginBox() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50.0),
-      ),
-      child: FrostedGlassBox(
-        350,
-        double.infinity,
-        Center(child: loginBoxContents()),
+    return Hero(
+      tag: "box",
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: FrostedGlassBox(
+            350,
+            double.infinity,
+            Center(child: loginBoxContents()),
+          ),
+        ),
       ),
     );
   }
@@ -111,26 +160,26 @@ class _LoginLayoutState extends State<LoginLayout> {
           child: TextFormField(
             controller: _emailController,
             maxLines: 1,
-            style: TextStyle(color: _whiteText),
+            style: TextStyle(color: _textClr),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _midWhite,
+                  color: _borderColor,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.email,
-                color: _midWhite,
+                color: _borderColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.emailString,
-              labelStyle: TextStyle(color: _whiteText),
+              labelStyle: TextStyle(color: Colors.black54),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _midWhite, width: 2.5),
+                borderSide: BorderSide(color: _borderColor, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -142,26 +191,26 @@ class _LoginLayoutState extends State<LoginLayout> {
           child: TextFormField(
             controller: _passwordController,
             maxLines: 1,
-            style: TextStyle(color: _whiteText),
+            style: TextStyle(color: _textClr),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _midWhite,
+                  color: _borderColor,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _midWhite,
+                color: _borderColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.passwordString,
-              labelStyle: TextStyle(color: _whiteText),
+              labelStyle: TextStyle(color: Colors.black54),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _midWhite, width: 2.5),
+                borderSide: BorderSide(color: _borderColor, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -176,24 +225,26 @@ class _LoginLayoutState extends State<LoginLayout> {
           ),
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 40, 20, 10),
-          child: FloatingActionButton.extended(
-            heroTag: AppStrings.heroLogin,
-            backgroundColor: _midWhite,
-            label: Text(
-              AppStrings.loginString,
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            onPressed: signIn,
-          ),
+          // child: FloatingActionButton.extended(
+          //   heroTag: AppStrings.heroLogin,
+          //   splashColor: Colors.white,
+          //   backgroundColor: _primaryColor,
+          //   label: Text(
+          //     AppStrings.loginString,
+          //     style:
+          //         TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          //   ),
+          //   onPressed: signIn,
+          // ),
         ),
 
-        TextButton(
-          child: Text(
-            AppStrings.forgotPassword,
-          ),
-          onPressed: () => {},
-        )
+        // TextButton(
+        //   child: Text(
+        //     AppStrings.forgotPassword,
+        //     style: TextStyle(color: _textClr),
+        //   ),
+        //   onPressed: () => {},
+        // )
       ]),
     );
   }
@@ -433,7 +484,8 @@ class _LoginLayoutState extends State<LoginLayout> {
        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
        child: FloatingActionButton.extended(
          heroTag: 100,
-         backgroundColor: Colors.transparent,
+         backgroundColor: _primaryColor,
+           splashColor: Colors.white,
            onPressed: () => Navigator.push(
              context,
              MaterialPageRoute(builder: (context) => OnboardingSelection()),

@@ -4,10 +4,12 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/register%20with%20mail.dart';
 import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:http/http.dart' as http;
+import 'package:technicians/widgets/glass%20box.dart';
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
 import 'login.dart';
@@ -30,6 +32,7 @@ class _SelectRegisterMethodLayoutState
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: (loginLayout()),
       ),
@@ -44,10 +47,21 @@ class _SelectRegisterMethodLayoutState
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                SizedBox(
-                  height: 150,
+
+                Hero(
+                  tag: "lottie",
+                  child: Container(
+                    // decoration: BoxDecoration(
+                    //   border: Border.all(width: 2, color: Colors.brown),
+                    // ),
+                    margin: EdgeInsets.fromLTRB(50,50,50,50),
+                      child:
+                          Lottie.asset(
+                              'assets/29410-technical-assistance.json'),
+                      height: 300,
+                      width: 300,
+                  ),
                 ),
-                Logo(75, 75),
               ],
             )),
         Align(
@@ -60,18 +74,21 @@ class _SelectRegisterMethodLayoutState
   }
 
   Widget loginLayoutBackGroundImage() {
-    return Image.asset(
-      "assets/Login.png",
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
+    return Hero(
+      tag: "bg",
+      child: Image.asset(
+        "assets/cyan_bg.jpg",
+        fit: BoxFit.fitHeight,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
+      ),
     );
   }
 
   Widget glassyLoginBox() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(30, 0, 30, 100),
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 75),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50.0),
       ),
@@ -83,8 +100,11 @@ class _SelectRegisterMethodLayoutState
   Widget loginBoxContents() {
     return SingleChildScrollView(
       child: Column(children: [
+        Hero(
+          tag: "box",
+            child: Container(height: 1, width: 1,)),
         Container(
-          width: double.infinity,
+          width: 200,
           decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(color: Colors.transparent),
@@ -92,20 +112,24 @@ class _SelectRegisterMethodLayoutState
           ),
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: FloatingActionButton.extended(
+          child:
+          FloatingActionButton.extended(
             heroTag: AppStrings.heroLogin,
-            backgroundColor: _midWhite,
+
+            backgroundColor: HexColor("#1651db"),
+            splashColor: Colors.white,
             label: Text(
               AppStrings.loginString,
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-            onPressed: navigateToLoginPage,
-            // onPressed: signIn,
+            onPressed:
+                // () {}
+            navigateToLoginPage,
           ),
         ),
         Container(
-          width: double.infinity,
+          width: 200,
           decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(color: Colors.transparent),
@@ -115,50 +139,50 @@ class _SelectRegisterMethodLayoutState
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: FloatingActionButton.extended(
             heroTag: AppStrings.heroRegister,
-            backgroundColor: _midWhite,
+            splashColor: HexColor("#1651db"),
+            backgroundColor: Colors.white,
             label: Text(
               AppStrings.registerString,
               style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  TextStyle(fontWeight: FontWeight.bold, color: HexColor("#1651db")),
             ),
-            onPressed: navigateToRegisterWithMail,
-            // onPressed: signIn,
+            onPressed:
+                // () {}
+            navigateToRegisterWithMail,
           ),
         ),
-
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          height: 50,
-          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: FloatingActionButton.extended(
-            heroTag: AppStrings.heroConnectwithFb,
-            backgroundColor: Colors.white,
-            icon: Icon(
-              Icons.facebook,
-              color: Colors.blue,
-              size: 30,
-            ),
-            label: Text(
-              AppStrings.connectWithFb,
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>
-              TestUI()));
-              // signInWithFacebook();
-            },
-            // onPressed: navigateToResetPassLayout,
-          ),
-        ),
+        // Container(
+        //   width: double.infinity,
+        //   decoration: BoxDecoration(
+        //     color: Colors.transparent,
+        //     border: Border.all(color: Colors.transparent),
+        //     borderRadius: BorderRadius.circular(20),
+        //   ),
+        //   height: 50,
+        //   margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        //   child: FloatingActionButton.extended(
+        //     heroTag: AppStrings.heroConnectwithFb,
+        //     backgroundColor: Colors.white,
+        //     icon: Icon(
+        //       Icons.facebook,
+        //       color: Colors.blue,
+        //       size: 30,
+        //     ),
+        //     label: Text(
+        //       AppStrings.connectWithFb,
+        //       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //           context, MaterialPageRoute(builder: (context) => TestUI()));
+        //       // signInWithFacebook();
+        //     },
+        //     // onPressed: navigateToResetPassLayout,
+        //   ),
+        // ),
       ]),
     );
   }
-
 
   void navigateToRegisterWithMail() {
     Navigator.push(

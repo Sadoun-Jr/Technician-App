@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:like_button/like_button.dart';
+import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/layouts/view%20detailed%20portfolio%20item.dart';
@@ -30,32 +31,47 @@ class OnboardingSelection extends StatefulWidget {
 }
 
 class _OnboardingSelectionState extends State<OnboardingSelection> {
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         isHeaderForCategoryPageVisible = true;
-        return (await showDialog(context: context, builder: (context) => AlertDialog(
-          title: new Text('Are you sure?'),
-          content: new Text('This will delete your current issue'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
-              child: new Text('No'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // <-- SEE HERE
-              child: new Text('Yes'),
-            ),
-          ],
-        ),
-        ));
+
+        if(isInOnboarding){
+          debugPrint("Calling onboarding key while in onboarding, going back a page");
+          introKey.currentState!.previous();
+        }
+        else {
+          debugPrint("Calling onboarding key while not in onboarding, going back a page");
+          Navigator.pop(context);
+        }
+        return false;
+      //   return (
+      //       await showDialog(context: context, builder: (context) => AlertDialog(
+      //     title: new Text('Are you sure?'),
+      //     content: new Text('This will delete your current issue'),
+      //     actions: <Widget>[
+      //       TextButton(
+      //         onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
+      //         child: new Text('No'),
+      //       ),
+      //       TextButton(
+      //         onPressed: () => Navigator.of(context).pop(true), // <-- SEE HERE
+      //         child: new Text('Yes'),
+      //       ),
+      //     ],
+      //   ),
+      //   ));
       },
       child: MaterialApp(
         title: 'Introduction screen',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue),
         home: OnBoardingPage(),
+        routes:  {
+          "/dashboard or login" : (context) => const LoginLayout(),
+        },
       ),
     );
   }
@@ -83,8 +99,10 @@ Color _midWhite = Colors.white54;
 var isSkipVisible = true;
 var isPrevVisible = false;
 
+final introKey = GlobalKey<IntroductionScreenState>();
+var isInOnboarding = true;
+
 class _OnBoardingPageState extends State<OnBoardingPage> {
-  final introKey = GlobalKey<IntroductionScreenState>();
 
   void _onIntroEnd(context) {
     Navigator.pop(context);
@@ -116,6 +134,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     const bodyStyle = TextStyle(fontSize: 19.0);
+    debugPrint("Onboarding initialised, you are there now: $isInOnboarding");
 
     return Scaffold(
       drawer: NavDrawer(),
@@ -134,6 +153,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           alignment: Alignment.center,
         ),
         IntroductionScreen(
+          isTopSafeArea: true,
+          animationDuration: 500,
           key: introKey,
           globalBackgroundColor: Colors.transparent,
           globalHeader: checkAppropriateGlobalHeader(),
@@ -222,7 +243,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void requestOrder() async {
     Fluttertoast.cancel();
 
-    await uploadImageToFirebase(files);
+    if(files != null) {
+      await uploadImageToFirebase(files);
+    }
 
     Fluttertoast.showToast(msg: "Creating request...");
 
@@ -275,11 +298,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         });
       });
 
-      setState(() {});
-      // Navigator.of(context).pushNamedAndRemoveUntil(
-      //     '/dashboard or login',
-      //         (Route<dynamic> route) => false);
-      Navigator.pop(context);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/dashboard or login',
+              (Route<dynamic> route) => false);
+
       _showMyDialog();
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
@@ -459,9 +481,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           child: FloatingActionButton.extended(
                               heroTag: 2,
                               label: Text("portfolio"),
-                              onPressed: () => {
+                              onPressed: () {
+                                isInOnboarding = false;
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => PortfolioSummary(myAssignedTech!.technicianUid!)))
+                                    builder: (context) => PortfolioSummary(myAssignedTech!.technicianUid!)));
                               })),
                     ],
                   ),
@@ -1170,7 +1193,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             children: [
               ElevatedButton(onPressed: selectMultipleImages, child: Text("Add pictures")),
               Text(files == null ? "No Images added" : "Added ${files!.length} images"),
-              TextButton(child: Text("Click to see"), onPressed: () {
+              TextButton(child: Text("Click to see"), onPressed:  () {
+                Fluttertoast.cancel();
+                if(files == null){
+                  Fluttertoast.showToast(msg: "No images selected",);
+                  return;
+                }
                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                     ViewDetailedPortfolioItem(files, 12345, _issueDesc, true)));
               },)

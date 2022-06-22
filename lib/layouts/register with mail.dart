@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
@@ -23,9 +24,10 @@ class RegisterWithMailLayout extends StatefulWidget {
 }
 
 class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
-  Color _primaryColor = HexColor("#1D4EAB");
-  Color _whiteText = Colors.white;
-  Color _midWhite = Colors.white54;
+  final Color _textColor = HexColor("#052163");
+  final Color _borderColor = HexColor("#0d3fb5");
+  final Color _primaryColor = HexColor("##1651db");
+
   final formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -48,6 +50,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: (loginLayout()),
       ),
@@ -62,15 +65,48 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                SizedBox(
-                  height: 50,
+                Hero(
+                  tag: "lottie",
+                  child: SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Lottie.asset(
+                        'assets/29410-technical-assistance.json'),
+                  ),
                 ),
-                Logo(75, 75),
               ],
             )),
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
+          child: Align(
+            child: glassyLoginBox(),
+            alignment: Alignment.bottomCenter,
+          ),
+        ),
         Align(
-          child: glassyLoginBox(),
           alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+
+            height: 50,
+            margin: const EdgeInsets.fromLTRB(50, 0, 50, 50),
+            child: Visibility(
+              visible:MediaQuery.of(context).viewInsets.bottom == 0,
+              child: FloatingActionButton.extended(
+                heroTag: AppStrings.heroRegister,
+                backgroundColor: _borderColor,
+                label: Text(
+                  AppStrings.createAccountButton,
+                  style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                onPressed: () => {
+                  signUp()
+                },
+                // onPressed: signIn,
+              ),
+            ),
+          ),
         ),
         // loginBoxContents(),
       ],
@@ -78,12 +114,15 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   }
 
   Widget loginLayoutBackGroundImage() {
-    return Image.asset(
-      "assets/Login.png",
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
+    return Hero(
+      tag: "bg",
+      child: Image.asset(
+        "assets/cyan_bg.jpg",
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
+      ),
     );
   }
 
@@ -93,10 +132,20 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50.0),
       ),
-      child: FrostedGlassBox(
-        470,
-        double.infinity,
-        Center(child: loginBoxContents()),
+      child: Hero(
+        tag: "box",
+        child: Material(
+          color: Colors.transparent,
+          child: FrostedGlassBox(
+            350,
+            double.infinity,
+            Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    child: loginBoxContents())),
+          ),
+        ),
       ),
     );
   }
@@ -107,11 +156,11 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       child: Column(children: [
         Container(
           alignment: Alignment.center,
-          margin: const EdgeInsets.fromLTRB(10, 10, 10, 30),
+          margin: const EdgeInsets.fromLTRB(10, 10, 10, 15),
           child: Text(
             AppStrings.registerNewAccountString,
             style: TextStyle(
-                fontSize: 24, color: _midWhite, fontWeight: FontWeight.bold),
+                fontSize: 24, color: _borderColor, fontWeight: FontWeight.bold),
           ),
         ),
         Container(
@@ -128,26 +177,26 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                   ? "Enter a valid Email"
                   : null,
               maxLines: 1,
-              style: TextStyle(color: _whiteText),
+              style: TextStyle(color: _textColor),
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                   borderSide: BorderSide(
-                    color: _midWhite,
+                    color: _borderColor,
                     width: 1.25,
                   ),
                 ),
                 prefixIcon: Icon(
                   Icons.email,
-                  color: _midWhite,
+                  color: _borderColor,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 labelText: AppStrings.emailString,
-                labelStyle: TextStyle(color: _whiteText),
+                labelStyle: TextStyle(color: _textColor),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _midWhite, width: 2.5),
+                  borderSide: BorderSide(color: _borderColor, width: 2.5),
                   borderRadius: BorderRadius.circular(25.0),
                 ),
               ),
@@ -166,26 +215,26 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             validator: (value) => value != null && value.length < 6
                 ? "Password can't be less than 6 characters"
                 : null,
-            style: TextStyle(color: _whiteText),
+            style: TextStyle(color: _textColor),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _midWhite,
+                  color: _borderColor,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _midWhite,
+                color: _borderColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.passwordString,
-              labelStyle: TextStyle(color: _whiteText),
+              labelStyle: TextStyle(color: _textColor),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _midWhite, width: 2.5),
+                borderSide: BorderSide(color: _borderColor, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -203,54 +252,54 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             validator: (value) => value != passwordController.text.trim()
                 ? "Type the same password in the confirm field"
                 : null,
-            style: TextStyle(color: _whiteText),
+            style: TextStyle(color: _textColor),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _midWhite,
+                  color: _borderColor,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _midWhite,
+                color: _borderColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.confirmPasswordString,
-              labelStyle: TextStyle(color: _whiteText),
+              labelStyle: TextStyle(color: _textColor),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _midWhite, width: 2.5),
+                borderSide: BorderSide(color: _borderColor, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
           ),
         ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          height: 50,
-          margin: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-          child: FloatingActionButton.extended(
-            heroTag: AppStrings.heroRegister,
-            backgroundColor: _midWhite,
-            label: Text(
-              AppStrings.createAccountButton,
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            onPressed: () => {
-            signUp()
-            },
-            // onPressed: signIn,
-          ),
-        ),
+        // Container(
+        //   width: double.infinity,
+        //   decoration: BoxDecoration(
+        //     color: Colors.transparent,
+        //     border: Border.all(color: Colors.transparent),
+        //     borderRadius: BorderRadius.circular(20),
+        //   ),
+        //   height: 50,
+        //   margin: const EdgeInsets.fromLTRB(20, 30, 20, 10),
+        //   child: FloatingActionButton.extended(
+        //     heroTag: AppStrings.heroRegister,
+        //     backgroundColor: _midWhite,
+        //     label: Text(
+        //       AppStrings.createAccountButton,
+        //       style:
+        //           TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        //     ),
+        //     onPressed: () => {
+        //     signUp()
+        //     },
+        //     // onPressed: signIn,
+        //   ),
+        // ),
       ]),
     );
   }

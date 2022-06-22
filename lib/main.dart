@@ -5,6 +5,7 @@ import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
+import 'package:technicians/layouts/user%20favourites.dart';
 import 'layouts/onboarding selection process.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -41,8 +42,9 @@ class MyApp extends StatelessWidget {
       routes: {
         "/onboarding selection": (context) => const OnboardingSelection(),
         "/dashboard or login" : (context) => const LoginLayout(),
-      },
+        "/user favourites" : (context) => const UserFavourites(),
 
+      },
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
@@ -57,18 +59,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-    );
-  }
-}
+//
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({Key? key}) : super(key: key);
+//
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+//
+// class _MyHomePageState extends State<MyHomePage> {
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//     );
+//   }
+// }
