@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,8 @@ import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
+import 'package:technicians/layouts/stats.dart';
+import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/navigation%20drawer.dart';
@@ -26,21 +31,22 @@ Color _borderColor = HexColor("#0d3fb5");
 TextEditingController _emailController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 
-
 class _LoginLayoutState extends State<LoginLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return dashBoard();
-            } else {
-              return loginLayout();
-            }
-          },
-        ));
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return selectionScreen();
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else {
+          return loginLayout();
+        }
+      },
+    ));
   }
 
   Widget loginLayout() {
@@ -56,8 +62,7 @@ class _LoginLayoutState extends State<LoginLayout> {
                   child: SizedBox(
                     height: 300,
                     width: 300,
-                    child: Lottie.asset(
-                        'assets/29410-technical-assistance.json'),
+                    child: Lottie.asset('assets/intro_abstract_anime.json'),
                   ),
                 ),
               ],
@@ -109,8 +114,8 @@ class _LoginLayoutState extends State<LoginLayout> {
     return Hero(
       tag: "bg",
       child: Image.asset(
-        "assets/cyan_bg.jpg",
-        fit: BoxFit.fitHeight,
+        "assets/abstract bg.jpg",
+        fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
         alignment: Alignment.center,
@@ -139,8 +144,6 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Widget loginBoxContents() {
-
-
     return SingleChildScrollView(
       child: Column(children: [
         // Container(
@@ -191,6 +194,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           child: TextFormField(
             controller: _passwordController,
             maxLines: 1,
+            obscureText: true,
             style: TextStyle(color: _textClr),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -252,30 +256,48 @@ class _LoginLayoutState extends State<LoginLayout> {
   Future signIn() async {
     Fluttertoast.cancel();
 
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (context) => Center(child: slider()),
-    // );
+    //check if there is connection
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Material(
+        child: Center(
+            child: Container(
+          height: 150,
+          width: 150,
+          child: Lottie.asset('assets/loading.json'),
+        )),
+      ),
+    );
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
-          password: _passwordController.text.trim()
-      );
+          password: _passwordController.text.trim());
 
       var collection = FirebaseFirestore.instance.collection("users");
       User? user = FirebaseAuth.instance.currentUser;
       var docSnapshot = await collection.doc(user?.uid).get();
-      debugPrint("Role is ""${docSnapshot["role"]} for user ${docSnapshot["email"]}");
+      debugPrint(
+          "Role is " "${docSnapshot["role"]} for user ${docSnapshot["email"]}");
 
       Fluttertoast.showToast(
           backgroundColor: Colors.green,
-          msg: "Logged in Successfully as ${FirebaseAuth.instance.currentUser?.email}",
+          msg:
+              "Logged in Successfully as ${FirebaseAuth.instance.currentUser?.email}",
           toastLength: Toast.LENGTH_LONG);
-
     } catch (e) {
-
       debugPrint(e.toString());
       Fluttertoast.showToast(
           backgroundColor: Colors.red,
@@ -283,7 +305,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           toastLength: Toast.LENGTH_LONG);
     }
 
-    // Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   void navigateToRegisterPage() {
@@ -311,273 +333,158 @@ class _LoginLayoutState extends State<LoginLayout> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////START DASHBOARD////////////////////////////////////
+/////////////////////////////START SELECTION////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-  @override
-  Widget dashBoard() {
+int xyz = 4;
+  Widget selectionScreen() {
     return Scaffold(
-      body: dashboardLayout(),
-      bottomNavigationBar: bottomButtonsBar(),
+      extendBodyBehindAppBar: true,
       drawer: NavDrawer(),
-      drawerScrimColor: Colors.transparent,
-      //TODO: remove the appBar
       appBar: AppBar(
-        elevation: 0.0,
-        title: Text("widget.title"),
+        title: Row(
+          children: const [
+            CircleAvatar(
+              backgroundColor: Colors.grey,
+              maxRadius: 30,
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Text(
+              "Ahmed Selim",
+              style: TextStyle(color: Colors.black54),
+            )
+          ],
+        ),
+        toolbarHeight: 80,
+        iconTheme: IconThemeData(color: Colors.black54, size: 25),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-    );
-  }
-
-  Widget dashboardLayout() {
-    return Container(
-      color: Colors.green,
-      child: ListView(
-        children: <Widget>[
-          Container(
+      body: Stack(
+        children: [
+          Hero(
+            tag: "bg",
+            child: Image.asset(
+              "assets/abstract bg.jpg",
+              fit: BoxFit.cover,
+              height: double.infinity,
+              width: double.infinity,
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              child: Center(
-                child: welcomeBackRectangleWithText(),
-              )),
-          Container(
-            child: dashBoardBody(),
+            ),
           ),
-          //TODO: check that this bottom bar is actually stuck at the bottom of screen
-          //DO NOT USE SPACER() HERE BECAUSE IT CAN CAUSE RENDER ISSUES
+          Center(
+            child: ListView(
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                        child: circleBtn("assets/dash fix.png", "Order",
+                            Colors.red[200], "123124", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OnboardingSelection()),
+                              );
+                            }
+                        )),
+                    Flexible(
+                        child: circleBtn("assets/dash wiat.png", "Pending",
+                            Colors.yellow[200], "2314",
+                                () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => StepperProcess()),
+                              );
+                            }))
+                  ],
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                        child: circleBtn("assets/dash done 2.png", "Done",
+                            Colors.green[200], "12",
+                                () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Stats()),
+                              );
+                            })),
+                    Flexible(
+                      child: circleBtn("assets/dash stats 2.png", "Stats",
+                          Colors.grey[200], "1", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Stats()),
+                        );
+                      }),
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
         ],
       ),
     );
   }
 
-  Widget welcomeBackRectangleWithText() {
-    return Container(
-        padding: const EdgeInsets.all(7),
-        height: 100.0,
-        width: double.infinity,
-        color: Colors.transparent,
-        child: Container(
-          decoration: BoxDecoration(
-              color: secondaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
-          child: Center(
-              child: Column(
-                children: [
-                  Container(
-                      padding: const EdgeInsets.all(7),
-                      child: const Text(
-                        "Welcome back, WIDGET",
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      )),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 36,
+  Widget circleBtn(String image, String text, Color? spalshClr, String tag,
+      VoidCallback function) {
+    return Hero(
+      tag: tag,
+      child: Container(
+          margin: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          child: Align(
+              alignment: Alignment.topCenter,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(150)),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: spalshClr,
+                      onTap: function,
+                      child: Container(
+                        width: double.infinity,
+                        height: 150,
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            border: Border.all(width: 1, color: Colors.white54),
+                            color: Colors.grey.shade200.withOpacity(0.25)),
+                        child: Center(
+                            child: Align(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                image,
+                                height: 40,
+                                width: 40,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  text,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              )
+                            ],
+                          ),
+                        )),
+                      ),
                     ),
                   ),
-                ],
-              )),
-        ));
-  }
-
-  Widget dashBoardBody() {
-    return Container(
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-        width: double.infinity,
-        color: Colors.transparent,
-        child: Column(children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                BorderRadius.vertical(top: Radius.circular(borderRadius))),
-            child: Center(
-              child: pendingOrdersBox(),
-            ),
-          ),
-          Container(
-            child: circleInBoxLayoutStats(
-                34, "Jobs", 4500, "Paid"),
-          ),
-          Container(
-            child: circleInBoxLayoutStats(
-                4.8, "Rating", 00, "..."),
-          ),
-        ]));
-  }
-
-  Widget circleInBoxLayoutStats(
-      double firstNumber, String firstStat, double secondNumber, String secondStat) {
-    return Container(
-      height: 220.0,
-      color: secondaryColor,
-      child: Container(
-        padding: const EdgeInsets.all(5),
-        margin: const EdgeInsets.all(5),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: backGroundSquareForStats(firstNumber, firstStat),
-              flex: 1,
-            ),
-            Flexible(
-              child: backGroundSquareForStats(secondNumber, secondStat),
-              flex: 1,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget backGroundSquareForStats(double number, String stat) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      padding: const EdgeInsets.all(15),
-      height: 200.0,
-      decoration: BoxDecoration(
-          color: primColor,
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
-      child: Center(
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: CircleAvatar(
-                backgroundColor: secondaryColor,
-                radius: 50,
-                child: Center(
-                  child: Text(
-                    "$number",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: primColor,
-                        fontWeight: FontWeight.bold),
-                  ),
                 ),
-              ),
-            ),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Text(
-                    stat,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget bottomButtonsBar() {
-    return
-     Container(
-       margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-       child: FloatingActionButton.extended(
-         heroTag: 100,
-         backgroundColor: _primaryColor,
-           splashColor: Colors.white,
-           onPressed: () => Navigator.push(
-             context,
-             MaterialPageRoute(builder: (context) => OnboardingSelection()),
-           ),
-           label: Text("Create a new order")),
-     ) ;
-      // Container(
-      //   color: Colors.white,
-      //   child: Container(
-      //       margin: EdgeInsets.fromLTRB(40, 0, 40, 5),
-      //       child: Row(
-      //         children: [
-      //           bottomhalfButton("Logout", Icons.logout, () => {}),
-      //           Spacer(),
-      //           bottomhalfButton(
-      //               "Quiz", Icons.question_mark, () => {}),
-      //           Spacer(),
-      //           bottomhalfButton("Share", Icons.share, null)
-      //         ],
-      //       )));
-  }
-
-  Widget bottomhalfButton(String text, IconData icon, VoidCallback? function) {
-    return Container(
-        child: SizedBox.fromSize(
-          size: Size(60, 60),
-          child: ClipOval(
-            child: Material(
-              color: (HexColor("#ffffff")),
-              child: InkWell(
-                splashColor: Colors.blueGrey,
-                onTap: function,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      icon,
-                      color: Colors.blue,
-                    ), // <-- Icon
-                    Text(
-                      text,
-                      style: TextStyle(color: Colors.blue, fontSize: 15),
-                    ), // <-- Text
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ));
-  }
-
-  Widget pendingOrdersBox() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: HexColor("#D4AF37")
-            ),
-            height: 50,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                onTap: () => navigateToPendingOrCompletedOrders(),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(child: Text("Pending orders (1)")),
-                ),
-              ),
-            )),
-        Container(
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: Colors.green
-            ),
-            height: 50,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                onTap: () => navigateToPendingOrCompletedOrders(),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(child: Text("Completed orders")),
-                ),
-              ),
-            )),
-      ],
+              ))),
     );
   }
 

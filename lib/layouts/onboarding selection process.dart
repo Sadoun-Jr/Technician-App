@@ -37,16 +37,17 @@ class _OnboardingSelectionState extends State<OnboardingSelection> {
     return WillPopScope(
       onWillPop: () async {
         isHeaderForCategoryPageVisible = true;
-
-        if(isInOnboarding){
-          debugPrint("Calling onboarding key while in onboarding, going back a page");
-          introKey.currentState!.previous();
-        }
-        else {
-          debugPrint("Calling onboarding key while not in onboarding, going back a page");
-          Navigator.pop(context);
-        }
-        return false;
+        return true;
+        // if(isInOnboarding){
+        //   debugPrint("Calling onboarding key while in onboarding, going back a page");
+        //   introKey.currentState!.previous();
+        //   return false;
+        // }
+        // else {
+        //   debugPrint("Calling onboarding key while not in onboarding, going back a page");
+        //   Navigator.pop(context);
+        //   return true;
+        // }
       //   return (
       //       await showDialog(context: context, builder: (context) => AlertDialog(
       //     title: new Text('Are you sure?'),
@@ -145,12 +146,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         title: Text("widget.title"),
       ),
       body: Stack(children: [
-        Image.asset(
-          "assets/blurred_login.png",
-          fit: BoxFit.cover,
-          height: double.infinity,
-          width: double.infinity,
-          alignment: Alignment.center,
+        Hero(
+          tag: "bg",
+          child: Image.asset(
+            "assets/abstract bg.jpg",
+            fit: BoxFit.cover,
+            height: double.infinity,
+            width: double.infinity,
+            alignment: Alignment.center,
+          ),
         ),
         IntroductionScreen(
           isTopSafeArea: true,

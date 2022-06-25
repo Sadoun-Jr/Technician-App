@@ -6,8 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:technicians/layouts/global%20search.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
+import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
-import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/layouts/user%20favourites.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/widgets/slider.dart';
@@ -195,7 +195,7 @@ class _NavDrawerState extends State<NavDrawer> {
                             onTap: () {
                               Navigator.pop(context);
                               Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                              TestUI()));
+                              StepperProcess()));
                             },
                             child: ListTile(
                               leading: Icon(

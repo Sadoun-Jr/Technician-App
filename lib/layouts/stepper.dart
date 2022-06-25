@@ -31,14 +31,14 @@ import '../widgets/glass box.dart';
 import '../widgets/navigation drawer.dart';
 import '../widgets/slider.dart';
 
-class TestUI extends StatefulWidget {
-  const TestUI({Key? key}) : super(key: key);
+class StepperProcess extends StatefulWidget {
+  const StepperProcess({Key? key}) : super(key: key);
 
   @override
-  State<TestUI> createState() => _TestUIState();
+  State<StepperProcess> createState() => _StepperProcessState();
 }
 
-class _TestUIState extends State<TestUI> {
+class _StepperProcessState extends State<StepperProcess> {
   static String _issueCategory = CommonIssues.applianceCategory9;
   bool _isCustomIssue = false;
   bool _isCompleted = false;
@@ -56,8 +56,7 @@ class _TestUIState extends State<TestUI> {
   String _isAcceptedByTechnician = " ";
   bool _isCanceledByUser = false;
   bool _isDeclinedByTechnician = false;
-  var _isSortedByAppliance = true;
-  var _isSortedByTrades = false;
+
   TextEditingController customIssueController = TextEditingController();
   TextEditingController searchTechnicianController = TextEditingController();
   String _issueDesc = " ";
@@ -82,7 +81,7 @@ class _TestUIState extends State<TestUI> {
               ),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
+              margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: ListView(
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
@@ -96,8 +95,9 @@ class _TestUIState extends State<TestUI> {
                       Icon(Icons.person),
                       Icon(Icons.done)
                     ],
-                    enableStepTapping: false,
+                    enableStepTapping: true,
                     enableNextPreviousButtons: false,
+                    activeStepColor: HexColor("#d4c4ca"),
 
                     // activeStep property set to activeStep variable defined above.
                     activeStep: activeStep,
@@ -109,7 +109,15 @@ class _TestUIState extends State<TestUI> {
                       });
                     },
                   ),
+                  Container(
+                    height: 3,
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
                   header(),
+                  Visibility(
+                      visible: activeStep == 0,
+                      child: categoryPageHeader(true)),
                   Visibility(
                       visible: activeStep == 0,
                       child: selectCategoryOnboarding()),
@@ -129,16 +137,22 @@ class _TestUIState extends State<TestUI> {
                     visible: activeStep == 4,
                     child: _showMyDialog(),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      previousButton(),
-                      nextButton(),
-                    ],
-                  ),
                 ],
               ),
-            )
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    previousButton(),
+                    nextButton(),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -148,6 +162,7 @@ class _TestUIState extends State<TestUI> {
   /// Returns the next button.
   Widget nextButton() {
     return FloatingActionButton(
+      backgroundColor: HexColor("#d4c4ca"),
       heroTag: 10,
       onPressed: () {
         // Navigator.push(context, MaterialPageRoute(builder: (context) => TestDashboard()));
@@ -159,12 +174,13 @@ class _TestUIState extends State<TestUI> {
           });
         }
       },
-      child: Icon(Icons.navigate_next),
+      child: Icon(Icons.navigate_next, size: 35,),
     );
   }
 
   Widget previousButton() {
     return FloatingActionButton(
+      backgroundColor: HexColor("#d4c4ca"),
       heroTag: 12,
       onPressed: () {
         // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
@@ -174,7 +190,7 @@ class _TestUIState extends State<TestUI> {
           });
         }
       },
-      child: Icon(Icons.navigate_before),
+      child: Icon(Icons.navigate_before,size: 35,),
     );
   }
 
@@ -184,32 +200,43 @@ class _TestUIState extends State<TestUI> {
   int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
 
   Widget header() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.orange,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              headerText(),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Visibility(
+      visible: false,
+      child: Container(
+          margin:
+          EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          child: Align(
+              alignment: Alignment.topCenter,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                      sigmaX: 10.0, sigmaY: 10.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+
+                        border: Border.all(width: 1, color: Colors.white),
+                        color: Colors.grey.shade200
+                            .withOpacity(0.25)),
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      child: Align(alignment: Alignment.centerLeft,
+                          child: Text(headerText(), style: TextStyle(fontSize: 25),)
+                      ),
+                    ),
+                  ),
+                ),
+              ))),
     );
   }
 
   String headerText() {
     switch (activeStep) {
       case 1:
-        return 'Preface';
+        return 'Keskolede untoniua';
 
       case 2:
         return 'Table of Contents';
@@ -218,9 +245,10 @@ class _TestUIState extends State<TestUI> {
         return 'About the Author';
 
       default:
-        return 'Introduction';
+        return 'What do you need?';
     }
   }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,42 +257,39 @@ class _TestUIState extends State<TestUI> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
   Widget _showMyDialog() {
-    return
-      Column(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0))),
-                  height: 150,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.all(40),
-                  child: Text(
-                    'Awesome',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    child: Text(
-                        'The technician has been notified with your request')),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.all(40),
-                  child: FloatingActionButton.extended(
-                    //TODO: set a key here to prevent user from multiple requests
-                      label: Text("To dashboard"),
-                      onPressed: () => {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/dashboard or login',
-                                (Route<dynamic> route) => false)
-                      }),
-                ),
-              ],
-            );
+    return Column(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.all(Radius.circular(50.0))),
+          height: 150,
+        ),
+        Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.all(40),
+          child: Text(
+            'Awesome',
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+        Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Text('The technician has been notified with your request')),
+        Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.all(40),
+          child: FloatingActionButton.extended(
+              //TODO: set a key here to prevent user from multiple requests
+              label: Text("To dashboard"),
+              onPressed: () => {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/dashboard or login', (Route<dynamic> route) => false)
+                  }),
+        ),
+      ],
+    );
   }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -292,10 +317,11 @@ class _TestUIState extends State<TestUI> {
         shrinkWrap: true, // use this
         children: [
           Container(
-              child: Icon( //TODO: CHANGE THIS TO TECH IMAGE
-                Icons.person,
-                size: 75,
-              )),
+              child: Icon(
+            //TODO: CHANGE THIS TO TECH IMAGE
+            Icons.person,
+            size: 75,
+          )),
           Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
@@ -314,15 +340,18 @@ class _TestUIState extends State<TestUI> {
                       child: Text(
                         "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
                         maxLines: 1,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       )),
                   SizedBox(height: 5),
                   Align(
                       alignment: Alignment.center,
                       child: Text(
-                        myAssignedTech?.jobTitle  ?? "null",
+                        myAssignedTech?.jobTitle ?? "null",
                         maxLines: 1,
-                        style: TextStyle(fontSize: 18, ),
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
                       )),
                   SizedBox(
                     height: 10,
@@ -338,10 +367,11 @@ class _TestUIState extends State<TestUI> {
                   ),
                   Visibility(
                     visible: false,
-                    child: InkWell(onTap: () {},
+                    child: InkWell(
+                        onTap: () {},
                         child: LikeButton(
                           onTap: onLikeButtonTapped,
-                          isLiked: listOfFavourites.contains(_issuedByUid) ,
+                          isLiked: listOfFavourites.contains(_issuedByUid),
                           // isLiked: (myAssignedTech!.favouritedBy!.contains(_issuedByUid)) ?
                           // true : false,
                           // isLiked: myAssignedTech!.favouritedBy!.contains(_issuedByUid),
@@ -356,13 +386,14 @@ class _TestUIState extends State<TestUI> {
                             heroTag: 3,
                             label: Text("Reviews"),
                             onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        TechnicianReviews(false, myAssignedTech!.technicianUid!)),
-                              )
-                            }),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TechnicianReviews(
+                                            false,
+                                            myAssignedTech!.technicianUid!)),
+                                  )
+                                }),
                       ),
                       Align(
                           alignment: Alignment.centerRight,
@@ -371,8 +402,11 @@ class _TestUIState extends State<TestUI> {
                               label: Text("portfolio"),
                               onPressed: () {
                                 isInOnboarding = false;
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => PortfolioSummary(myAssignedTech!.technicianUid!)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PortfolioSummary(
+                                            myAssignedTech!.technicianUid!)));
                               })),
                     ],
                   ),
@@ -380,7 +414,6 @@ class _TestUIState extends State<TestUI> {
               ),
             ),
           ),
-
           SizedBox(
             height: 10,
           ),
@@ -392,70 +425,70 @@ class _TestUIState extends State<TestUI> {
                   100,
                   Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              myAssignedTech?.jobsCompleted?.toString() ?? "-1",
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text("Jobs"),
-                          )
-                        ],
-                      ))),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          myAssignedTech?.jobsCompleted?.toString() ?? "-1",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Jobs"),
+                      )
+                    ],
+                  ))),
               FrostedGlassBox(
                   100,
                   100,
                   Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              myAssignedTech?.rating?.toString() ?? "-1",
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text("Rating"),
-                          )
-                        ],
-                      ))),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          myAssignedTech?.rating?.toString() ?? "-1",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Rating"),
+                      )
+                    ],
+                  ))),
               FrostedGlassBox(
                   100,
                   100,
                   Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:  [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              "${myAssignedTech?.completionRate?.toString()}" "%",
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text("Completion"),
-                          )
-                        ],
-                      ))),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "${myAssignedTech?.completionRate?.toString()}" "%",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Completion"),
+                      )
+                    ],
+                  ))),
             ],
           ),
         ],
@@ -463,7 +496,7 @@ class _TestUIState extends State<TestUI> {
     );
   }
 
-  Future<bool> onLikeButtonTapped(bool isLiked) async{
+  Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
     debugPrint("===========1============");
     var ref = FirebaseFirestore.instance.collection("technicians");
@@ -475,19 +508,17 @@ class _TestUIState extends State<TestUI> {
     debugPrint("User favs are (from like): " + listFavs.toString());
     debugPrint("===========3============");
 
-    if(listFavs.contains(uid)){
-
+    if (listFavs.contains(uid)) {
       listFavs.remove(uid);
       await ref.doc(myAssignedTech!.technicianUid).set({
-        AppStrings.listOfFavouritedByKey : listFavs ,
-        AppStrings.numberOfFavouritesKey : listFavs.length,
+        AppStrings.listOfFavouritedByKey: listFavs,
+        AppStrings.numberOfFavouritesKey: listFavs.length,
       }, SetOptions(merge: true)).then((value) => isLiked = false);
     } else {
-
       listFavs.add(uid);
       await ref.doc(myAssignedTech!.technicianUid).set({
-        AppStrings.listOfFavouritedByKey : listFavs ,
-        AppStrings.numberOfFavouritesKey : listFavs.length,
+        AppStrings.listOfFavouritedByKey: listFavs,
+        AppStrings.numberOfFavouritesKey: listFavs.length,
       }, SetOptions(merge: true)).then((value) => isLiked = true);
     }
 
@@ -1252,8 +1283,8 @@ class _TestUIState extends State<TestUI> {
   }
 
   void sortByTrades() {
-    _isSortedByAppliance = false;
     selectCategoryValue = 2222222;
+    _isSortedByAppliance = false;
     setState(() => _isSortedByTrades = true);
   }
 
@@ -1264,241 +1295,226 @@ class _TestUIState extends State<TestUI> {
 
   Widget selectCategoryOnboarding() {
     return Container(
-        margin: EdgeInsets.fromLTRB(8, 16, 8, 16),
-        child: ListView(
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            children: <Widget>[
-              categoryPageHeader(true),
-              appliancesItemRow(
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[0]),
-                CommonIssues.listOfTechnicianCategories[0],
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[1]),
-                CommonIssues.listOfTechnicianCategories[1],
-              ),
-              appliancesItemRow(
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[2]),
-                CommonIssues.listOfTechnicianCategories[2],
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[3]),
-                CommonIssues.listOfTechnicianCategories[3],
-              ),
-              appliancesItemRow(
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[4]),
-                CommonIssues.listOfTechnicianCategories[4],
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[5]),
-                CommonIssues.listOfTechnicianCategories[5],
-              ),
-              appliancesItemRow(
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[6]),
-                CommonIssues.listOfTechnicianCategories[6],
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[7]),
-                CommonIssues.listOfTechnicianCategories[7],
-              ),
-              appliancesItemRow(
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[8]),
-                CommonIssues.listOfTechnicianCategories[8],
-                CommonIssues.listOfTechnicianCategories
-                    .indexOf(CommonIssues.listOfTechnicianCategories[9]),
-                CommonIssues.listOfTechnicianCategories[9],
-              ),
-              tradesItemRow(
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[0]),
-                CommonIssues.listOfAppliancesCategories[0],
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[1]),
-                CommonIssues.listOfAppliancesCategories[1],
-              ),
-              tradesItemRow(
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[2]),
-                CommonIssues.listOfAppliancesCategories[2],
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[3]),
-                CommonIssues.listOfAppliancesCategories[3],
-              ),
-              tradesItemRow(
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[4]),
-                CommonIssues.listOfAppliancesCategories[4],
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[5]),
-                CommonIssues.listOfAppliancesCategories[5],
-              ),
-              tradesItemRow(
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[6]),
-                CommonIssues.listOfAppliancesCategories[6],
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[7]),
-                CommonIssues.listOfAppliancesCategories[7],
-              ),
-              tradesItemRow(
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[8]),
-                CommonIssues.listOfAppliancesCategories[8],
-                CommonIssues.listOfAppliancesCategories
-                    .indexOf(CommonIssues.listOfAppliancesCategories[9]),
-                CommonIssues.listOfAppliancesCategories[9],
-              ),
-            ]));
+
+        margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
+        child: GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 5.0,
+            mainAxisSpacing: 5.0,
+          ),
+          itemCount: 9,
+          itemBuilder: (context, index) {
+            if(_isSortedByTrades){
+              return techsList(index);
+            } else {
+              return appliancesList(index);
+            }
+          },
+        ));
   }
 
-  Widget appliancesItemRow(int selectedValueFirst, String textFirst,
-      int selectedValueSecond, String textSecond) {
-    return Visibility(
-      visible: _isSortedByAppliance,
-      child: Row(
-        children: [
-          Container(
-            height: 150,
-            width: 150,
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+  Widget techsList(int index) {
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        splashColor: Colors.white,
+        highlightColor: Colors.white,
+        onTap: () {
+          setState(() => selectCategoryValue = index);
+          setIssueCategory(selectCategoryValue, true);
+        },
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+        child: AnimatedContainer(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: InkWell(
-              onTap: () => {
-                setState(() => selectCategoryValue = selectedValueFirst),
-                setIssueCategory(selectCategoryValue, false),
-              },
-              child: Container(
-                height: 56,
-                width: 56,
-                child: Center(child: Text(textFirst)),
-                decoration: BoxDecoration(
-                    color: selectCategoryValue == selectedValueFirst
-                        ? Colors.grey
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-              ),
+              color: selectCategoryValue == index ?
+              Colors.white : Colors.transparent,
+              borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
-          ),
-          Spacer(),
-          Container(
-            height: 150,
-            width: 150,
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: InkWell(
-              onTap: () => {
-                setState(() => selectCategoryValue = selectedValueSecond),
-                setIssueCategory(selectCategoryValue, false),
-              },
-              child: Container(
-                height: 56,
-                width: 56,
-                child: Center(child: Text(textSecond)),
-                decoration: BoxDecoration(
-                  color: selectCategoryValue == selectedValueSecond
-                      ? Colors.grey
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-              ),
-            ),
-          ),
-        ],
+            duration: Duration(milliseconds: 400),
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(30)),
+                          border: Border.all(width: 1, color: Colors.white),
+                          color: Colors.grey.shade200.withOpacity(0.25)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Image.asset(
+                              selectCategoryValue == index
+                                  ? CommonIssues
+                                  .listOfSelectedTechImages[index]
+                                  : CommonIssues
+                                  .listOfNotSelectedTechImages[index],
+                              height: 75,
+                              width: 75,
+                            ),
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child: Text(CommonIssues
+                                  .listOfTechnicianCategories[index])
+                                  )
+                        ],
+                      ),
+                    ),
+                  ),
+                ))),
       ),
     );
   }
 
-  Widget tradesItemRow(int selectedValueFirst, String textFirst,
-      int selectedValueSecond, String textSecond) {
-    return Visibility(
-      visible: _isSortedByTrades,
-      child: Row(
-        children: [
-          Container(
-            height: 150,
-            width: 150,
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+  Widget appliancesList(int index) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        splashColor: Colors.white,
+        highlightColor: Colors.white,
+        onTap: () => {
+          setState(() => selectCategoryValue = index),
+          setIssueCategory(selectCategoryValue, false),
+        },
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+        child: AnimatedContainer(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: InkWell(
-              onTap: () => {
-                setState(() => selectCategoryValue = selectedValueFirst),
-                setIssueCategory(selectCategoryValue, true),
-              },
-              child: Container(
-                height: 56,
-                width: 56,
-                child: Center(child: Text(textFirst)),
-                decoration: BoxDecoration(
-                    color: selectCategoryValue == selectedValueFirst
-                        ? Colors.grey
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-              ),
+              color: selectCategoryValue == index ?
+              Colors.white : Colors.transparent,
+              borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
-          ),
-          Spacer(),
-          Container(
-            height: 150,
-            width: 150,
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: InkWell(
-              onTap: () => {
-                setState(() => selectCategoryValue = selectedValueSecond),
-                setIssueCategory(selectCategoryValue, true),
-              },
-              child: Container(
-                height: 56,
-                width: 56,
-                child: Center(child: Text(textSecond)),
-                decoration: BoxDecoration(
-                  color: selectCategoryValue == selectedValueSecond
-                      ? Colors.grey
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-              ),
-            ),
-          ),
-        ],
+            duration: Duration(milliseconds: 400),
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(30)),
+                          border: Border.all(width: 1, color: Colors.white),
+                          color: Colors.grey.shade200.withOpacity(0.25)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Image.asset(
+                              selectCategoryValue == index
+                                  ? CommonIssues
+                                  .listOfSelectedApplianceImages[index]
+                                  : CommonIssues
+                                  .listOfNotSelectedApplianceImages[index],
+                              height: 75,
+                              width: 75,
+                            ),
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child: _isSortedByTrades
+                                  ? Text(CommonIssues
+                                  .listOfTechnicianCategories[index])
+                                  : Text(CommonIssues
+                                  .listOfAppliancesCategories[index]))
+                        ],
+                      ),
+                    ),
+                  ),
+                ))),
       ),
     );
   }
 
   Widget categoryPageHeader(bool visible) {
-    return Visibility(
-      visible: visible,
-      child: Container(
-        margin: EdgeInsets.fromLTRB(60, 40, 60, 20),
-        child: Row(
-          children: [
-            FloatingActionButton.extended(
-                heroTag: AppStrings.globalHeaderHero,
-                onPressed: sortByTrades,
-                label: Text("Appliances")),
-            Spacer(),
-            FloatingActionButton.extended(
-                heroTag: 98,
-                onPressed: sortByApplicances,
-                label: Text("Trades"))
-          ],
-        ),
+    return Container(
+      margin: EdgeInsets.fromLTRB(0,8,0,16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    width: 2,
+                    color: _isSortedByTrades ? Colors.blue : Colors.grey)),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                onTap: () {
+                  sortByTrades;
+                  setState(() {
+                    _isSortedByAppliance = false;
+                    _isSortedByTrades = true;
+                  });
+                },
+                child: Image.asset(
+                  _isSortedByTrades
+                      ? "assets/human selected.png"
+                      : "assets/human not selected.png",
+                  height: 60,
+                  width: 60,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    width: 2,
+                    color: _isSortedByAppliance ? Colors.blue : Colors.grey)),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                onTap: () {
+                  sortByApplicances();
+                  setState(() {
+                    _isSortedByAppliance = true;
+                    _isSortedByTrades = false;
+                  });
+                },
+                child: Image.asset(
+                  _isSortedByAppliance
+                      ? "assets/machine selected.png"
+                      : "assets/machine not selected.png",
+                  height: 60,
+                  width: 60,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
+  var _isSortedByAppliance = false;
+  var _isSortedByTrades = true;
+
   void setIssueCategory(int category, bool isSortedByTechnician) {
-    if (!isSortedByTechnician) {
+    if (isSortedByTechnician) {
       setState(() =>
           _issueCategory = CommonIssues.listOfTechnicianCategories[category]);
     } else {

@@ -4,27 +4,122 @@ class CommonIssues{
 
   //static strings for technician categories
   static String technicianCategory0 = "Plumber";
-  static String technicianCategory1 = "Electrician";
-  static String technicianCategory2 = "Carpenter";
-  static String technicianCategory3 = "Painter";
-  static String technicianCategory4 = "Builder";
-  static String technicianCategory5 = "Cleaner";
-  static String technicianCategory6 = "Butcher";
-  static String technicianCategory7 = "Mechanic";
-  static String technicianCategory8 = ".!!.";
+  static String technicianCategory1 = "Carpenter";
+  static String technicianCategory2 = "Painter";
+  static String technicianCategory3 = "Mechanic";
+  static String technicianCategory4 = "Welder";
+  static String technicianCategory5 = "Mover";
+  static String technicianCategory6 = "Builder";
+  static String technicianCategory7 = "Electrician";
+  static String technicianCategory8 = "Cleaner";
   static String technicianCategory9 = "...";
+
+  //images for technicians not selected
+  static String imageTechnicianCategory0NS = "assets/plumber ns.png";
+  static String imageTechnicianCategory1NS = "assets/carpenter ns.png";
+  static String imageTechnicianCategory2NS = "assets/painter ns.png";
+  static String imageTechnicianCategory3NS = "assets/mechanic ns.png";
+  static String imageTechnicianCategory4NS = "assets/welder ns.png";
+  static String imageTechnicianCategory5NS = "assets/mover ns.png";
+  static String imageTechnicianCategory6NS = "assets/builder ns.png";
+  static String imageTechnicianCategory7NS = "assets/electrician ns.png";
+  static String imageTechnicianCategory8NS = "assets/cleaner ns.png";
+
+  //images for technicians selected
+  static String imageTechnicianCategory0S = "assets/plumber s.png";
+  static String imageTechnicianCategory1S = "assets/carpenter s.png";
+  static String imageTechnicianCategory2S = "assets/painter s.png";
+  static String imageTechnicianCategory3S = "assets/mechanic s.png";
+  static String imageTechnicianCategory4S = "assets/welder s.png";
+  static String imageTechnicianCategory5S = "assets/mover s.png";
+  static String imageTechnicianCategory6S = "assets/builder s.png";
+  static String imageTechnicianCategory7S = "assets/electrician s.png";
+  static String imageTechnicianCategory8S = "assets/cleaner s.png";
+
+  //list for images of technicians
+  static List<String> listOfSelectedTechImages = [
+    imageTechnicianCategory0S,
+    imageTechnicianCategory1S,
+    imageTechnicianCategory2S,
+    imageTechnicianCategory3S,
+    imageTechnicianCategory4S,
+    imageTechnicianCategory5S,
+    imageTechnicianCategory6S,
+    imageTechnicianCategory7S,
+    imageTechnicianCategory8S,
+  ];
+
+  static List<String> listOfNotSelectedTechImages = [
+    imageTechnicianCategory0NS,
+    imageTechnicianCategory1NS,
+    imageTechnicianCategory2NS,
+    imageTechnicianCategory3NS,
+    imageTechnicianCategory4NS,
+    imageTechnicianCategory5NS,
+    imageTechnicianCategory6NS,
+    imageTechnicianCategory7NS,
+    imageTechnicianCategory8NS,
+  ];
 
   //static strings for appliance categories
   static String applianceCategory0 = "AC";
-  static String applianceCategory1 = "Refrigirator";
-  static String applianceCategory2 = "Computer";
-  static String applianceCategory3 = "Dry cleaner";
-  static String applianceCategory4 = "Wet Drier";
-  static String applianceCategory5 = "Mobile phone";
-  static String applianceCategory6 = "Drier";
-  static String applianceCategory7 = "Other";
-  static String applianceCategory8 = "---";
-  static String applianceCategory9 = "///";
+  static String applianceCategory1 = "Fridge";
+  static String applianceCategory2 = "Microwave";
+  static String applianceCategory3 = "Stove";
+  static String applianceCategory4 = "Toilet";
+  static String applianceCategory5 = "TV";
+  static String applianceCategory6 = "Vacuum cleaner";
+  static String applianceCategory7 = "Washing machine";
+  static String applianceCategory8 = "Other";
+  static String applianceCategory9 = "...";
+
+  //images for appliance selected
+  static String imageApplianceCategory0S = "assets/ac s.png";
+  static String imageApplianceCategory1S = "assets/fridge s.png";
+  static String imageApplianceCategory2S = "assets/oven s.png";
+  static String imageApplianceCategory3S = "assets/stove s.png";
+  static String imageApplianceCategory4S = "assets/toilet s.png";
+  static String imageApplianceCategory5S = "assets/tv s.png";
+  static String imageApplianceCategory6S = "assets/vacuum s.png";
+  static String imageApplianceCategory7S = "assets/washing-machine s.png";
+  static String imageApplianceCategory8S = "assets/question-mark s.png";
+
+  //images for appliance not selected
+  static String imageApplianceCategory0NS = "assets/ac ns.png";
+  static String imageApplianceCategory1NS = "assets/fridge ns.png";
+  static String imageApplianceCategory2NS = "assets/oven ns.png";
+  static String imageApplianceCategory3NS = "assets/stove ns.png";
+  static String imageApplianceCategory4NS = "assets/toilet ns.png";
+  static String imageApplianceCategory5NS = "assets/tv ns.png";
+  static String imageApplianceCategory6NS = "assets/vacuum ns.png";
+  static String imageApplianceCategory7NS = "assets/washing-machine ns.png";
+  static String imageApplianceCategory8NS = "assets/question-mark ns.png";
+
+  //list for images of appliances
+  static List<String> listOfSelectedApplianceImages = [
+    imageApplianceCategory0S,
+    imageApplianceCategory1S,
+    imageApplianceCategory2S,
+    imageApplianceCategory3S,
+    imageApplianceCategory4S,
+    imageApplianceCategory5S,
+    imageApplianceCategory6S,
+    imageApplianceCategory7S,
+    imageApplianceCategory8S,
+  ];
+
+  static List<String> listOfNotSelectedApplianceImages = [
+    imageApplianceCategory0NS,
+    imageApplianceCategory1NS,
+    imageApplianceCategory2NS,
+    imageApplianceCategory3NS,
+    imageApplianceCategory4NS,
+    imageApplianceCategory5NS,
+    imageApplianceCategory6NS,
+    imageApplianceCategory7NS,
+    imageApplianceCategory8NS,
+  ];
+
 
   //strings for the category page
   //IMPORTANT: NEVER CHANGE THE ARRANGEMENT OF THE CATEGORIES LISTS, JUST ADD IF NEEDED

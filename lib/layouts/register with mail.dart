@@ -68,8 +68,8 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                 Hero(
                   tag: "lottie",
                   child: SizedBox(
-                    height: 200,
-                    width: 200,
+                    height: 150,
+                    width: 150,
                     child: Lottie.asset(
                         'assets/29410-technical-assistance.json'),
                   ),
@@ -77,7 +77,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               ],
             )),
         Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 25),
           child: Align(
             child: glassyLoginBox(),
             alignment: Alignment.bottomCenter,
@@ -89,11 +89,12 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             width: double.infinity,
 
             height: 50,
-            margin: const EdgeInsets.fromLTRB(50, 0, 50, 50),
+            margin: const EdgeInsets.fromLTRB(50, 0, 50, 70),
             child: Visibility(
               visible:MediaQuery.of(context).viewInsets.bottom == 0,
               child: FloatingActionButton.extended(
                 heroTag: AppStrings.heroRegister,
+                splashColor: Colors.white,
                 backgroundColor: _borderColor,
                 label: Text(
                   AppStrings.createAccountButton,
@@ -137,7 +138,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
         child: Material(
           color: Colors.transparent,
           child: FrostedGlassBox(
-            350,
+            450,
             double.infinity,
             Align(
                 alignment: Alignment.topCenter,

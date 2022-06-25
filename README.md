@@ -6,8 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added ability to attach images with the issue by user
-- Added ability to view said images by the user to confirm
+- Migrated from introduction screen to stepper library
 
 ## (  ) Creating and Styling the layouts
 

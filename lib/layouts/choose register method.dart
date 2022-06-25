@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/register%20with%20mail.dart';
-import 'package:technicians/layouts/test%20file.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:technicians/widgets/glass%20box.dart';
