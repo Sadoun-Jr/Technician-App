@@ -63,6 +63,8 @@ class _StepperProcessState extends State<StepperProcess> {
   Color _whiteText = Colors.white;
   Color _midWhite = Colors.white54;
 
+  final Color _btnColor = HexColor("#d4c4ca");
+
   //TODO: get profile image and display it here
   @override
   Widget build(BuildContext context) {
@@ -162,7 +164,8 @@ class _StepperProcessState extends State<StepperProcess> {
   /// Returns the next button.
   Widget nextButton() {
     return FloatingActionButton(
-      backgroundColor: HexColor("#d4c4ca"),
+      splashColor: Colors.white,
+      backgroundColor: _btnColor,
       heroTag: 10,
       onPressed: () {
         // Navigator.push(context, MaterialPageRoute(builder: (context) => TestDashboard()));
@@ -173,14 +176,20 @@ class _StepperProcessState extends State<StepperProcess> {
             activeStep++;
           });
         }
+        debugPrint("=============NOT custom issue================");
+
       },
-      child: Icon(Icons.navigate_next, size: 35,),
+      child: Icon(
+        Icons.navigate_next,
+        size: 35,
+      ),
     );
   }
 
   Widget previousButton() {
     return FloatingActionButton(
-      backgroundColor: HexColor("#d4c4ca"),
+      splashColor: Colors.white,
+      backgroundColor: _btnColor,
       heroTag: 12,
       onPressed: () {
         // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
@@ -190,7 +199,10 @@ class _StepperProcessState extends State<StepperProcess> {
           });
         }
       },
-      child: Icon(Icons.navigate_before,size: 35,),
+      child: Icon(
+        Icons.navigate_before,
+        size: 35,
+      ),
     );
   }
 
@@ -203,29 +215,28 @@ class _StepperProcessState extends State<StepperProcess> {
     return Visibility(
       visible: false,
       child: Container(
-          margin:
-          EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           child: Align(
               alignment: Alignment.topCenter,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: 10.0, sigmaY: 10.0),
+                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                   child: Container(
                     width: double.infinity,
                     height: 40,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
-
                         border: Border.all(width: 1, color: Colors.white),
-                        color: Colors.grey.shade200
-                            .withOpacity(0.25)),
+                        color: Colors.grey.shade200.withOpacity(0.25)),
                     child: Container(
                       margin: EdgeInsets.all(5),
-                      child: Align(alignment: Alignment.centerLeft,
-                          child: Text(headerText(), style: TextStyle(fontSize: 25),)
-                      ),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            headerText(),
+                            style: TextStyle(fontSize: 25),
+                          )),
                     ),
                   ),
                 ),
@@ -1033,54 +1044,216 @@ class _StepperProcessState extends State<StepperProcess> {
   }
 
   int selectIssueValue = 134;
-  bool _visible = true;
 
   Widget selectIssueTypeOnboarding(List<String> listOfIssues) {
-    return Visibility(
-      visible: true,
-      child: Column(
-        children: [
-          customIssueHeader(),
-          Container(
-            margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: ListView.builder(
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                itemCount: listOfIssues.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 50,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+    return Stack(
+      children: [
+        Container(
+            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 140,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          border: Border.all(width: 3, color: Colors.white),
+                          color: Colors.grey.shade200.withOpacity(0.25)),
+                    ),
+                  ),
+                ))),
+        Container(
+          margin: EdgeInsets.fromLTRB(30, 25, 30, 15),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 16, 10, 10),
+                child: Text(
+                  "Describe your issue",
+                  style: TextStyle(fontSize: 25, color: Colors.black54),
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: customIssueController,
+                maxLines: 5,
+                textInputAction: TextInputAction.next,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                // validator: (value) => (listOfRespectiveIssuesFromMap!
+                //     .contains(value))
+                //     ? "Don't type an issue that already exists in the list"
+                //     : null,
+                style: TextStyle(color: Colors.black54),
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: Colors.white54,
+                      width: 1.25,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  labelText: "What is the issue...",
+                  alignLabelWithHint: true,
+                  labelStyle: TextStyle(color: Colors.black54),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white, width: 2.5),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                child: Center(
+                  child: Text(
+                    "OR",
+                    style: TextStyle(fontSize: 25, color: Colors.black54),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: FloatingActionButton.extended(
+                  heroTag: 2132,
+                  onPressed: () {
+                    _isCustomIssue = false;
+                    showCustomDialog(context, listOfIssues);
+                  },
+                  backgroundColor: _btnColor,
+                  label: Text("Choose a common issue"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                height: 3,
+                color: Colors.white,
+                width: double.infinity,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: FloatingActionButton.extended(
+                  heroTag: 2132,
+                  onPressed: () {
+                    selectMultipleImages();
+                  },
+                  backgroundColor: _btnColor,
+                  label: Text("Add Images"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 7,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 5.0,
+                  ),
+                  itemCount: files?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: Image.file(
+                        File(files![index].path),
+                        width: double.infinity,
+                        fit: BoxFit.cover,
                       ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () => setIssueDesc(index, false, ""),
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            color: selectIssueValue == index
-                                ? Colors.grey
-                                : Colors.transparent,
-                          ),
-                          child: Center(
-                              child: Text(
-                            listOfIssues[index],
-                            maxLines: 1,
-                          )),
+
+                    );
+                  },
+                ),
+              ),
+              // Container(
+              //   width: 50,
+              //   height: 50,
+              //   child: FloatingActionButton(
+              //     onPressed: () => {
+              //       setIssueDesc(
+              //           -1, true, customIssueController.text.toString().trim())
+              //     },
+              //     heroTag: AppStrings.globalHeaderHero,
+              //     child: Icon(Icons.arrow_forward),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void showCustomDialog(BuildContext context, List listOfIssues) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 200),
+      pageBuilder: (_, __, ___) {
+        return Center(
+          child: ListView.builder(
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              itemCount: listOfIssues.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 50,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        setIssueDesc(index, false, "");
+                        _isCustomIssue = false;
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          color: selectIssueValue == index
+                              ? Colors.greenAccent
+                              : Colors.transparent,
                         ),
+                        child: Center(
+                            child: Text(
+                          listOfIssues[index],
+                          maxLines: 1,
+                        )),
                       ),
                     ),
-                  );
-                }),
+                  ),
+                );
+              }),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1088,17 +1261,22 @@ class _StepperProcessState extends State<StepperProcess> {
     if (!isCustomIssue) {
       List<String>? listOfRespectiveIssuesFromMap =
           CommonIssues.mapAllCommonIssues[_issueCategory];
-
       _issueDesc = listOfRespectiveIssuesFromMap![index];
       debugPrint("issue desc is " + _issueDesc.toString());
+
+      customIssueController.text = _issueDesc;
       setState(() => selectIssueValue = index);
+      Navigator.pop(context);
     } else if (isCustomIssue) {
       _isCustomIssue = isCustomIssue;
       _issueDesc = customIssueTyped;
       setState(() => selectIssueValue = 134);
+      Navigator.pop(context);
     }
   }
 
+
+  FocusNode firstFocusNode = FocusNode();
   var isDontSeeYourIssue = false;
 
   File _imageFile = File("");
@@ -1106,114 +1284,6 @@ class _StepperProcessState extends State<StepperProcess> {
   List<File>? files;
   UploadTask? uploadTask;
   List<String> listOfFilePaths = [];
-
-  Widget customIssueHeader() {
-    List<String>? listOfRespectiveIssuesFromMap =
-        CommonIssues.mapAllCommonIssues[_issueCategory];
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          CheckboxListTile(
-            title: Text("Don't see your issue?"),
-            value: isDontSeeYourIssue,
-            checkboxShape: CircleBorder(),
-            onChanged: (value) {
-              selectIssueValue = 135;
-              setState(() {
-                isDontSeeYourIssue = value!;
-              });
-            },
-          ),
-          Visibility(
-            visible: isDontSeeYourIssue,
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: customIssueController,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.next,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) => (listOfRespectiveIssuesFromMap!
-                            .contains(value))
-                        ? "Don't type an issue that already exists in the list"
-                        : null,
-                    style: TextStyle(color: _whiteText),
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(
-                          color: _midWhite,
-                          width: 1.25,
-                        ),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.lock,
-                        color: _midWhite,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      labelText: "Custom issue...",
-                      labelStyle: TextStyle(color: _whiteText),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: _midWhite, width: 2.5),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Container(
-                  width: 50,
-                  height: 50,
-                  child: FloatingActionButton(
-                    onPressed: () => {
-                      setIssueDesc(-1, true,
-                          customIssueController.text.toString().trim())
-                    },
-                    heroTag: AppStrings.globalHeaderHero,
-                    child: Icon(Icons.arrow_forward),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              ElevatedButton(
-                  onPressed: selectMultipleImages, child: Text("Add pictures")),
-              Text(files == null
-                  ? "No Images added"
-                  : "Added ${files!.length} images"),
-              TextButton(
-                child: Text("Click to see"),
-                onPressed: () {
-                  Fluttertoast.cancel();
-                  if (files == null) {
-                    Fluttertoast.showToast(
-                      msg: "No images selected",
-                    );
-                    return;
-                  }
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ViewDetailedPortfolioItem(
-                              files, 12345, _issueDesc, true)));
-                },
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Future uploadImageToFirebase(dynamic listOfFiles) async {
     try {
@@ -1295,7 +1365,6 @@ class _StepperProcessState extends State<StepperProcess> {
 
   Widget selectCategoryOnboarding() {
     return Container(
-
         margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
         child: GridView.builder(
           physics: NeverScrollableScrollPhysics(),
@@ -1307,7 +1376,7 @@ class _StepperProcessState extends State<StepperProcess> {
           ),
           itemCount: 9,
           itemBuilder: (context, index) {
-            if(_isSortedByTrades){
+            if (_isSortedByTrades) {
               return techsList(index);
             } else {
               return appliancesList(index);
@@ -1317,7 +1386,6 @@ class _StepperProcessState extends State<StepperProcess> {
   }
 
   Widget techsList(int index) {
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -1330,8 +1398,9 @@ class _StepperProcessState extends State<StepperProcess> {
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: selectCategoryValue == index ?
-              Colors.white : Colors.transparent,
+              color: selectCategoryValue == index
+                  ? Colors.greenAccent
+                  : Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
             duration: Duration(milliseconds: 400),
@@ -1346,8 +1415,7 @@ class _StepperProcessState extends State<StepperProcess> {
                       width: double.infinity,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(30)),
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
                           border: Border.all(width: 1, color: Colors.white),
                           color: Colors.grey.shade200.withOpacity(0.25)),
                       child: Column(
@@ -1357,10 +1425,9 @@ class _StepperProcessState extends State<StepperProcess> {
                             flex: 4,
                             child: Image.asset(
                               selectCategoryValue == index
-                                  ? CommonIssues
-                                  .listOfSelectedTechImages[index]
+                                  ? CommonIssues.listOfSelectedTechImages[index]
                                   : CommonIssues
-                                  .listOfNotSelectedTechImages[index],
+                                      .listOfNotSelectedTechImages[index],
                               height: 75,
                               width: 75,
                             ),
@@ -1368,8 +1435,7 @@ class _StepperProcessState extends State<StepperProcess> {
                           Expanded(
                               flex: 1,
                               child: Text(CommonIssues
-                                  .listOfTechnicianCategories[index])
-                                  )
+                                  .listOfTechnicianCategories[index]))
                         ],
                       ),
                     ),
@@ -1392,8 +1458,9 @@ class _StepperProcessState extends State<StepperProcess> {
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: selectCategoryValue == index ?
-              Colors.white : Colors.transparent,
+              color: selectCategoryValue == index
+                  ? Colors.greenAccent
+                  : Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
             duration: Duration(milliseconds: 400),
@@ -1408,8 +1475,7 @@ class _StepperProcessState extends State<StepperProcess> {
                       width: double.infinity,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(30)),
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
                           border: Border.all(width: 1, color: Colors.white),
                           color: Colors.grey.shade200.withOpacity(0.25)),
                       child: Column(
@@ -1420,9 +1486,9 @@ class _StepperProcessState extends State<StepperProcess> {
                             child: Image.asset(
                               selectCategoryValue == index
                                   ? CommonIssues
-                                  .listOfSelectedApplianceImages[index]
+                                      .listOfSelectedApplianceImages[index]
                                   : CommonIssues
-                                  .listOfNotSelectedApplianceImages[index],
+                                      .listOfNotSelectedApplianceImages[index],
                               height: 75,
                               width: 75,
                             ),
@@ -1431,9 +1497,9 @@ class _StepperProcessState extends State<StepperProcess> {
                               flex: 1,
                               child: _isSortedByTrades
                                   ? Text(CommonIssues
-                                  .listOfTechnicianCategories[index])
+                                      .listOfTechnicianCategories[index])
                                   : Text(CommonIssues
-                                  .listOfAppliancesCategories[index]))
+                                      .listOfAppliancesCategories[index]))
                         ],
                       ),
                     ),
@@ -1443,9 +1509,16 @@ class _StepperProcessState extends State<StepperProcess> {
     );
   }
 
+  @override
+  void dispose()
+  {
+    firstFocusNode.removeListener((){});
+    super.dispose();
+  }
+
   Widget categoryPageHeader(bool visible) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0,8,0,16),
+      margin: EdgeInsets.fromLTRB(0, 8, 0, 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -68,8 +68,8 @@ class CommonIssues{
   static String applianceCategory3 = "Stove";
   static String applianceCategory4 = "Toilet";
   static String applianceCategory5 = "TV";
-  static String applianceCategory6 = "Vacuum cleaner";
-  static String applianceCategory7 = "Washing machine";
+  static String applianceCategory6 = "Vacuum C";
+  static String applianceCategory7 = "Washing M";
   static String applianceCategory8 = "Other";
   static String applianceCategory9 = "...";
 
