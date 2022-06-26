@@ -113,7 +113,8 @@ class AppStrings {
   static String listOfImagePathskey = "listOfImagePaths";
 
   static List<String> listOfReviews = [
-    "Condimentum sagittis laoreet nullam curabitur lorem adipiscing viverra at dolor ipsum id libero dolor sit amet a consectetur nunc in libero",
+    "Condimentum sagittis laoreet nu"
+        "llam curabitur lorem adipiscing viverra at dolor ipsum id libero dolor sit amet a consectetur nunc in libero",
     "Nullam curabitur auctor in elit euismod nunc lorem ipsum laoreet condimentum viverra est libero tincidunt id consectetur sit adipiscing",
     "Nullam dolor odio at viverra id sagittis elit in amet auctor a vel lorem laoreet euismod tincidunt",
     "Consectetur odio nunc nullam viverra curabitur vitae dolor amet euismod enim id libero libero sit ipsum elit nec sagittis id auctor lorem at vel adipiscing est",

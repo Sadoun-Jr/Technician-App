@@ -64,6 +64,11 @@ class _StepperProcessState extends State<StepperProcess> {
   Color _midWhite = Colors.white54;
 
   final Color _btnColor = HexColor("#d4c4ca");
+  final Color _splashClr = Colors.white;
+  final Gradient _bgGradiaet = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: <Color>[Colors.black, Colors.blue]);
 
   //TODO: get profile image and display it here
   @override
@@ -92,16 +97,16 @@ class _StepperProcessState extends State<StepperProcess> {
                     IconStepper(
                       stepRadius: 20,
                       icons: const [
-                        Icon(Icons.question_mark),
-                        Icon(Icons.description),
-                        Icon(Icons.list),
-                        Icon(Icons.person),
-                        Icon(Icons.done)
+                        Icon(Icons.question_mark, color:Colors.white),
+                        Icon(Icons.description, color:Colors.white),
+                        Icon(Icons.list, color:Colors.white),
+                        Icon(Icons.person, color:Colors.white),
+                        Icon(Icons.upload, color:Colors.white),
+                        Icon(Icons.done, color:Colors.white)
                       ],
                       enableStepTapping: true,
                       enableNextPreviousButtons: false,
-                      activeStepColor: HexColor("#d4c4ca"),
-
+                      activeStepColor: _btnColor,
                       // activeStep property set to activeStep variable defined above.
                       activeStep: activeStep,
 
@@ -167,26 +172,51 @@ class _StepperProcessState extends State<StepperProcess> {
   /// Returns the next button.
   Widget nextButton() {
     return FloatingActionButton(
-      splashColor: Colors.white,
-      backgroundColor: _nextVisible ? _btnColor : Colors.grey,
+      splashColor: _splashClr,
+      backgroundColor: activeStep == 3 ? Colors.green :
+      _nextVisible ? _btnColor : Colors.grey,
       heroTag: 10,
-      onPressed: _nextVisible ? () {
+      onPressed: _nextVisible
+          ? () {
+              if (activeStep < upperBound) {
+                setState(() {
+                  activeStep++;
+                  //describe issue page
+                  if (activeStep == 1) {
+                    //navigating after first page
+                    _prevVisible = true;
+                    _nextVisible = true;
+                    //technician already selected
+                    if (_assignedTo != " ") {
+                      _nextVisible = true;
+                    }
+                  }
+                  //select tech page
+                  if (activeStep == 2) {
+                    //technician already selected
+                    if (_assignedTo != " ") {
+                      _nextVisible = true;
+                    } else {
+                      _nextVisible = false;
+                    }
+                  }
+                });
 
-        if (activeStep < upperBound) {
-          setState(() {
-            activeStep++;
-            if(activeStep == 1){
-              //navigating after first page
-              _prevVisible = true;
-              _nextVisible = true;
+                //tech profile page
+                if(activeStep ==3) {
+                  _prevVisible = true;
+                }
+
+                //Creating order page
+                if(activeStep ==4) {
+                  _prevVisible = false;
+                  _nextVisible = false;
+
+                }
+              }
             }
-            if(activeStep ==2){
-              _nextVisible = false;
-            }
-          });
-        }
-      } : null,
-      child: Icon(
+          : null,
+      child: Icon( activeStep == 3? Icons.upload :
         Icons.navigate_next,
         size: 35,
       ),
@@ -195,25 +225,30 @@ class _StepperProcessState extends State<StepperProcess> {
 
   Widget previousButton() {
     return FloatingActionButton(
-      splashColor: Colors.white,
-      backgroundColor:_prevVisible ? _btnColor : Colors.grey,
+      splashColor: _splashClr,
+      backgroundColor: _prevVisible ? _btnColor : Colors.grey,
       heroTag: 12,
-      onPressed:_prevVisible ? () {
-        // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
-        if (activeStep > 0) {
-          setState(() {
-            activeStep--;
-            if(activeStep == 0){
-              //first page so prev is invisible
-              _prevVisible = false;
-              if(isCategorySelected){
-                //category already selected so next is visible
-                _nextVisible = true;
+      onPressed: _prevVisible
+          ? () {
+              // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
+              if (activeStep > 0) {
+                setState(() {
+                  activeStep--;
+                  if (activeStep == 0) {
+                    //first page so prev is invisible
+                    _prevVisible = false;
+                    if (isCategorySelected) {
+                      //category already selected so next is visible
+                      _nextVisible = true;
+                    }
+                  }
+                  if (activeStep == 1) {
+                    _nextVisible = true;
+                  }
+                });
               }
             }
-          });
-        }
-      } : null,
+          : null,
       child: Icon(
         Icons.navigate_before,
         size: 35,
@@ -225,7 +260,7 @@ class _StepperProcessState extends State<StepperProcess> {
   int activeStep = 0; // Initial step set to 0.
   bool _prevVisible = false;
   bool _nextVisible = false;
-  int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
+  int upperBound = 5; // upperBound MUST BE total number of icons minus 1.
 
   Widget header() {
     return Visibility(
@@ -336,192 +371,527 @@ class _StepperProcessState extends State<StepperProcess> {
   var isInOnboarding = true;
 
   Widget assignedTechnicianProfileOnBoarding() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(20, 16, 20, 80),
-      child: ListView(
-        physics: ScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true, // use this
-        children: [
-          Container(
-              child: Icon(
-            //TODO: CHANGE THIS TO TECH IMAGE
-            Icons.person,
-            size: 75,
-          )),
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white54),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      children: [
+        Container(
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 140,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          border: Border.all(width: 3, color: Colors.white),
+                          color: Colors.grey.shade200.withOpacity(0.25)),
+                      // child: Center(
+                      //     child: child
+                      // ),
+                    ),
+                  ),
+                ))),
+        Container(
+          margin: EdgeInsets.fromLTRB(20, 16, 20, 80),
+          child: ListView(
+            physics: ScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            children: [
+              Row(
                 children: [
-                  Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
-                        maxLines: 1,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
-                  SizedBox(height: 5),
-                  Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        myAssignedTech?.jobTitle ?? "null",
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 18,
+                  myAssignedTech?.image == null
+                      ? Container(
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          child: Icon(
+                            Icons.person,
+                            size: 120,
+                            color: Colors.black12,
+                          ))
+                      : Container(
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(width: 3, color: Colors.white)),
+                          child: CircleAvatar(
+                            maxRadius: 60,
+                            backgroundImage:
+                                NetworkImage(myAssignedTech!.image!),
+                            // child: Image.network(
+                            //   myAssignedTech!.image!, height: 125, width: 125,),
+                          ),
                         ),
-                      )),
                   SizedBox(
-                    height: 10,
+                    width: 10,
                   ),
-                  Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        "a short desc", //TODO: add in db
-                        maxLines: 2,
-                      )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Visibility(
-                    visible: false,
-                    child: InkWell(
-                        onTap: () {},
-                        child: LikeButton(
-                          onTap: onLikeButtonTapped,
-                          isLiked: listOfFavourites.contains(_issuedByUid),
-                          // isLiked: (myAssignedTech!.favouritedBy!.contains(_issuedByUid)) ?
-                          // true : false,
-                          // isLiked: myAssignedTech!.favouritedBy!.contains(_issuedByUid),
-                        )),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: FloatingActionButton.extended(
-                            heroTag: 3,
-                            label: Text("Reviews"),
-                            onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => TechnicianReviews(
-                                            false,
-                                            myAssignedTech!.technicianUid!)),
-                                  )
-                                }),
-                      ),
-                      Align(
-                          alignment: Alignment.centerRight,
-                          child: FloatingActionButton.extended(
-                              heroTag: 2,
-                              label: Text("portfolio"),
-                              onPressed: () {
-                                isInOnboarding = false;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PortfolioSummary(
-                                            myAssignedTech!.technicianUid!)));
-                              })),
-                    ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            // SizedBox(width: 5,),
+                            // InkWell(
+                            //     onTap: () {},
+                            //     child: LikeButton(
+                            //       size: 40,
+                            //       onTap: onLikeButtonTapped,
+                            //       isLiked: listOfFavourites.contains(_issuedByUid),
+                            //     )),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              myAssignedTech?.jobTitle ?? "null",
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_rounded,
+                                  color: Colors.blueAccent,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  myAssignedTech?.location ?? "location",
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FrostedGlassBox(
-                  100,
-                  100,
-                  Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          myAssignedTech?.jobsCompleted?.toString() ?? "-1",
-                          style: TextStyle(fontSize: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                    sigmaX: 10.0, sigmaY: 10.0),
+                                child: Container(
+                                  width: _statsWidth,
+                                  height: _statsHeight,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(30)),
+                                      border: Border.all(
+                                          width: 2, color: _jobsBoxClr),
+                                      color: Colors.grey.shade200
+                                          .withOpacity(0.25)),
+                                  child: Center(
+                                      child: Center(
+                                          child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Icon(Icons.handyman,
+                                              color: _jobsBoxClr)),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Text(
+                                          myAssignedTech?.jobsCompleted
+                                                  ?.toString() ??
+                                              "0",
+                                          style: TextStyle(
+                                              fontSize: 30, color: _jobsBoxClr),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Jobs",
+                                          style: TextStyle(
+                                              color: _jobsBoxClr,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    ],
+                                  ))),
+                                ),
+                              ),
+                            ))),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                    sigmaX: 10.0, sigmaY: 10.0),
+                                child: Container(
+                                  width: _statsWidth,
+                                  height: _statsHeight,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(30)),
+                                      border: Border.all(
+                                          width: 2, color: Colors.orangeAccent),
+                                      color: Colors.grey.shade200
+                                          .withOpacity(0.25)),
+                                  child: Center(
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Icon(
+                                              Icons.star,
+                                              color: Colors.orangeAccent,
+                                            )),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Text(
+                                            myAssignedTech?.rating
+                                                    ?.toString() ??
+                                                "0.0",
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.orangeAccent),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Rating",
+                                            style: TextStyle(
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ))),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                    sigmaX: 10.0, sigmaY: 10.0),
+                                child: Container(
+                                  width: _statsWidth,
+                                  height: _statsHeight,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(30)),
+                                      border: Border.all(
+                                          width: 2, color: Colors.blueAccent),
+                                      color: Colors.grey.shade200
+                                          .withOpacity(0.25)),
+                                  child: Center(
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Icon(
+                                              Icons.handshake,
+                                              color: Colors.blueAccent,
+                                            )),
+                                        Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Text(
+                                            "${myAssignedTech?.completionRate?.toString()}"
+                                            "%",
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.blueAccent),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          //todo: Check if comp rate can be 0% when new user and use ??
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Completion",
+                                            style: TextStyle(
+                                                color: Colors.blueAccent,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ))),
+                  )
+                ],
+              ),
+              Container(
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              // onTap: () {
+                              //   setState(() =>
+                              //   _isDescExpanded = !_isDescExpanded);
+                              //   debugPrint(
+                              //       "Is desc expanded? $_isDescExpanded");
+                              // },
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                padding: EdgeInsets.all(12),
+                                height: _isDescExpanded ? 150 : 100,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                    border: Border.all(
+                                        width: 2, color: Colors.white),
+                                    color: Colors.white.withOpacity(0.25)),
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  physics: ScrollPhysics(),
+                                  children: [
+                                    Text(
+                                      myAssignedTech?.personalDesc ??
+                                          AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[2] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1] +
+                                              AppStrings.listOfReviews[1],
+                                      maxLines: _isDescExpanded ? 8 : 4,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ))),
+              SizedBox(
+                height: 10,
+              ),
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      height: 130,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          splashColor: Colors.grey,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          onTap: () {
+                            isInOnboarding = false;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PortfolioSummary(
+                                        myAssignedTech!.technicianUid!)));
+                          },
+                          child: Container(
+                            // margin: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.work,
+                                      color: _btnColor,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Portfolio",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: _btnColor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Spacer(),
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: _btnColor,
+                                      child: Icon(
+                                        Icons.navigate_next,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text("Jobs"),
-                      )
-                    ],
-                  ))),
-              FrostedGlassBox(
-                  100,
-                  100,
-                  Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          myAssignedTech?.rating?.toString() ?? "-1",
-                          style: TextStyle(fontSize: 30),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          color: _btnColor,
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          splashColor: _splashClr,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TechnicianReviews(
+                                      false, myAssignedTech!.technicianUid!)),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 15),
+                            child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Reviews",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Spacer(),
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(
+                                        Icons.navigate_next,
+                                        color: _btnColor,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text("Rating"),
-                      )
-                    ],
-                  ))),
-              FrostedGlassBox(
-                  100,
-                  100,
-                  Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          "${myAssignedTech?.completionRate?.toString()}" "%",
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text("Completion"),
-                      )
-                    ],
-                  ))),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+
+  bool _isDescExpanded = false;
+  double _statsHeight = 105;
+  double _statsWidth = 105;
+  final Color _jobsBoxClr = Colors.green;
+  final Color _ratingBoxClr = Colors.orangeAccent;
+  final Color _completedBoxClr = Colors.blueAccent;
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
@@ -803,244 +1173,290 @@ class _StepperProcessState extends State<StepperProcess> {
                   Container(
                     height: MediaQuery.of(context).size.height - 190,
                     margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        itemCount: listOfAppropriateTechnicians.length,
-                        itemBuilder: (context, index) {
-                          return Visibility(
-                              visible: !isAppliance
-                                  ? true
-                                  : listOfAppropriateTechnicians[index]
-                                              .pricesForAppliancesSubscribedToIssues![
-                                          _issueDesc] !=
-                                      null,
-                              child: Container(
-                                height: 100,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 1, horizontal: 4),
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(30)),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                          sigmaX: 10.0, sigmaY: 10.0),
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: 90,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30)),
-                                            border: Border.all(
-                                                width: 2,
-                                                color: Colors.white),
-                                            color: Colors.grey.shade200
-                                                .withOpacity(0.25)),
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(30)),
-                                          splashColor: Colors.redAccent,
-                                          onTap: () =>
-                                              {setAssignedTo(index)},
-                                          child: AnimatedContainer(
-                                            duration:
-                                                Duration(milliseconds: 200),
+                    child: listOfAppropriateTechnicians.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            itemCount: listOfAppropriateTechnicians.length,
+                            itemBuilder: (context, index) {
+                              return Visibility(
+                                  visible: !isAppliance
+                                      ? true
+                                      : listOfAppropriateTechnicians[index]
+                                                  .pricesForAppliancesSubscribedToIssues![
+                                              _issueDesc] !=
+                                          null,
+                                  child: Container(
+                                    height: 100,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 1, horizontal: 4),
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: 10.0, sigmaY: 10.0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 90,
                                             decoration: BoxDecoration(
-                                                color:
-                                                    selectTechnicianValue ==
-                                                            index
-                                                        ? Colors.greenAccent
-                                                        : Colors
-                                                            .transparent,
-                                                borderRadius:
-                                                    BorderRadius.all(
-                                                        Radius.circular(
-                                                            30))),
-                                            child: Row(children: <Widget>[
-                                              Expanded(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    SizedBox(
-                                                      width: 16,
-                                                    ),
-                                                    Container(
-                                                      margin: EdgeInsets
-                                                          .fromLTRB(
-                                                              0, 16, 0, 16),
-                                                      child:
-                                                          Stack(children: [
-                                                        CircleAvatar(
-                                                          backgroundImage:  listOfAppropriateTechnicians[index].image != null ?
-                                                          AssetImage(
-                                                            listOfAppropriateTechnicians[index].image!,
-                                                          ) : null,
-                                                          backgroundColor:
-                                                              Colors.grey,
-                                                          maxRadius: 30,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(30)),
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.white),
+                                                color: Colors.grey.shade200
+                                                    .withOpacity(0.25)),
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                              splashColor: _splashClr,
+                                              onTap: () =>
+                                                  {setAssignedTo(index)},
+                                              child: AnimatedContainer(
+                                                duration:
+                                                    Duration(milliseconds: 200),
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        selectTechnicianValue ==
+                                                                index
+                                                            ? _btnColor
+                                                            : Colors
+                                                                .transparent,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                30))),
+                                                child: Row(children: <Widget>[
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        SizedBox(
+                                                          width: 16,
                                                         ),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
-                                                          child: Visibility(
-                                                            visible: listOfAppropriateTechnicians[
-                                                                    index]
-                                                                .isAvailable!,
-                                                            child: CircleAvatar(
-                                                                maxRadius:
-                                                                    7,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                        )
-                                                      ]),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 16,
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        margin: EdgeInsets
-                                                            .fromLTRB(0, 23,
-                                                                16, 16),
-                                                        color: Colors
-                                                            .transparent,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: <
-                                                              Widget>[
-                                                            Row(
+                                                        Container(
+                                                          margin: EdgeInsets
+                                                              .fromLTRB(
+                                                                  0, 16, 0, 16),
+                                                          child: Stack(
                                                               children: [
+                                                                listOfAppropriateTechnicians[index]
+                                                                            .image ==
+                                                                        null
+                                                                    ? Container(
+                                                                        decoration: BoxDecoration(
+                                                                            shape: BoxShape
+                                                                                .circle,
+                                                                            color: Colors
+                                                                                .white),
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .person,
+                                                                          size:
+                                                                              57.5,
+                                                                          color:
+                                                                              Colors.black12,
+                                                                        ))
+                                                                    : Container(
+                                                                        decoration: BoxDecoration(
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                            border: Border.all(width: 2, color: Colors.white)),
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          maxRadius:
+                                                                              28.5,
+                                                                          backgroundImage:
+                                                                              NetworkImage(listOfAppropriateTechnicians[index].image!),
+                                                                          // child: Image.network(
+                                                                          //   myAssignedTech!.image!, height: 125, width: 125,),
+                                                                        ),
+                                                                      ),
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .bottomCenter,
+                                                                  child:
+                                                                      Visibility(
+                                                                    visible: listOfAppropriateTechnicians[
+                                                                            index]
+                                                                        .isAvailable!,
+                                                                    child: CircleAvatar(
+                                                                        maxRadius:
+                                                                            7,
+                                                                        backgroundColor:
+                                                                            Colors.green),
+                                                                  ),
+                                                                )
+                                                              ]),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 16,
+                                                        ),
+                                                        Expanded(
+                                                          child: Container(
+                                                            margin: EdgeInsets
+                                                                .fromLTRB(0, 23,
+                                                                    16, 16),
+                                                            color: Colors
+                                                                .transparent,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: <
+                                                                  Widget>[
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      listOfAppropriateTechnicians[index]
+                                                                              .firstName ??
+                                                                          "null",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              18),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      listOfAppropriateTechnicians[index]
+                                                                              .familyName ??
+                                                                          "null",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              18),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 6,
+                                                                ),
                                                                 Text(
                                                                   listOfAppropriateTechnicians[
                                                                               index]
-                                                                          .firstName ??
+                                                                          .jobTitle ??
                                                                       "null",
                                                                   style: TextStyle(
                                                                       fontSize:
-                                                                          18),
-                                                                ),
-                                                                SizedBox(width: 5,),
-                                                                Text(
-                                                                  listOfAppropriateTechnicians[
-                                                                  index]
-                                                                      .familyName ??
-                                                                      "null",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                      18),
-                                                                ),
+                                                                          13,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade600,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  maxLines: 1,
+                                                                )
                                                               ],
                                                             ),
-                                                            SizedBox(
-                                                              height: 6,
-                                                            ),
-                                                            Text(
-                                                              listOfAppropriateTechnicians[
-                                                                          index]
-                                                                      .jobTitle ??
-                                                                  "null",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      13,
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade600,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                              maxLines: 1,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets
-                                                          .fromLTRB(16, 16,
-                                                              0, 16),
-                                                      child: Column(
-                                                        children: [
-                                                          //price commented out
-                                                          // Visibility(
-                                                          //   visible:
-                                                          //       !_isCustomIssue,
-                                                          //   child: Align(
-                                                          //     alignment:
-                                                          //         Alignment
-                                                          //             .topLeft,
-                                                          //     child: Text(
-                                                          //       isAppliance
-                                                          //           ? listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueDesc].toString() +
-                                                          //               "\$"
-                                                          //           : listOfAppropriateTechnicians[index].pricesForJobIssues![_issueDesc].toString() +
-                                                          //               "\$",
-                                                          //     ),
-                                                          //   ),
-                                                          // ),
-                                                          Expanded(
-                                                            child: Container(
-                                                              margin: EdgeInsets
-                                                                  .fromLTRB(
-                                                                      0,
-                                                                      5,
-                                                                      0,
-                                                                      0),
-                                                              child: Row(
-                                                                children: [
-                                                                  Text(
-                                                                    listOfAppropriateTechnicians[
-                                                                            index]
-                                                                        .rating
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight: listOfAppropriateTechnicians[index].isAvailable!
-                                                                            ? FontWeight.bold
-                                                                            : FontWeight.normal),
-                                                                  ),
-                                                                  Container(
-                                                                    margin: EdgeInsets
-                                                                        .fromLTRB(
-                                                                            5,
-                                                                            0,
-                                                                            16,
-                                                                            0),
-                                                                    child:
-                                                                        Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      size:
-                                                                          16,
-                                                                      color: Colors.orangeAccent
-                                                                      // HexColor(
-                                                                      //     "FFD700"),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        Container(
+                                                          padding: EdgeInsets
+                                                              .fromLTRB(16, 16,
+                                                                  0, 16),
+                                                          child: Column(
+                                                            children: [
+                                                              //price commented out
+                                                              // Visibility(
+                                                              //   visible:
+                                                              //       !_isCustomIssue,
+                                                              //   child: Align(
+                                                              //     alignment:
+                                                              //         Alignment
+                                                              //             .topLeft,
+                                                              //     child: Text(
+                                                              //       isAppliance
+                                                              //           ? listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueDesc].toString() +
+                                                              //               "\$"
+                                                              //           : listOfAppropriateTechnicians[index].pricesForJobIssues![_issueDesc].toString() +
+                                                              //               "\$",
+                                                              //     ),
+                                                              //   ),
+                                                              // ),
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  margin: EdgeInsets
+                                                                      .fromLTRB(
+                                                                          0,
+                                                                          5,
+                                                                          10,
+                                                                          0),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            listOfAppropriateTechnicians[index].rating.toString(),
+                                                                            style:
+                                                                                TextStyle(fontSize: 16, fontWeight: listOfAppropriateTechnicians[index].isAvailable! ? FontWeight.bold : FontWeight.normal),
+                                                                          ),
+                                                                          Container(
+                                                                            margin: EdgeInsets.fromLTRB(
+                                                                                5,
+                                                                                0,
+                                                                                16,
+                                                                                0),
+                                                                            child: Icon(Icons.star,
+                                                                                size: 16,
+                                                                                color: Colors.orangeAccent
+                                                                                // HexColor(
+                                                                                //     "FFD700"),
+                                                                                ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(
+                                                                          height:
+                                                                              7),
+                                                                      Align(
+                                                                          alignment: Alignment
+                                                                              .bottomCenter,
+                                                                          child:
+                                                                              Text(listOfAppropriateTechnicians[index].location ?? "")),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ]),
                                               ),
-                                            ]),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
+                                  ));
+                            })
+                        : Center(
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex: 6,
+                                  child: Image.asset(
+                                    "assets/no result.png",
                                   ),
                                 ),
-                              ));
-                        }),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    "No technicians, please try another issue.",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                   )
                 ],
               ),
@@ -1078,7 +1494,10 @@ class _StepperProcessState extends State<StepperProcess> {
       _price = -1;
     }
     debugPrint("Assigned to " + _assignedTo);
-    setState(() => selectTechnicianValue = index);
+    setState(() {
+      activeStep++;
+      selectTechnicianValue = index;
+    });
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -1150,6 +1569,8 @@ class _StepperProcessState extends State<StepperProcess> {
                 //     : null,
                 style: TextStyle(color: Colors.black54),
                 decoration: InputDecoration(
+                  fillColor: Colors.white54,
+                  filled: true,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25.0),
                     borderSide: BorderSide(
@@ -1181,9 +1602,11 @@ class _StepperProcessState extends State<StepperProcess> {
               SizedBox(
                 width: double.infinity,
                 child: FloatingActionButton.extended(
+                  splashColor: _splashClr,
                   heroTag: 2132,
                   onPressed: () {
                     _isCustomIssue = false;
+                    //TODO: make dialog show "no common issues" if none exist
                     showCustomDialog(context, listOfIssues);
                   },
                   backgroundColor: _btnColor,
@@ -1199,11 +1622,13 @@ class _StepperProcessState extends State<StepperProcess> {
               SizedBox(
                 width: double.infinity,
                 child: FloatingActionButton.extended(
+                  splashColor: _splashClr,
                   heroTag: 2132,
                   onPressed: () {
                     selectMultipleImages();
                   },
                   backgroundColor: _btnColor,
+                  icon: Icon(Icons.photo),
                   label: Text("Add Images"),
                 ),
               ),
@@ -1447,7 +1872,7 @@ class _StepperProcessState extends State<StepperProcess> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        splashColor: Colors.white,
+        splashColor: _splashClr,
         highlightColor: Colors.white,
         onTap: () {
           isCategorySelected = true;
@@ -1458,9 +1883,8 @@ class _StepperProcessState extends State<StepperProcess> {
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: selectCategoryValue == index
-                  ? Colors.greenAccent
-                  : Colors.transparent,
+              color:
+                  selectCategoryValue == index ? _btnColor : Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
             duration: Duration(milliseconds: 400),
@@ -1509,9 +1933,9 @@ class _StepperProcessState extends State<StepperProcess> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        splashColor: Colors.white,
+        splashColor: _splashClr,
         highlightColor: Colors.white,
-        onTap: ()  {
+        onTap: () {
           isCategorySelected = true;
           _nextVisible = true;
           setState(() => selectCategoryValue = index);
