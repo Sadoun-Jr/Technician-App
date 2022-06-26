@@ -6,7 +6,7 @@ class Technician {
   String? technicianUid;
   String? jobTitle;
   String? personalDesc; //NOT IN DATABASE
-  Widget? image; //TODO: change to bitmap...?
+  String? image; //TODO: change to bitmap...?
   double? rating;
   bool? isAvailable;
   int? jobsCompleted;

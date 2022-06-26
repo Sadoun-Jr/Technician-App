@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Migrated from introduction screen to stepper library
+- Styled third step onboarding
 
 ## (  ) Creating and Styling the layouts
 

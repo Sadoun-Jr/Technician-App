@@ -57,7 +57,7 @@ class _StepperProcessState extends State<StepperProcess> {
   bool _isCanceledByUser = false;
   bool _isDeclinedByTechnician = false;
 
-  TextEditingController customIssueController = TextEditingController();
+  late TextEditingController customIssueController;
   TextEditingController searchTechnicianController = TextEditingController();
   String _issueDesc = " ";
   Color _whiteText = Colors.white;
@@ -82,64 +82,67 @@ class _StepperProcessState extends State<StepperProcess> {
                 alignment: Alignment.center,
               ),
             ),
-            Container(
-              margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-              child: ListView(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                children: [
-                  IconStepper(
-                    stepRadius: 20,
-                    icons: const [
-                      Icon(Icons.question_mark),
-                      Icon(Icons.description),
-                      Icon(Icons.list),
-                      Icon(Icons.person),
-                      Icon(Icons.done)
-                    ],
-                    enableStepTapping: true,
-                    enableNextPreviousButtons: false,
-                    activeStepColor: HexColor("#d4c4ca"),
+            SafeArea(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: ListView(
+                  // shrinkWrap: true,
+                  // physics: ScrollPhysics(),
+                  children: [
+                    IconStepper(
+                      stepRadius: 20,
+                      icons: const [
+                        Icon(Icons.question_mark),
+                        Icon(Icons.description),
+                        Icon(Icons.list),
+                        Icon(Icons.person),
+                        Icon(Icons.done)
+                      ],
+                      enableStepTapping: true,
+                      enableNextPreviousButtons: false,
+                      activeStepColor: HexColor("#d4c4ca"),
 
-                    // activeStep property set to activeStep variable defined above.
-                    activeStep: activeStep,
+                      // activeStep property set to activeStep variable defined above.
+                      activeStep: activeStep,
 
-                    // This ensures step-tapping updates the activeStep.
-                    onStepReached: (index) {
-                      setState(() {
-                        activeStep = index;
-                      });
-                    },
-                  ),
-                  Container(
-                    height: 3,
-                    width: double.infinity,
-                    color: Colors.white,
-                  ),
-                  header(),
-                  Visibility(
-                      visible: activeStep == 0,
-                      child: categoryPageHeader(true)),
-                  Visibility(
-                      visible: activeStep == 0,
-                      child: selectCategoryOnboarding()),
-                  Visibility(
-                    visible: activeStep == 1,
-                    child: selectIssueTypeOnboarding(selectKindOfIssuesArray()),
-                  ),
-                  Visibility(
-                    visible: activeStep == 2,
-                    child: selectTechnicianOnboarding(),
-                  ),
-                  Visibility(
-                    visible: activeStep == 3,
-                    child: assignedTechnicianProfileOnBoarding(),
-                  ),
-                  Visibility(
-                    visible: activeStep == 4,
-                    child: _showMyDialog(),
-                  ),
-                ],
+                      // This ensures step-tapping updates the activeStep.
+                      onStepReached: (index) {
+                        setState(() {
+                          activeStep = index;
+                        });
+                      },
+                    ),
+                    Container(
+                      height: 3,
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                    header(),
+                    Visibility(
+                        visible: activeStep == 0,
+                        child: categoryPageHeader(true)),
+                    Visibility(
+                        visible: activeStep == 0,
+                        child: selectCategoryOnboarding()),
+                    Visibility(
+                      visible: activeStep == 1,
+                      child:
+                          selectIssueTypeOnboarding(selectKindOfIssuesArray()),
+                    ),
+                    Visibility(
+                      visible: activeStep == 2,
+                      child: selectTechnicianOnboarding(),
+                    ),
+                    Visibility(
+                      visible: activeStep == 3,
+                      child: assignedTechnicianProfileOnBoarding(),
+                    ),
+                    Visibility(
+                      visible: activeStep == 4,
+                      child: _showMyDialog(),
+                    ),
+                  ],
+                ),
               ),
             ),
             Container(
@@ -165,20 +168,24 @@ class _StepperProcessState extends State<StepperProcess> {
   Widget nextButton() {
     return FloatingActionButton(
       splashColor: Colors.white,
-      backgroundColor: _btnColor,
+      backgroundColor: _nextVisible ? _btnColor : Colors.grey,
       heroTag: 10,
-      onPressed: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => TestDashboard()));
+      onPressed: _nextVisible ? () {
 
-        // Increment activeStep, when the next button is tapped. However, check for upper bound.
         if (activeStep < upperBound) {
           setState(() {
             activeStep++;
+            if(activeStep == 1){
+              //navigating after first page
+              _prevVisible = true;
+              _nextVisible = true;
+            }
+            if(activeStep ==2){
+              _nextVisible = false;
+            }
           });
         }
-        debugPrint("=============NOT custom issue================");
-
-      },
+      } : null,
       child: Icon(
         Icons.navigate_next,
         size: 35,
@@ -189,16 +196,24 @@ class _StepperProcessState extends State<StepperProcess> {
   Widget previousButton() {
     return FloatingActionButton(
       splashColor: Colors.white,
-      backgroundColor: _btnColor,
+      backgroundColor:_prevVisible ? _btnColor : Colors.grey,
       heroTag: 12,
-      onPressed: () {
+      onPressed:_prevVisible ? () {
         // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
         if (activeStep > 0) {
           setState(() {
             activeStep--;
+            if(activeStep == 0){
+              //first page so prev is invisible
+              _prevVisible = false;
+              if(isCategorySelected){
+                //category already selected so next is visible
+                _nextVisible = true;
+              }
+            }
           });
         }
-      },
+      } : null,
       child: Icon(
         Icons.navigate_before,
         size: 35,
@@ -208,7 +223,8 @@ class _StepperProcessState extends State<StepperProcess> {
 
 // THE FOLLOWING TWO VARIABLES ARE REQUIRED TO CONTROL THE STEPPER.
   int activeStep = 0; // Initial step set to 0.
-
+  bool _prevVisible = false;
+  bool _nextVisible = false;
   int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
 
   Widget header() {
@@ -782,191 +798,232 @@ class _StepperProcessState extends State<StepperProcess> {
               margin: EdgeInsets.fromLTRB(5, 10, 5, 80),
               child: ListView(
                 shrinkWrap: true,
-                physics: ScrollPhysics(),
+                physics: ClampingScrollPhysics(),
                 children: <Widget>[
-                  // SafeArea(
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 16, right: 16),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: <Widget>[
-                  //         Text(
-                  //           AppStrings.selectTechnicianString,
-                  //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                    height: MediaQuery.of(context).size.height - 190,
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
                         itemCount: listOfAppropriateTechnicians.length,
                         itemBuilder: (context, index) {
                           return Visibility(
-                            visible: !isAppliance
-                                ? true
-                                : listOfAppropriateTechnicians[index]
-                                            .pricesForAppliancesSubscribedToIssues![
-                                        _issueDesc] !=
-                                    null,
-                            child: Container(
+                              visible: !isAppliance
+                                  ? true
+                                  : listOfAppropriateTechnicians[index]
+                                              .pricesForAppliancesSubscribedToIssues![
+                                          _issueDesc] !=
+                                      null,
+                              child: Container(
                                 height: 100,
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 1, horizontal: 4),
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: InkWell(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
-                                    splashColor: Colors.redAccent,
-                                    onTap: () => {setAssignedTo(index)},
-                                    child: AnimatedContainer(
-                                      duration: Duration(milliseconds: 200),
-                                      decoration: BoxDecoration(
-                                          color: selectTechnicianValue == index
-                                              ? Colors.redAccent
-                                              : Colors.transparent,
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(30)),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 10.0, sigmaY: 10.0),
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30)),
+                                            border: Border.all(
+                                                width: 2,
+                                                color: Colors.white),
+                                            color: Colors.grey.shade200
+                                                .withOpacity(0.25)),
+                                        child: InkWell(
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      child: Row(children: <Widget>[
-                                        Expanded(
-                                          child: Row(
-                                            children: <Widget>[
-                                              SizedBox(
-                                                width: 16,
-                                              ),
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 16, 0, 16),
-                                                child: Stack(children: [
-                                                  CircleAvatar(
-                                                    // backgroundImage:
-                                                    // AppStrings.techniciansList[index].image,
-                                                    backgroundColor:
-                                                        Colors.grey,
-                                                    maxRadius: 30,
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.bottomCenter,
-                                                    child: Visibility(
-                                                      visible:
-                                                          listOfAppropriateTechnicians[
-                                                                  index]
-                                                              .isAvailable!,
-                                                      child: CircleAvatar(
-                                                          maxRadius: 7,
-                                                          backgroundColor:
-                                                              Colors.green),
-                                                    ),
-                                                  )
-                                                ]),
-                                              ),
-                                              SizedBox(
-                                                width: 16,
-                                              ),
+                                              Radius.circular(30)),
+                                          splashColor: Colors.redAccent,
+                                          onTap: () =>
+                                              {setAssignedTo(index)},
+                                          child: AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    selectTechnicianValue ==
+                                                            index
+                                                        ? Colors.greenAccent
+                                                        : Colors
+                                                            .transparent,
+                                                borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            30))),
+                                            child: Row(children: <Widget>[
                                               Expanded(
-                                                child: Container(
-                                                  margin: EdgeInsets.fromLTRB(
-                                                      0, 23, 16, 16),
-                                                  color: Colors.transparent,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        listOfAppropriateTechnicians[
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Container(
+                                                      margin: EdgeInsets
+                                                          .fromLTRB(
+                                                              0, 16, 0, 16),
+                                                      child:
+                                                          Stack(children: [
+                                                        CircleAvatar(
+                                                          backgroundImage:  listOfAppropriateTechnicians[index].image != null ?
+                                                          AssetImage(
+                                                            listOfAppropriateTechnicians[index].image!,
+                                                          ) : null,
+                                                          backgroundColor:
+                                                              Colors.grey,
+                                                          maxRadius: 30,
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .bottomCenter,
+                                                          child: Visibility(
+                                                            visible: listOfAppropriateTechnicians[
                                                                     index]
-                                                                .firstName ??
-                                                            "null",
-                                                        style: TextStyle(
-                                                            fontSize: 16),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 6,
-                                                      ),
-                                                      Text(
-                                                        listOfAppropriateTechnicians[
-                                                                    index]
-                                                                .jobTitle ??
-                                                            "null",
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors
-                                                                .grey.shade600,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                        maxLines: 1,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    16, 16, 0, 16),
-                                                child: Column(
-                                                  children: [
-                                                    Visibility(
-                                                      visible: !_isCustomIssue,
-                                                      child: Align(
-                                                        alignment:
-                                                            Alignment.topLeft,
-                                                        child: Text(
-                                                          isAppliance
-                                                              ? listOfAppropriateTechnicians[
+                                                                .isAvailable!,
+                                                            child: CircleAvatar(
+                                                                maxRadius:
+                                                                    7,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .green),
+                                                          ),
+                                                        )
+                                                      ]),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        margin: EdgeInsets
+                                                            .fromLTRB(0, 23,
+                                                                16, 16),
+                                                        color: Colors
+                                                            .transparent,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <
+                                                              Widget>[
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  listOfAppropriateTechnicians[
+                                                                              index]
+                                                                          .firstName ??
+                                                                      "null",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
+                                                                ),
+                                                                SizedBox(width: 5,),
+                                                                Text(
+                                                                  listOfAppropriateTechnicians[
+                                                                  index]
+                                                                      .familyName ??
+                                                                      "null",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                      18),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: 6,
+                                                            ),
+                                                            Text(
+                                                              listOfAppropriateTechnicians[
                                                                           index]
-                                                                      .pricesForAppliancesSubscribedToIssues![
-                                                                          _issueDesc]
-                                                                      .toString() +
-                                                                  "\$"
-                                                              : listOfAppropriateTechnicians[
-                                                                          index]
-                                                                      .pricesForJobIssues![
-                                                                          _issueDesc]
-                                                                      .toString() +
-                                                                  "\$",
+                                                                      .jobTitle ??
+                                                                  "null",
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      13,
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade600,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                              maxLines: 1,
+                                                            )
+                                                          ],
                                                         ),
                                                       ),
                                                     ),
                                                     Container(
-                                                      margin:
-                                                          EdgeInsets.fromLTRB(
-                                                              0, 5, 0, 0),
-                                                      child: Row(
+                                                      padding: EdgeInsets
+                                                          .fromLTRB(16, 16,
+                                                              0, 16),
+                                                      child: Column(
                                                         children: [
-                                                          Text(
-                                                            listOfAppropriateTechnicians[
-                                                                    index]
-                                                                .rating
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight: listOfAppropriateTechnicians[
+                                                          //price commented out
+                                                          // Visibility(
+                                                          //   visible:
+                                                          //       !_isCustomIssue,
+                                                          //   child: Align(
+                                                          //     alignment:
+                                                          //         Alignment
+                                                          //             .topLeft,
+                                                          //     child: Text(
+                                                          //       isAppliance
+                                                          //           ? listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueDesc].toString() +
+                                                          //               "\$"
+                                                          //           : listOfAppropriateTechnicians[index].pricesForJobIssues![_issueDesc].toString() +
+                                                          //               "\$",
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
+                                                          Expanded(
+                                                            child: Container(
+                                                              margin: EdgeInsets
+                                                                  .fromLTRB(
+                                                                      0,
+                                                                      5,
+                                                                      0,
+                                                                      0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Text(
+                                                                    listOfAppropriateTechnicians[
                                                                             index]
-                                                                        .isAvailable!
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal),
-                                                          ),
-                                                          Container(
-                                                            margin: EdgeInsets
-                                                                .fromLTRB(5, 0,
-                                                                    16, 0),
-                                                            child: Icon(
-                                                              Icons.star,
-                                                              size: 16,
-                                                              color: HexColor(
-                                                                  "FFD700"),
+                                                                        .rating
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight: listOfAppropriateTechnicians[index].isAvailable!
+                                                                            ? FontWeight.bold
+                                                                            : FontWeight.normal),
+                                                                  ),
+                                                                  Container(
+                                                                    margin: EdgeInsets
+                                                                        .fromLTRB(
+                                                                            5,
+                                                                            0,
+                                                                            16,
+                                                                            0),
+                                                                    child:
+                                                                        Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      size:
+                                                                          16,
+                                                                      color: Colors.orangeAccent
+                                                                      // HexColor(
+                                                                      //     "FFD700"),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
@@ -975,14 +1032,14 @@ class _StepperProcessState extends State<StepperProcess> {
                                                   ],
                                                 ),
                                               ),
-                                            ],
+                                            ]),
                                           ),
                                         ),
-                                      ]),
+                                      ),
                                     ),
                                   ),
-                                )),
-                          );
+                                ),
+                              ));
                         }),
                   )
                 ],
@@ -990,7 +1047,7 @@ class _StepperProcessState extends State<StepperProcess> {
             );
           } else {
             return SizedBox(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height - 125,
               width: MediaQuery.of(context).size.width,
               child: Center(
                 child: Lottie.asset('assets/loading.json',
@@ -1009,6 +1066,7 @@ class _StepperProcessState extends State<StepperProcess> {
     _assignedTo = listOfAppropriateTechnicians[index].firstName! +
         " " +
         listOfAppropriateTechnicians[index].familyName!;
+    _nextVisible = true;
     if (isAppliance) {
       _price = listOfAppropriateTechnicians[index]
           .pricesForAppliancesSubscribedToIssues![_issueCategory];
@@ -1081,6 +1139,7 @@ class _StepperProcessState extends State<StepperProcess> {
                 height: 16,
               ),
               TextFormField(
+                focusNode: firstFocusNode,
                 controller: customIssueController,
                 maxLines: 5,
                 textInputAction: TextInputAction.next,
@@ -1166,7 +1225,6 @@ class _StepperProcessState extends State<StepperProcess> {
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
-
                     );
                   },
                 ),
@@ -1275,7 +1333,6 @@ class _StepperProcessState extends State<StepperProcess> {
     }
   }
 
-
   FocusNode firstFocusNode = FocusNode();
   var isDontSeeYourIssue = false;
 
@@ -1345,6 +1402,7 @@ class _StepperProcessState extends State<StepperProcess> {
 ////////////////////////////////////////////////////////////////////////////////
 
   int selectCategoryValue = 14;
+  bool isCategorySelected = false;
 
   void sortByApplicances() {
     selectCategoryValue = 222222;
@@ -1392,6 +1450,8 @@ class _StepperProcessState extends State<StepperProcess> {
         splashColor: Colors.white,
         highlightColor: Colors.white,
         onTap: () {
+          isCategorySelected = true;
+          _nextVisible = true;
           setState(() => selectCategoryValue = index);
           setIssueCategory(selectCategoryValue, true);
         },
@@ -1416,7 +1476,7 @@ class _StepperProcessState extends State<StepperProcess> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(width: 1, color: Colors.white),
+                          border: Border.all(width: 2, color: Colors.white),
                           color: Colors.grey.shade200.withOpacity(0.25)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1451,9 +1511,11 @@ class _StepperProcessState extends State<StepperProcess> {
       child: InkWell(
         splashColor: Colors.white,
         highlightColor: Colors.white,
-        onTap: () => {
-          setState(() => selectCategoryValue = index),
-          setIssueCategory(selectCategoryValue, false),
+        onTap: ()  {
+          isCategorySelected = true;
+          _nextVisible = true;
+          setState(() => selectCategoryValue = index);
+          setIssueCategory(selectCategoryValue, false);
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: AnimatedContainer(
@@ -1476,7 +1538,7 @@ class _StepperProcessState extends State<StepperProcess> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(width: 1, color: Colors.white),
+                          border: Border.all(width: 2, color: Colors.white),
                           color: Colors.grey.shade200.withOpacity(0.25)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1509,11 +1571,29 @@ class _StepperProcessState extends State<StepperProcess> {
     );
   }
 
+  bool _isIssueDescribed = false;
+
   @override
-  void dispose()
-  {
-    firstFocusNode.removeListener((){});
+  void dispose() {
+    firstFocusNode.removeListener(() {});
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    customIssueController = TextEditingController();
+    firstFocusNode.addListener(() {
+      // if(!firstFocusNode.hasFocus){
+      //   if(customIssueController.text.trim().toString().isEmpty){
+      //     _isIssueDescribed = false;
+      //     Fluttertoast.showToast(msg: "Empty issue");
+      //   } else {
+      //     _isIssueDescribed = false;
+      //     Fluttertoast.showToast(msg: "Issue made");
+      //   }
+      // }
+    });
+    super.initState();
   }
 
   Widget categoryPageHeader(bool visible) {
