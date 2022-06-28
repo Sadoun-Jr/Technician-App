@@ -57,7 +57,7 @@ class _StepperProcessState extends State<StepperProcess> {
   bool _isCanceledByUser = false;
   bool _isDeclinedByTechnician = false;
 
-  late TextEditingController customIssueController;
+  final customIssueController = TextEditingController();
   TextEditingController searchTechnicianController = TextEditingController();
   String _issueDesc = "";
   Color _whiteText = Colors.white;
@@ -95,7 +95,7 @@ class _StepperProcessState extends State<StepperProcess> {
                   // physics: ScrollPhysics(),
                   children: [
                     Hero(
-                      tag: "123124",
+                      tag: "123124s",
                       child: Material(
                         color: Colors.transparent,
                         child: IconStepper(
@@ -188,47 +188,55 @@ class _StepperProcessState extends State<StepperProcess> {
         heroTag: "1",
         onPressed: _nextActive
             ? () {
-                if (activeStep < upperBound) {
-                  setState(() {
-                    if (activeStep == 3) {
-                      _prevActive = false;
-                      _confirmOrder();
-                    } else {
-                      activeStep++;
-                      //describe issue page
-                      if (activeStep == 1) {
-                        //navigating after first page
-                        _prevActive = true;
-                        _nextActive = true;
-                        //technician already selected
-                        if (_assignedTo != " ") {
-                          _nextActive = true;
-                        }
-                      }
-                      //select tech page
-                      if (activeStep == 2) {
-                        //technician already selected
-                        if (_assignedTo != " ") {
-                          _nextActive = true;
-                        } else {
-                          _nextActive = false;
-                        }
-                      }
-                      //tech profile page
-                      if (activeStep == 3) {
-                        _prevActive = true;
-                      }
+          try{
 
-                      //Creating order page
-                      if (activeStep == 4) {
-                        _prevActive = false;
-                        _nextActive = false;
-                        // _confirmOrder();
-                      }
-                    }
-                  });
+            if (activeStep < upperBound) {
+              setState(() {
+                if(activeStep == 1){
+                  _setDesc();
                 }
-              }
+                if (activeStep == 3) {
+                  _prevActive = false;
+                  _confirmOrder();
+                } else {
+                  activeStep++;
+                  //describe issue page
+                  if (activeStep == 1) {
+                    //navigating after first page
+                    _prevActive = true;
+                    _nextActive = true;
+                    //technician already selected
+                    if (_assignedTo != " ") {
+                      _nextActive = true;
+                    }
+                  }
+                  //select tech page
+                  if (activeStep == 2) {
+                    //technician already selected
+                    if (_assignedTo != " ") {
+                      _nextActive = true;
+                    } else {
+                      _nextActive = false;
+                    }
+                  }
+                  //tech profile page
+                  if (activeStep == 3) {
+                    _prevActive = true;
+                  }
+
+                  //Creating order page
+                  if (activeStep == 4) {
+                    _prevActive = false;
+                    _nextActive = false;
+                    // _confirmOrder();
+                  }
+                }
+              });
+            }
+          } catch (e){
+            debugPrint(e.toString());
+          }
+          }
             : null,
         child: Icon(
           activeStep == 3 ? Icons.upload : Icons.navigate_next,
@@ -1153,7 +1161,7 @@ class _StepperProcessState extends State<StepperProcess> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: TextFormField(
+            child: TextField(
               controller: searchTechnicianController,
               maxLines: 1,
               textInputAction: TextInputAction.next,
@@ -1781,11 +1789,10 @@ class _StepperProcessState extends State<StepperProcess> {
                 height: 16,
               ),
               TextFormField(
-                focusNode: firstFocusNode,
                 controller: customIssueController,
                 maxLines: 5,
                 textInputAction: TextInputAction.next,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                // autovalidateMode: AutovalidateMode.onUserInteraction,
                 // validator: (value) => (listOfRespectiveIssuesFromMap!
                 //     .contains(value))
                 //     ? "Don't type an issue that already exists in the list"
@@ -1804,7 +1811,7 @@ class _StepperProcessState extends State<StepperProcess> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  labelText: "What is the issue...",
+                  // labelText: "What is the issue...",
                   alignLabelWithHint: true,
                   labelStyle: TextStyle(color: Colors.black54),
                   focusedBorder: OutlineInputBorder(
@@ -1877,23 +1884,16 @@ class _StepperProcessState extends State<StepperProcess> {
                   },
                 ),
               ),
-              // Container(
-              //   width: 50,
-              //   height: 50,
-              //   child: FloatingActionButton(
-              //     onPressed: () => {
-              //       setIssueDesc(
-              //           -1, true, customIssueController.text.toString().trim())
-              //     },
-              //     heroTag: AppStrings.globalHeaderHero,
-              //     child: Icon(Icons.arrow_forward),
-              //   ),
-              // ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  void _setDesc() {
+    _issueDesc = customIssueController.text.trim();
+    debugPrint("Desc is $_issueDesc");
   }
 
   void showCustomDialog(BuildContext context, List listOfIssues) {
@@ -1922,7 +1922,7 @@ class _StepperProcessState extends State<StepperProcess> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () {
-                        setIssueDesc(index, false, "");
+                        _setCommonIssueDesc(index, false);
                         _isCustomIssue = false;
                       },
                       child: AnimatedContainer(
@@ -1963,26 +1963,25 @@ class _StepperProcessState extends State<StepperProcess> {
     );
   }
 
-  void setIssueDesc(int index, bool isCustomIssue, String customIssueTyped) {
+  void _setCommonIssueDesc(int index, bool isCustomIssue) {
     if (!isCustomIssue) {
       List<String>? listOfRespectiveIssuesFromMap =
           CommonIssues.mapAllCommonIssues[_issueCategory];
       _issueDesc = listOfRespectiveIssuesFromMap![index];
-      debugPrint("issue desc is " + _issueDesc.toString());
 
       customIssueController.text = _issueDesc;
       setState(() => selectIssueValue = index);
       Navigator.pop(context);
+
     } else if (isCustomIssue) {
       _isCustomIssue = isCustomIssue;
-      _issueDesc = customIssueTyped;
+      _issueDesc = customIssueController.text.trim();
       setState(() => selectIssueValue = 134);
       Navigator.pop(context);
     }
+    debugPrint("issue desc is " + _issueDesc.toString());
 
-    if (_issueDesc == "") {
-      _issueDesc = "No Description made";
-    }
+
   }
 
   FocusNode firstFocusNode = FocusNode();
@@ -2229,26 +2228,11 @@ class _StepperProcessState extends State<StepperProcess> {
 
   @override
   void dispose() {
+    customIssueController.dispose();
     firstFocusNode.removeListener(() {});
     super.dispose();
   }
 
-  @override
-  void initState() {
-    customIssueController = TextEditingController();
-    firstFocusNode.addListener(() {
-      // if(!firstFocusNode.hasFocus){
-      //   if(customIssueController.text.trim().toString().isEmpty){
-      //     _isIssueDescribed = false;
-      //     Fluttertoast.showToast(msg: "Empty issue");
-      //   } else {
-      //     _isIssueDescribed = false;
-      //     Fluttertoast.showToast(msg: "Issue made");
-      //   }
-      // }
-    });
-    super.initState();
-  }
 
   Widget categoryPageHeader(bool visible) {
     return Container(

@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- styled pending/completed orders page
+- styled user favourites page
 
 ## (  ) Creating and Styling the layouts
 

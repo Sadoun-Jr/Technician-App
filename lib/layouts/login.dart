@@ -457,28 +457,30 @@ int xyz = 4;
                             border: Border.all(width: 1, color: Colors.white54),
                             color: Colors.grey.shade200.withOpacity(0.25)),
                         child: Center(
-                            child: Align(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                image,
-                                height: 40,
-                                width: 40,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  text,
-                                  style: TextStyle(fontSize: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Image.asset(
+                                    image,
+                                    height: 40,
+                                    width: 40,
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        )),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Flexible(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      text,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )),
                       ),
                     ),
                   ),

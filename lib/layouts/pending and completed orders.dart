@@ -52,11 +52,6 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
               borderRadius: BorderRadius.vertical(
                   bottom: Radius.elliptical(
                       MediaQuery.of(context).size.width, 32))),
-          // shape: RoundedRectangleBorder(
-          //   borderRadius:  BorderRadius.vertical(
-          //     bottom:  Radius.elliptical(MediaQuery.of(context).size.width, 54),
-          //   ),
-          // ),
         ),
         body: Stack(
           children: [
@@ -188,7 +183,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
   Widget ordersList() {
     return Container(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+      margin: EdgeInsets.fromLTRB(8, 5, 8, 5),
       child: orders(),
     );
   }
@@ -307,7 +302,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 5,
+                                      height: 15,
                                     ),
                                     Row(
                                       //========status========
@@ -384,12 +379,30 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                       height: 5,
                                     ),
                                     //========date=========
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text( listOfAllIssues[index].isCompleted! ? "Completed on: " + convertTimeFromDb(listOfAllIssues[index].timeCompleted!) :
-                                          "Requested on: " +convertTimeFromDb(listOfAllIssues[index].timeRequested!),
-                                        style: TextStyle(color: Colors.black54),
-                                      ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text( listOfAllIssues[index].isCompleted! ? "Completed on: " + convertTimeFromDb(listOfAllIssues[index].timeCompleted!) :
+                                              "Requested on: " +convertTimeFromDb(listOfAllIssues[index].timeRequested!),
+                                            style: TextStyle(color: Colors.black54),
+                                          ),
+                                        ),
+
+                                        Visibility(
+                                            visible: !listOfAllIssues[index].isCompleted!
+                                            ,child: Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: IconButton(
+                                            splashColor: Colors.white,
+                                            onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                                MarkOrderFinished())); },
+                                            icon:Icon(Icons.done, color: Colors.green, size: 35,),
+                                            //todo: change this according to if technician is willing to end
+                                          ),
+                                        ))
+                                      ],
                                     ),
                                     SizedBox(
                                       height: 5,
@@ -447,279 +460,18 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
                                           ],
                                         ),
                                         //=========review=========
-
-
                                       ],
                                     ),
                                     SizedBox(height: 5,),
                                     Visibility(child: Text(listOfAllIssues[index].technicianReview!),
                                       visible: listOfAllIssues[index]
                                           .isCompleted!,),
-                                    Visibility(
-                                    visible: !listOfAllIssues[index].isCompleted!
-                                    ,child: Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: SizedBox(
-                                        height: 45,
-                                        width: 45,
-                                        child: FloatingActionButton(
-                                          splashColor: Colors.white,
-                                          onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                          MarkOrderFinished())); },
-                                          child: Icon(Icons.done),
-                                          //todo: change this according to if technician is willing to end
-                                          backgroundColor: Colors.green,
-                                          heroTag: 32334,
-                                        ),
-                                      ),
-                                    ))
+
                                   ],
                                 ),
                               )
                             ],
                           ),
-
-                          // child: Column(
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         Column(
-                          //           children: [
-                          //             Align(
-                          //               alignment: Alignment.topCenter,
-                          //               child: Container(
-                          //                 decoration: BoxDecoration(
-                          //                     shape: BoxShape.circle,
-                          //                     color: Colors.transparent),
-                          //                 height: 60.0,
-                          //                 width: 60.0,
-                          //                 child: Image.asset(
-                          //                     CommonIssues.mapOfSelectedImages[
-                          //                         listOfAllIssues[index]
-                          //                             .issueCategory]!),
-                          //               ),
-                          //             ),
-                          //             Container(
-                          //               padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                          //               child: Align(
-                          //                 alignment: Alignment.topLeft,
-                          //                 child: Text(
-                          //                   listOfAllIssues[index].paymentMethod ??
-                          //                       "Not available",
-                          //                   style: TextStyle(
-                          //                       color: listOfAllIssues[index]
-                          //                                   .paymentMethod ==
-                          //                               "In App"
-                          //                           ? Colors.green
-                          //                           : Colors.red),
-                          //                 ),
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //         Container(
-                          //           width: MediaQuery.of(context).size.width * 0.71,
-                          //           child: Column(
-                          //             mainAxisAlignment: MainAxisAlignment.start,
-                          //             children: [
-                          //               Row(
-                          //                 children: [
-                          //                   Expanded(
-                          //                     child: Container(
-                          //                       padding: EdgeInsets.fromLTRB(
-                          //                           16, 0, 16, 0),
-                          //                       child: Align(
-                          //                         alignment: Alignment.topLeft,
-                          //                         child: Text(
-                          //                           listOfAllIssues[index]
-                          //                               .issueDesc!,
-                          //                           maxLines: 2,
-                          //                           overflow: TextOverflow.ellipsis,
-                          //                           style: TextStyle(fontSize: 20),
-                          //                         ),
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //               // Container(
-                          //               //   padding: EdgeInsets.fromLTRB(16, 5, 16, 0),
-                          //               //   child: Align(
-                          //               //     alignment: Alignment.topLeft,
-                          //               //     child: Text(
-                          //               //       listOfAllIssues[index].issueDesc ?? "No description",
-                          //               //       maxLines: 1,
-                          //               //     ),
-                          //               //   ),
-                          //               // ),
-                          //               Row(
-                          //                 children: [
-                          //                   Expanded(
-                          //                     child: Container(
-                          //                       margin: EdgeInsets.fromLTRB(
-                          //                           16, 5, 5, 5),
-                          //                       child: Align(
-                          //                         alignment: Alignment.topLeft,
-                          //                         child: RichText(
-                          //                           maxLines: 1,
-                          //                           overflow: TextOverflow.ellipsis,
-                          //                           text: TextSpan(
-                          //                             children: [
-                          //                               TextSpan(
-                          //                                 recognizer:
-                          //                                     TapGestureRecognizer()
-                          //                                       ..onTap = () => {},
-                          //                                 //todo: change to issuedTo
-                          //                                 text: listOfNamesFromUid[
-                          //                                     index],
-                          //                                 style: TextStyle(
-                          //                                     fontWeight:
-                          //                                         FontWeight.bold,
-                          //                                     color: HexColor(
-                          //                                         "#96878D")),
-                          //                               ),
-                          //                               // TextSpan(
-                          //                               //     text: listOfAllIssues[index].
-                          //                               //     isCompleted!
-                          //                               //         ? 'Completed by: '
-                          //                               //         : "Pending...  ",
-                          //                               //     style: TextStyle(
-                          //                               //         color: listOfAllIssues[index].isCompleted!
-                          //                               //             ? Colors.green
-                          //                               //             : HexColor(
-                          //                               //                 "FFD700"))),
-                          //                             ],
-                          //                           ),
-                          //                         ),
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //               Container(
-                          //                 padding:
-                          //                     EdgeInsets.fromLTRB(16, 0, 16, 0),
-                          //                 child: Align(
-                          //                   alignment: Alignment.topLeft,
-                          //                   child: Text(
-                          //                     //TODO: convert this to date/timestamp
-                          //                     listOfAllIssues[index].isCompleted!
-                          //                         ? "Completed: " + convertTimeFromDb(listOfAllIssues[index]
-                          //                         .timeCompleted!)
-                          //                         : listOfAllIssues[index]
-                          //                             .timeRequested
-                          //                             .toString(),
-                          //                     style: TextStyle(color: listOfAllIssues[index].isCompleted! ? Colors.green[300] :Colors.grey),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //               Visibility(
-                          //                 visible: listOfAllIssues[index].isCompleted!,
-                          //                 child: Text(
-                          //                   listOfAllIssues[index]
-                          //                       .technicianRating
-                          //                       .toString(),
-                          //                   style: TextStyle(
-                          //                     fontSize: 16,
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //               Visibility(
-                          //                 visible: listOfAllIssues[index].isCompleted!,
-                          //                 child: Container(
-                          //                   margin:
-                          //                   EdgeInsets.fromLTRB(5, 0, 16, 0),
-                          //                   child: Icon(
-                          //                     Icons.star,
-                          //                     size: 16,
-                          //                     color: HexColor("FFD700"),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //
-                          //
-                          //               Visibility(
-                          //                 visible:
-                          //                     listOfAllIssues[index].isCompleted!,
-                          //                 child: Container(
-                          //                   padding:
-                          //                       EdgeInsets.fromLTRB(16, 5, 16, 0),
-                          //                   child: Align(
-                          //                     alignment: Alignment.topLeft,
-                          //                     child: Text(
-                          //                       listOfAllIssues[index]
-                          //                               .technicianReview ??
-                          //                           "No review made",
-                          //                       maxLines: 4,
-                          //                       overflow: TextOverflow.ellipsis,
-                          //                       style: TextStyle(fontSize: 19),
-                          //                     ),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //               Container(
-                          //                 padding:
-                          //                 EdgeInsets.fromLTRB(16, 0, 16, 0),
-                          //                 child: Align(
-                          //                   child: Text(
-                          //                     //check if its accepted or not, then write the price if yes
-                          //                     listOfAllIssues[index].price ==
-                          //                         0.0
-                          //                         ? (listOfAllIssues[index]
-                          //                         .isAcceptedByTechnician!
-                          //                         ? "\$${listOfAllIssues[index].price}"
-                          //                         : "Not accepted yet")
-                          //                         : "\$${listOfAllIssues[index].price}",
-                          //                     maxLines: 1,
-                          //                     overflow: TextOverflow.ellipsis,
-                          //                     style: TextStyle(
-                          //                         fontSize: 16,
-                          //                         color: listOfAllIssues[index]
-                          //                             .price ==
-                          //                             0.0
-                          //                             ? Colors.orange
-                          //                             : Colors.black54),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         )
-                          //       ],
-                          //     ),
-                          //     Spacer(),
-                          //     Visibility(
-                          //         visible: false, child: Text("Hello world")),
-                          //     Visibility(
-                          //       visible: !listOfAllIssues[index].isCompleted!,
-                          //       child: Container(
-                          //         padding: EdgeInsets.fromLTRB(16, 5, 16, 0),
-                          //         child: Align(
-                          //           alignment: Alignment.bottomCenter,
-                          //           child: FloatingActionButton.extended(
-                          //             heroTag: index,
-                          //             label: Text(
-                          //               "Mark As Complete",
-                          //               maxLines: 1,
-                          //               overflow: TextOverflow.ellipsis,
-                          //               style: TextStyle(
-                          //                   fontSize: 14, color: Colors.white),
-                          //             ),
-                          //             onPressed: () => {
-                          //               Navigator.push(
-                          //                   context,
-                          //                   MaterialPageRoute(
-                          //                       builder: (context) =>
-                          //                           MarkOrderFinished())),
-                          //               // insertMockTechnicians()
-                          //             },
-                          //             backgroundColor: Colors.green,
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
                         )),
                   ),
                 ),
