@@ -47,6 +47,15 @@ class AppStrings {
   static String userUidKey =
       "userUid"; //TODO: CHANGE TO userUid both var and value
 
+  //database empty values when creating issue, NY = not yet
+  static String paymentMethodNY = " ";
+  static String reviewNY = " ";
+  static int priceNY = 0;
+  static double ratingNY = 0.0;
+  static int timeCompletedNY = 0;
+  static String descNY = "No description made";
+
+
   //issue database keys
   static String issueCategoryKey = "issueCategory";
   static String issueDescKey = "issueDesc";

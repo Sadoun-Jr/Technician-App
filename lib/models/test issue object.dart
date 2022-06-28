@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
 class TestIssue {
-  String issueCategory;
-  String issueDesc;
-  bool isCompleted;
-  double technicianRating;
-  String technicianReview;
-  int timeRequested;
-  int timeCompleted;
-  String paymentMethod;
-  double price;
-  String issueUid;
-  bool isEmergency;
-  bool isPaid;
-  String issuedBy;
-  String issuedTo;
-  bool isAcceptedByTechnician;
-  bool isCanceledByUser;
+  String? issueCategory;
+  String? issueDesc;
+  bool? isCompleted;
+  double? technicianRating; //todo: change to double, its int for -1 ratings in test db
+  String? technicianReview;
+  int? timeRequested;
+  int? timeCompleted;
+  String? paymentMethod;
+  double? price; //todo: change to double, its int for -1 ratings in test db
+  String? issueUid;
+  bool? isEmergency;
+  bool? isPaid;
+  String? issuedBy;
+  String? issuedTo;
+  bool? isAcceptedByTechnician;
+  bool? isCanceledByUser;
+  List? listOfImages;
+  //todo: add isTerminatedMidWork
 
   TestIssue(
       {required this.issueCategory,
@@ -35,5 +37,6 @@ class TestIssue {
       required this.issuedTo,
       required this.isAcceptedByTechnician,
       required this.isCanceledByUser,
+        required this.listOfImages,
       });
 }

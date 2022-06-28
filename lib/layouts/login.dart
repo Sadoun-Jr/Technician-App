@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
-import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
 import 'package:technicians/layouts/stats.dart';
 import 'package:technicians/layouts/stepper.dart';
@@ -318,7 +317,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   void navigateToOnboardingSelection() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => OnboardingSelection()),
+      MaterialPageRoute(builder: (context) => StepperProcess()),
     );
   }
 
@@ -387,7 +386,7 @@ int xyz = 4;
                             Colors.red[200], "123124", () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => OnboardingSelection()),
+                                MaterialPageRoute(builder: (context) => StepperProcess()),
                               );
                             }
                         )),
@@ -397,7 +396,7 @@ int xyz = 4;
                                 () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => StepperProcess()),
+                                MaterialPageRoute(builder: (context) => PendingAndCompletedOrders()),
                               );
                             }))
                   ],

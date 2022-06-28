@@ -48,7 +48,7 @@ class _StepperProcessState extends State<StepperProcess> {
   String _timeRequested = " ";
   String _timeCompleted = " ";
   String _paymentMethod = " ";
-  double? _price = 0.01;
+  double? _price = 0.0;
   String _issueUid = " ";
   bool _isEmergency = false;
   bool _isPaid = false;
@@ -59,7 +59,7 @@ class _StepperProcessState extends State<StepperProcess> {
 
   late TextEditingController customIssueController;
   TextEditingController searchTechnicianController = TextEditingController();
-  String _issueDesc = " ";
+  String _issueDesc = "";
   Color _whiteText = Colors.white;
   Color _midWhite = Colors.white54;
 
@@ -94,28 +94,33 @@ class _StepperProcessState extends State<StepperProcess> {
                   // shrinkWrap: true,
                   // physics: ScrollPhysics(),
                   children: [
-                    IconStepper(
-                      stepRadius: 20,
-                      icons: const [
-                        Icon(Icons.question_mark, color:Colors.white),
-                        Icon(Icons.description, color:Colors.white),
-                        Icon(Icons.list, color:Colors.white),
-                        Icon(Icons.person, color:Colors.white),
-                        Icon(Icons.upload, color:Colors.white),
-                        Icon(Icons.done, color:Colors.white)
-                      ],
-                      enableStepTapping: true,
-                      enableNextPreviousButtons: false,
-                      activeStepColor: _btnColor,
-                      // activeStep property set to activeStep variable defined above.
-                      activeStep: activeStep,
+                    Hero(
+                      tag: "123124",
+                      child: Material(
+                        color: Colors.transparent,
+                        child: IconStepper(
+                          stepRadius: 20,
+                          icons: const [
+                            Icon(Icons.question_mark, color: Colors.white),
+                            Icon(Icons.description, color: Colors.white),
+                            Icon(Icons.list, color: Colors.white),
+                            Icon(Icons.person, color: Colors.white),
+                            Icon(Icons.done, color: Colors.white),
+                          ],
+                          enableStepTapping: true,
+                          enableNextPreviousButtons: false,
+                          activeStepColor: _btnColor,
+                          // activeStep property set to activeStep variable defined above.
+                          activeStep: activeStep,
 
-                      // This ensures step-tapping updates the activeStep.
-                      onStepReached: (index) {
-                        setState(() {
-                          activeStep = index;
-                        });
-                      },
+                          // This ensures step-tapping updates the activeStep.
+                          onStepReached: (index) {
+                            setState(() {
+                              activeStep = index;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                     Container(
                       height: 3,
@@ -144,7 +149,7 @@ class _StepperProcessState extends State<StepperProcess> {
                     ),
                     Visibility(
                       visible: activeStep == 4,
-                      child: _showMyDialog(),
+                      child: creatingIssueOnboarding(),
                     ),
                   ],
                 ),
@@ -171,96 +176,110 @@ class _StepperProcessState extends State<StepperProcess> {
 
   /// Returns the next button.
   Widget nextButton() {
-    return FloatingActionButton(
-      splashColor: _splashClr,
-      backgroundColor: activeStep == 3 ? Colors.green :
-      _nextVisible ? _btnColor : Colors.grey,
-      heroTag: 10,
-      onPressed: _nextVisible
-          ? () {
-              if (activeStep < upperBound) {
-                setState(() {
-                  activeStep++;
-                  //describe issue page
-                  if (activeStep == 1) {
-                    //navigating after first page
-                    _prevVisible = true;
-                    _nextVisible = true;
-                    //technician already selected
-                    if (_assignedTo != " ") {
-                      _nextVisible = true;
-                    }
-                  }
-                  //select tech page
-                  if (activeStep == 2) {
-                    //technician already selected
-                    if (_assignedTo != " ") {
-                      _nextVisible = true;
+    return Visibility(
+      visible: _buttonsVisible,
+      child: FloatingActionButton(
+        splashColor: _splashClr,
+        backgroundColor: activeStep >= 3
+            ? Colors.green
+            : _nextActive
+                ? _btnColor
+                : Colors.grey,
+        heroTag: "1",
+        onPressed: _nextActive
+            ? () {
+                if (activeStep < upperBound) {
+                  setState(() {
+                    if (activeStep == 3) {
+                      _prevActive = false;
+                      _confirmOrder();
                     } else {
-                      _nextVisible = false;
+                      activeStep++;
+                      //describe issue page
+                      if (activeStep == 1) {
+                        //navigating after first page
+                        _prevActive = true;
+                        _nextActive = true;
+                        //technician already selected
+                        if (_assignedTo != " ") {
+                          _nextActive = true;
+                        }
+                      }
+                      //select tech page
+                      if (activeStep == 2) {
+                        //technician already selected
+                        if (_assignedTo != " ") {
+                          _nextActive = true;
+                        } else {
+                          _nextActive = false;
+                        }
+                      }
+                      //tech profile page
+                      if (activeStep == 3) {
+                        _prevActive = true;
+                      }
+
+                      //Creating order page
+                      if (activeStep == 4) {
+                        _prevActive = false;
+                        _nextActive = false;
+                        // _confirmOrder();
+                      }
                     }
-                  }
-                });
-
-                //tech profile page
-                if(activeStep ==3) {
-                  _prevVisible = true;
-                }
-
-                //Creating order page
-                if(activeStep ==4) {
-                  _prevVisible = false;
-                  _nextVisible = false;
-
+                  });
                 }
               }
-            }
-          : null,
-      child: Icon( activeStep == 3? Icons.upload :
-        Icons.navigate_next,
-        size: 35,
+            : null,
+        child: Icon(
+          activeStep == 3 ? Icons.upload : Icons.navigate_next,
+          size: 35,
+        ),
       ),
     );
   }
 
   Widget previousButton() {
-    return FloatingActionButton(
-      splashColor: _splashClr,
-      backgroundColor: _prevVisible ? _btnColor : Colors.grey,
-      heroTag: 12,
-      onPressed: _prevVisible
-          ? () {
-              // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
-              if (activeStep > 0) {
-                setState(() {
-                  activeStep--;
-                  if (activeStep == 0) {
-                    //first page so prev is invisible
-                    _prevVisible = false;
-                    if (isCategorySelected) {
-                      //category already selected so next is visible
-                      _nextVisible = true;
+    return Visibility(
+      visible: _buttonsVisible,
+      child: FloatingActionButton(
+        splashColor: _splashClr,
+        backgroundColor: _prevActive ? _btnColor : Colors.grey,
+        heroTag: "12",
+        onPressed: _prevActive
+            ? () {
+                // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
+                if (activeStep > 0) {
+                  setState(() {
+                    activeStep--;
+                    if (activeStep == 0) {
+                      //first page so prev is invisible
+                      _prevActive = false;
+                      if (isCategorySelected) {
+                        //category already selected so next is visible
+                        _nextActive = true;
+                      }
                     }
-                  }
-                  if (activeStep == 1) {
-                    _nextVisible = true;
-                  }
-                });
+                    if (activeStep == 1) {
+                      _nextActive = true;
+                    }
+                  });
+                }
               }
-            }
-          : null,
-      child: Icon(
-        Icons.navigate_before,
-        size: 35,
+            : null,
+        child: Icon(
+          Icons.navigate_before,
+          size: 35,
+        ),
       ),
     );
   }
 
 // THE FOLLOWING TWO VARIABLES ARE REQUIRED TO CONTROL THE STEPPER.
   int activeStep = 0; // Initial step set to 0.
-  bool _prevVisible = false;
-  bool _nextVisible = false;
-  int upperBound = 5; // upperBound MUST BE total number of icons minus 1.
+  bool _prevActive = false;
+  bool _nextActive = false;
+  int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
+  bool _buttonsVisible = true;
 
   Widget header() {
     return Visibility(
@@ -318,39 +337,200 @@ class _StepperProcessState extends State<StepperProcess> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-  Widget _showMyDialog() {
-    return Column(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          height: 150,
-        ),
-        Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.all(40),
-          child: Text(
-            'Awesome',
-            style: TextStyle(fontSize: 30),
-          ),
-        ),
-        Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-            child: Text('The technician has been notified with your request')),
-        Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.all(40),
-          child: FloatingActionButton.extended(
-              //TODO: set a key here to prevent user from multiple requests
-              label: Text("To dashboard"),
-              onPressed: () => {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/dashboard or login', (Route<dynamic> route) => false)
-                  }),
-        ),
-      ],
+  String orderStatus = "";
+
+  Future<void> _confirmOrder() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              // margin:
+              // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
+                      child: Container(
+                        padding: EdgeInsets.all(25),
+                        height: double.infinity,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(width: 2, color: Colors.white),
+                            color: Colors.grey.shade200.withOpacity(0.25)),
+                        child: Column(
+                          children: [
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "You're about to create an order, "
+                                  "this is irreversible. Continue?",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                )),
+                            SizedBox(
+                              height: 12.5,
+                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: CircleAvatar(
+                                      maxRadius: 40,
+                                      backgroundColor: Colors.red,
+                                      child: Icon(
+                                        Icons.close_rounded,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _buttonsVisible = false;
+                                      Navigator.pop(context);
+                                      setState(() => activeStep++);
+                                      requestOrder();
+                                    },
+                                    child: CircleAvatar(
+                                      maxRadius: 40,
+                                      backgroundColor: Colors.green,
+                                      child: Icon(
+                                        Icons.done,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ))),
+        );
+      },
+    );
+  }
+
+  Future<void> requestOrder() async {
+    Fluttertoast.cancel();
+
+    // Fluttertoast.showToast(msg: "Creating request...");
+
+    setState(() => orderStatus = "Connecting...");
+
+    //check if there is connection
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        debugPrint('connected');
+      }
+      setState(() => orderStatus = "Connected!");
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
+    if (files != null) {
+      setState(() => orderStatus = "Uploading photos...");
+      await uploadImageToFirebase(files);
+      setState(() => orderStatus = "Finished uploading!");
+    }
+
+    try {
+      //get the current user uid
+      final auth = FirebaseAuth.instance;
+      final User user = auth.currentUser!;
+      final userid = user.uid;
+
+      setState(() => orderStatus = "Creating order");
+
+      //create an empty issue with a uid
+      await FirebaseFirestore.instance.collection("issues").add({
+        AppStrings.issueUidKey: " ",
+      }).then((value) async {
+        debugPrint(
+            "Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
+        await FirebaseFirestore.instance
+            .collection("issues")
+            .doc(value.id)
+            .set({
+          AppStrings.listOfImagePathskey: listOfFilePaths,
+          AppStrings.issueCategoryKey: _issueCategory,
+          AppStrings.issueDescKey:
+              _issueDesc == "" ? "No Description made" : _issueDesc,
+          AppStrings.isCompletedKey: false,
+          AppStrings.technicianRatingKey: AppStrings.ratingNY,
+          AppStrings.technicianReviewKey: AppStrings.reviewNY,
+          AppStrings.timeCompletedKey: AppStrings.timeCompletedNY,
+          AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
+          AppStrings.paymentMethodKey: AppStrings.paymentMethodNY,
+          AppStrings.priceKey: _price,
+          AppStrings.issueUidKey: value.id,
+          AppStrings.isEmergencyKey: false,
+          AppStrings.isPaidKey: false,
+          AppStrings.issuedByKey: userid,
+          AppStrings.isAcceptedByTechnicianKey: false,
+          AppStrings.isCanceledByUserKey: false,
+          AppStrings.isTerminatedMidWork: false,
+          AppStrings.issuedToKey: myAssignedTech!.technicianUid
+        });
+      });
+
+      // _showMyDialog();
+      // Fluttertoast.showToast(msg: "Issue created", backgroundColor: Colors.green);
+      setState(() => orderStatus = "Order created!");
+
+      Future.delayed(Duration(milliseconds: 2000), () {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            '/dashboard or login', (Route<dynamic> route) => false);
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+      debugPrint(e.toString());
+    }
+  }
+
+  Widget creatingIssueOnboarding() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height - 170,
+      child: Column(
+        children: [
+          Expanded(
+              flex: 2,
+              child: Lottie.asset(
+                orderStatus == "Order created!"
+                    ? "assets/order mde.json"
+                    : "assets/making order.json",
+                repeat: orderStatus == "Order created!" ? false : true,
+              )),
+          Expanded(
+              flex: 1,
+              child: Text(
+                orderStatus,
+                style: TextStyle(
+                    fontSize: 25,
+                    color: orderStatus != "Order created!"
+                        ? HexColor("#96878D")
+                        : Colors.green),
+              ))
+        ],
+      ),
     );
   }
 
@@ -581,7 +761,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(30)),
                                       border: Border.all(
-                                          width: 2, color: Colors.orangeAccent),
+                                          width: 2, color: _ratingBoxClr),
                                       color: Colors.grey.shade200
                                           .withOpacity(0.25)),
                                   child: Center(
@@ -594,7 +774,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                             alignment: Alignment.topCenter,
                                             child: Icon(
                                               Icons.star,
-                                              color: Colors.orangeAccent,
+                                              color: _ratingBoxClr,
                                             )),
                                         SizedBox(
                                           height: 5,
@@ -607,7 +787,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                                 "0.0",
                                             style: TextStyle(
                                                 fontSize: 30,
-                                                color: Colors.orangeAccent),
+                                                color: _ratingBoxClr),
                                           ),
                                         ),
                                         SizedBox(
@@ -618,7 +798,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                           child: Text(
                                             "Rating",
                                             style: TextStyle(
-                                                color: Colors.orange,
+                                                color: _ratingBoxClr,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         )
@@ -649,7 +829,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(30)),
                                       border: Border.all(
-                                          width: 2, color: Colors.blueAccent),
+                                          width: 2, color: _completedBoxClr),
                                       color: Colors.grey.shade200
                                           .withOpacity(0.25)),
                                   child: Center(
@@ -662,7 +842,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                             alignment: Alignment.topCenter,
                                             child: Icon(
                                               Icons.handshake,
-                                              color: Colors.blueAccent,
+                                              color: _completedBoxClr,
                                             )),
                                         Align(
                                           alignment: Alignment.topCenter,
@@ -671,7 +851,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                             "%",
                                             style: TextStyle(
                                                 fontSize: 30,
-                                                color: Colors.blueAccent),
+                                                color: _completedBoxClr),
                                           ),
                                         ),
                                         SizedBox(
@@ -683,7 +863,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                           child: Text(
                                             "Completion",
                                             style: TextStyle(
-                                                color: Colors.blueAccent,
+                                                color: _completedBoxClr,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         )
@@ -716,7 +896,8 @@ class _StepperProcessState extends State<StepperProcess> {
                               child: AnimatedContainer(
                                 duration: Duration(milliseconds: 200),
                                 padding: EdgeInsets.all(12),
-                                height: _isDescExpanded ? 150 : 100,
+                                // height: _isDescExpanded ? 150 : 100,
+                                height: 100,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                     borderRadius:
@@ -763,6 +944,7 @@ class _StepperProcessState extends State<StepperProcess> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
                       width: double.infinity,
                       height: 130,
                       decoration: BoxDecoration(
@@ -822,6 +1004,7 @@ class _StepperProcessState extends State<StepperProcess> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
                       width: double.infinity,
                       height: 70,
                       decoration: BoxDecoration(
@@ -886,12 +1069,13 @@ class _StepperProcessState extends State<StepperProcess> {
     );
   }
 
+  final Color _darkTxtClr = HexColor("#96878D");
   bool _isDescExpanded = false;
   double _statsHeight = 105;
   double _statsWidth = 105;
-  final Color _jobsBoxClr = Colors.green;
-  final Color _ratingBoxClr = Colors.orangeAccent;
-  final Color _completedBoxClr = Colors.blueAccent;
+  final Color _jobsBoxClr = HexColor("#96878D");
+  final Color _ratingBoxClr = HexColor("#96878D");
+  final Color _completedBoxClr = HexColor("#96878D");
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
@@ -1010,6 +1194,21 @@ class _StepperProcessState extends State<StepperProcess> {
 
   Future<void> getAppropriateTechnicians() async {
     listOfFavourites.clear();
+
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/dashboard or login', (Route<dynamic> route) => false);
+
+      Fluttertoast.showToast(
+          msg: "No internet connection, unable to proceed",
+          backgroundColor: Colors.red);
+      return;
+    }
 
     _issuedByUid = FirebaseAuth.instance.currentUser!.uid;
     listOfAppropriateTechnicians.clear();
@@ -1267,6 +1466,8 @@ class _StepperProcessState extends State<StepperProcess> {
                                                                             border: Border.all(width: 2, color: Colors.white)),
                                                                         child:
                                                                             CircleAvatar(
+                                                                          backgroundColor:
+                                                                              Colors.white70,
                                                                           maxRadius:
                                                                               28.5,
                                                                           backgroundImage:
@@ -1335,21 +1536,21 @@ class _StepperProcessState extends State<StepperProcess> {
                                                                 SizedBox(
                                                                   height: 6,
                                                                 ),
-                                                                Text(
-                                                                  listOfAppropriateTechnicians[
-                                                                              index]
-                                                                          .jobTitle ??
-                                                                      "null",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13,
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade600,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                  maxLines: 1,
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    listOfAppropriateTechnicians[index]
+                                                                            .jobTitle ??
+                                                                        "null",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade600,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                    maxLines: 1,
+                                                                  ),
                                                                 )
                                                               ],
                                                             ),
@@ -1465,12 +1666,31 @@ class _StepperProcessState extends State<StepperProcess> {
             return SizedBox(
               height: MediaQuery.of(context).size.height - 125,
               width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: Lottie.asset('assets/loading.json',
-                    height: 75,
-                    width: 75,
-                    alignment: Alignment.center,
-                    animate: true),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Lottie.asset('assets/loading gear.json',
+                          height: 75,
+                          width: 75,
+                          alignment: Alignment.center,
+                          animate: true),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "Loading...",
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                ],
               ),
             );
           }
@@ -1482,7 +1702,7 @@ class _StepperProcessState extends State<StepperProcess> {
     _assignedTo = listOfAppropriateTechnicians[index].firstName! +
         " " +
         listOfAppropriateTechnicians[index].familyName!;
-    _nextVisible = true;
+    _nextActive = true;
     if (isAppliance) {
       _price = listOfAppropriateTechnicians[index]
           .pricesForAppliancesSubscribedToIssues![_issueCategory];
@@ -1491,7 +1711,10 @@ class _StepperProcessState extends State<StepperProcess> {
           .pricesForJobIssues![_issueCategory];
     }
     if (_isCustomIssue) {
-      _price = -1;
+      _price = 0;
+    }
+    if (_price == null) {
+      _price = 0;
     }
     debugPrint("Assigned to " + _assignedTo);
     setState(() {
@@ -1603,7 +1826,7 @@ class _StepperProcessState extends State<StepperProcess> {
                 width: double.infinity,
                 child: FloatingActionButton.extended(
                   splashColor: _splashClr,
-                  heroTag: 2132,
+                  heroTag: 3333332132,
                   onPressed: () {
                     _isCustomIssue = false;
                     //TODO: make dialog show "no common issues" if none exist
@@ -1623,7 +1846,7 @@ class _StepperProcessState extends State<StepperProcess> {
                 width: double.infinity,
                 child: FloatingActionButton.extended(
                   splashColor: _splashClr,
-                  heroTag: 2132,
+                  heroTag: 23426776,
                   onPressed: () {
                     selectMultipleImages();
                   },
@@ -1707,7 +1930,7 @@ class _StepperProcessState extends State<StepperProcess> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15.0),
                           color: selectIssueValue == index
-                              ? Colors.greenAccent
+                              ? _darkTxtClr
                               : Colors.transparent,
                         ),
                         child: Center(
@@ -1756,6 +1979,10 @@ class _StepperProcessState extends State<StepperProcess> {
       setState(() => selectIssueValue = 134);
       Navigator.pop(context);
     }
+
+    if (_issueDesc == "") {
+      _issueDesc = "No Description made";
+    }
   }
 
   FocusNode firstFocusNode = FocusNode();
@@ -1769,7 +1996,7 @@ class _StepperProcessState extends State<StepperProcess> {
 
   Future uploadImageToFirebase(dynamic listOfFiles) async {
     try {
-      Fluttertoast.showToast(msg: "Uploading attached images...");
+      // Fluttertoast.showToast(msg: "Uploading attached images...");
       // Create a Reference to the file
       var currentTime = DateTime.now().millisecondsSinceEpoch;
       for (int i = 0; i < files!.length; i++) {
@@ -1788,8 +2015,8 @@ class _StepperProcessState extends State<StepperProcess> {
 
         uploadTask = null;
       }
-      Fluttertoast.showToast(
-          msg: "Finished Uploading", backgroundColor: Colors.green);
+      // Fluttertoast.showToast(
+      // msg: "Finished Uploading", backgroundColor: Colors.green);
     } catch (e) {
       debugPrint(e.toString());
       Fluttertoast.showToast(
@@ -1876,15 +2103,16 @@ class _StepperProcessState extends State<StepperProcess> {
         highlightColor: Colors.white,
         onTap: () {
           isCategorySelected = true;
-          _nextVisible = true;
+          _nextActive = true;
           setState(() => selectCategoryValue = index);
           setIssueCategory(selectCategoryValue, true);
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-              color:
-                  selectCategoryValue == index ? _btnColor : Colors.transparent,
+              color: selectCategoryValue == index
+                  ? _darkTxtClr
+                  : Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
             duration: Duration(milliseconds: 400),
@@ -1937,7 +2165,7 @@ class _StepperProcessState extends State<StepperProcess> {
         highlightColor: Colors.white,
         onTap: () {
           isCategorySelected = true;
-          _nextVisible = true;
+          _nextActive = true;
           setState(() => selectCategoryValue = index);
           setIssueCategory(selectCategoryValue, false);
         },
@@ -1945,7 +2173,7 @@ class _StepperProcessState extends State<StepperProcess> {
         child: AnimatedContainer(
             decoration: BoxDecoration(
               color: selectCategoryValue == index
-                  ? Colors.greenAccent
+                  ? Colors.transparent
                   : Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
@@ -1962,7 +2190,9 @@ class _StepperProcessState extends State<StepperProcess> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(width: 2, color: Colors.white),
+                          border: Border.all(
+                              width: 0.1,
+                              color: Colors.white), //todo: fix border width
                           color: Colors.grey.shade200.withOpacity(0.25)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

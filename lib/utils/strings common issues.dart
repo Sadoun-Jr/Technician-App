@@ -95,6 +95,30 @@ class CommonIssues{
   static String imageApplianceCategory7NS = "assets/washing-machine ns.png";
   static String imageApplianceCategory8NS = "assets/question-mark ns.png";
 
+  //map for selected images for pending orders page
+  static Map<String, String> mapOfSelectedImages = {
+    technicianCategory0:imageTechnicianCategory0S,
+    technicianCategory1:imageTechnicianCategory1S,
+    technicianCategory2:imageTechnicianCategory2S,
+    technicianCategory3:imageTechnicianCategory3S,
+    technicianCategory4:imageTechnicianCategory4S,
+    technicianCategory5:imageTechnicianCategory5S,
+    technicianCategory6:imageTechnicianCategory6S,
+    technicianCategory7:imageTechnicianCategory7S,
+    technicianCategory8:imageTechnicianCategory8S,
+    technicianCategory9: "",
+    applianceCategory0:imageApplianceCategory0S,
+    applianceCategory1:imageApplianceCategory1S,
+    applianceCategory2:imageApplianceCategory2S,
+    applianceCategory3:imageApplianceCategory3S,
+    applianceCategory4:imageApplianceCategory4S,
+    applianceCategory5:imageApplianceCategory5S,
+    applianceCategory6:imageApplianceCategory6S,
+    applianceCategory7:imageApplianceCategory7S,
+    applianceCategory8:imageApplianceCategory8S,
+    applianceCategory9: "",
+  };
+
   //list for images of appliances
   static List<String> listOfSelectedApplianceImages = [
     imageApplianceCategory0S,

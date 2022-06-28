@@ -4,9 +4,9 @@ import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
+import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
 import 'package:technicians/layouts/user%20favourites.dart';
-import 'layouts/onboarding selection process.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        "/onboarding selection": (context) => const OnboardingSelection(),
+        "/onboarding selection": (context) => const StepperProcess(),
         "/dashboard or login" : (context) => const LoginLayout(),
         "/user favourites" : (context) => const UserFavourites(),
 

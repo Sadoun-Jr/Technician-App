@@ -119,8 +119,8 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
         .then((value) async {
       for (var element in value.docs) {
         TestIssue i = TestIssue(
-          technicianRating: double.parse(
-              element.data()[AppStrings.technicianRatingKey].toString()),
+          technicianRating: element.data()[AppStrings.technicianRatingKey] ?? -1> 0 ?
+          double.parse(element.data()[AppStrings.technicianRatingKey].toString()) : 0,
           isCompleted: element.data()[AppStrings.isCompletedKey],
           timeCompleted: element.data()[AppStrings.timeCompletedKey],
           timeRequested: element.data()[AppStrings.timeRequestedKey],
@@ -134,14 +134,16 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
           issuedBy: element.data()[AppStrings.issuedByKey],
           issueUid: element.data()[AppStrings.issueUidKey],
           paymentMethod: element.data()[AppStrings.paymentMethodKey],
-          price: double.parse(element.data()[AppStrings.priceKey].toString()),
+          price: element.data()[AppStrings.priceKey] ?? -1 > 0 ?
+          double.parse(element.data()[AppStrings.priceKey].toString()) : 0,
           technicianReview: element.data()[AppStrings.technicianReviewKey],
           issuedTo: element.data()[AppStrings.issuedToKey],
+          listOfImages: element.data()[AppStrings.listOfImagePathskey]
         );
 
         listOfAllIssues.add(i);
 
-        Future<String> name = changeUidToName(i.issuedBy, true);
+        Future<String> name = changeUidToName(i.issuedBy!, true);
         listOfNamesFromUid.add(await name);
       }
     });
@@ -184,8 +186,8 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
         .then((value) async {
       for (var element in value.docs) {
         TestIssue i = TestIssue(
-          technicianRating: double.parse(
-              element.data()[AppStrings.technicianRatingKey].toString()),
+            technicianRating: element.data()[AppStrings.technicianRatingKey] ?? -1 > 0 ?
+            double.parse(element.data()[AppStrings.technicianRatingKey].toString()) : 0,
           isCompleted: element.data()[AppStrings.isCompletedKey],
           timeCompleted: element.data()[AppStrings.timeCompletedKey],
           timeRequested: element.data()[AppStrings.timeRequestedKey],
@@ -199,14 +201,17 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
           issuedBy: element.data()[AppStrings.issuedByKey],
           issueUid: element.data()[AppStrings.issueUidKey],
           paymentMethod: element.data()[AppStrings.paymentMethodKey],
-          price: double.parse(element.data()[AppStrings.priceKey].toString()),
-          technicianReview: element.data()[AppStrings.technicianReviewKey],
+            price: element.data()[AppStrings.priceKey] ?? -1 > 0 ?
+            double.parse(element.data()[AppStrings.priceKey].toString()) : 0,
+            technicianReview: element.data()[AppStrings.technicianReviewKey],
           issuedTo: element.data()[AppStrings.issuedToKey],
+            listOfImages: element.data()[AppStrings.listOfImagePathskey]
+
         );
 
         listOfAllIssues.add(i);
 
-        Future<String> name = changeUidToName(i.issuedTo, false);
+        Future<String> name = changeUidToName(i.issuedTo!, false);
         listOfNamesFromUid.add(await name);
       }
     });
@@ -307,7 +312,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                               height: 6,
                                             ),
                                             Text(
-                                              listOfAllIssues[index].issueDesc,
+                                              listOfAllIssues[index].issueDesc ?? "No description",
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   color: Colors.grey.shade600,
@@ -319,7 +324,7 @@ class _TechnicianReviewsState extends State<TechnicianReviews> {
                                             ),
                                             Text(
                                               listOfAllIssues[index]
-                                                  .technicianReview,
+                                                  .technicianReview ?? "No review made",
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   color: Colors.grey.shade600,

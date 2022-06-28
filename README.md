@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Styled third step onboarding
+- styled pending/completed orders page
 
 ## (  ) Creating and Styling the layouts
 

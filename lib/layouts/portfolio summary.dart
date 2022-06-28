@@ -10,7 +10,6 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:technicians/layouts/create%20portfolio%20item.dart';
-import 'package:technicians/layouts/onboarding%20selection%20process.dart';
 import 'package:technicians/layouts/single%20portfolio%20item.dart';
 import 'package:technicians/layouts/view%20detailed%20portfolio%20item.dart';
 import 'package:technicians/models/portfolio%20object.dart';
