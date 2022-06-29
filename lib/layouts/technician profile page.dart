@@ -346,6 +346,7 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                           flex:1,
                                           child: FloatingActionButton.extended(
                                             onPressed: () {
+                                              debugPrint("${selectedTechnician!.firstName!} is first name");
                                               Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                               StepperProcess(hiredSpecificTech: selectedTechnician!)));
                                             },

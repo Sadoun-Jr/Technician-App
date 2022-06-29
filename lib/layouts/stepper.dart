@@ -198,6 +198,7 @@ class _StepperProcessState extends State<StepperProcess> {
                         activeStep = activeStep + 2;
                         _prevActive = true;
                         _nextActive = true;
+                        _setDesc();
                       }
                       if (activeStep == 3) {
                         _prevActive = false;
@@ -217,6 +218,7 @@ class _StepperProcessState extends State<StepperProcess> {
                           //navigating after first page
                           _prevActive = true;
                           _nextActive = true;
+
                           //technician already selected
                           if (_assignedTo != " ") {
                             _nextActive = true;
@@ -224,6 +226,9 @@ class _StepperProcessState extends State<StepperProcess> {
                         }
                         //select tech page
                         if (activeStep == 2) {
+
+                          _setDesc();
+
                           //technician already selected
                           if (_assignedTo != " ") {
                             _nextActive = true;
@@ -437,6 +442,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.pop(context);
+                                      setState(() => _prevActive =true);
                                     },
                                     child: CircleAvatar(
                                       maxRadius: 40,
@@ -487,13 +493,19 @@ class _StepperProcessState extends State<StepperProcess> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        debugPrint('connected');
+        // debugPrint('connected');
       }
       setState(() => orderStatus = "Connected!");
     } on SocketException catch (_) {
       Fluttertoast.showToast(
           msg: "No internet connection", backgroundColor: Colors.red);
+      setState(() {
+        activeStep--;
+        _prevActive = true;
+        _nextActive = true;
+      });
       return;
+
     }
 
     if (files != null) {
@@ -502,7 +514,7 @@ class _StepperProcessState extends State<StepperProcess> {
       setState(() => orderStatus = "Finished uploading!");
     }
 
-    try {
+    // try {
       //get the current user uid
       final auth = FirebaseAuth.instance;
       final User user = auth.currentUser!;
@@ -538,7 +550,7 @@ class _StepperProcessState extends State<StepperProcess> {
           AppStrings.isAcceptedByTechnicianKey: false,
           AppStrings.isCanceledByUserKey: false,
           AppStrings.isTerminatedMidWork: false,
-          AppStrings.issuedToKey: myAssignedTech!.technicianUid
+          AppStrings.issuedToKey: _isHiringFromFavs ? widget.hiredSpecificTech!.technicianUid! : myAssignedTech!.technicianUid
         });
       });
 
@@ -550,10 +562,15 @@ class _StepperProcessState extends State<StepperProcess> {
         Navigator.of(context).pushNamedAndRemoveUntil(
             '/dashboard or login', (Route<dynamic> route) => false);
       });
-    } catch (e) {
-      Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
-      debugPrint(e.toString());
-    }
+    // } catch (e) {
+    //   Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+    //   debugPrint(e.toString());
+    //   setState(() {
+    //     activeStep--;
+    //     _prevActive = true;
+    //     _nextActive = true;
+    //   });
+    // }
   }
 
   Widget creatingIssueOnboarding() {
@@ -1022,7 +1039,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                   children: [
                                     Text(
                                       _isHiringFromFavs
-                                          ? widget.hiredSpecificTech!.techDesc!
+                                          ? widget.hiredSpecificTech!.techDesc ?? "No Desc"
                                           : myAssignedTech?.techDesc ??
                                               AppStrings.listOfReviews[1] +
                                                   AppStrings.listOfReviews[2] +
@@ -1210,7 +1227,7 @@ class _StepperProcessState extends State<StepperProcess> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        debugPrint('connected');
+        // debugPrint('connected');
       }
     } on SocketException catch (_) {
       Fluttertoast.showToast(
@@ -1335,7 +1352,7 @@ class _StepperProcessState extends State<StepperProcess> {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        debugPrint('connected');
+        // debugPrint('connected');
       }
     } on SocketException catch (_) {
       Navigator.of(context).pushNamedAndRemoveUntil(

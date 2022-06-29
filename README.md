@@ -8,7 +8,7 @@ I will add various info down as I think of it<br />
 
 - added "hire me" and "like" to tech profile page
 - styled tech profile page
-- KNOWN BUG: hire me for any tech other than the first 1 throws null exc
+- KNOWN BUG: hire me for any tech other than the first 1 throws null exc (fixed)
 
 ## (  ) Creating and Styling the layouts
 
