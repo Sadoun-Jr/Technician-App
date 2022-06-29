@@ -5,7 +5,7 @@ class Technician {
   String? familyName;
   String? technicianUid;
   String? jobTitle;
-  String? personalDesc; //NOT IN DATABASE
+  String? techDesc;
   String? image; //TODO: change to bitmap...?
   double? rating;
   bool? isAvailable;
@@ -36,7 +36,7 @@ class Technician {
     required this.familyName,
     required this.jobTitle,
     required this.technicianUid,
-    required this.personalDesc,
+    required this.techDesc,
     required this.image,
     required this.rating,
     required this.isAvailable,});
@@ -46,7 +46,7 @@ class Technician {
       required this.familyName,
       required this.jobTitle,
     required this.technicianUid,
-      required this.personalDesc,
+      required this.techDesc,
       required this.image,
       required this.rating,
       required this.isAvailable,

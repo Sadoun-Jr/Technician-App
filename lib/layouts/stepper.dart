@@ -32,7 +32,8 @@ import '../widgets/navigation drawer.dart';
 import '../widgets/slider.dart';
 
 class StepperProcess extends StatefulWidget {
-  const StepperProcess({Key? key}) : super(key: key);
+  final Technician? hiredSpecificTech;
+  const StepperProcess({this.hiredSpecificTech, Key? key}) : super(key: key);
 
   @override
   State<StepperProcess> createState() => _StepperProcessState();
@@ -40,6 +41,7 @@ class StepperProcess extends StatefulWidget {
 
 class _StepperProcessState extends State<StepperProcess> {
   static String _issueCategory = CommonIssues.applianceCategory9;
+  bool _isHiringFromFavs = false;
   bool _isCustomIssue = false;
   bool _isCompleted = false;
   String _assignedTo = " ";
@@ -188,55 +190,62 @@ class _StepperProcessState extends State<StepperProcess> {
         heroTag: "1",
         onPressed: _nextActive
             ? () {
-          try{
+                if (activeStep < upperBound) {
+                  if (_isHiringFromFavs) {
+                    setState(() {
+                      //proceed directly to upload issue after writing it
+                      if (activeStep == 1) {
+                        activeStep = activeStep + 2;
+                        _prevActive = true;
+                        _nextActive = true;
+                      }
+                      if (activeStep == 3) {
+                        _prevActive = false;
+                        _nextActive = false;
+                        _confirmOrder();
+                      }
+                    });
+                  } else if (!_isHiringFromFavs) {
+                    setState(() {
+                      if (activeStep == 3) {
+                        _prevActive = false;
+                        _confirmOrder();
+                      } else {
+                        activeStep++;
+                        //describe issue page
+                        if (activeStep == 1) {
+                          //navigating after first page
+                          _prevActive = true;
+                          _nextActive = true;
+                          //technician already selected
+                          if (_assignedTo != " ") {
+                            _nextActive = true;
+                          }
+                        }
+                        //select tech page
+                        if (activeStep == 2) {
+                          //technician already selected
+                          if (_assignedTo != " ") {
+                            _nextActive = true;
+                          } else {
+                            _nextActive = false;
+                          }
+                        }
+                        //tech profile page
+                        if (activeStep == 3) {
+                          _prevActive = true;
+                        }
 
-            if (activeStep < upperBound) {
-              setState(() {
-                if(activeStep == 1){
-                  _setDesc();
-                }
-                if (activeStep == 3) {
-                  _prevActive = false;
-                  _confirmOrder();
-                } else {
-                  activeStep++;
-                  //describe issue page
-                  if (activeStep == 1) {
-                    //navigating after first page
-                    _prevActive = true;
-                    _nextActive = true;
-                    //technician already selected
-                    if (_assignedTo != " ") {
-                      _nextActive = true;
-                    }
-                  }
-                  //select tech page
-                  if (activeStep == 2) {
-                    //technician already selected
-                    if (_assignedTo != " ") {
-                      _nextActive = true;
-                    } else {
-                      _nextActive = false;
-                    }
-                  }
-                  //tech profile page
-                  if (activeStep == 3) {
-                    _prevActive = true;
-                  }
-
-                  //Creating order page
-                  if (activeStep == 4) {
-                    _prevActive = false;
-                    _nextActive = false;
-                    // _confirmOrder();
+                        //Creating order page
+                        if (activeStep == 4) {
+                          _prevActive = false;
+                          _nextActive = false;
+                        }
+                      }
+                    });
                   }
                 }
-              });
-            }
-          } catch (e){
-            debugPrint(e.toString());
-          }
-          }
+              }
             : null,
         child: Icon(
           activeStep == 3 ? Icons.upload : Icons.navigate_next,
@@ -257,20 +266,34 @@ class _StepperProcessState extends State<StepperProcess> {
             ? () {
                 // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
                 if (activeStep > 0) {
-                  setState(() {
-                    activeStep--;
-                    if (activeStep == 0) {
-                      //first page so prev is invisible
-                      _prevActive = false;
-                      if (isCategorySelected) {
-                        //category already selected so next is visible
+                  if (_isHiringFromFavs) {
+                    setState(() {
+                      if (activeStep == 3) {
+                        activeStep = activeStep - 2;
+                        _prevActive = false;
                         _nextActive = true;
                       }
-                    }
-                    if (activeStep == 1) {
-                      _nextActive = true;
-                    }
-                  });
+                    });
+                  } else if (!_isHiringFromFavs) {
+                    setState(() {
+                      activeStep--;
+                      if (activeStep == 0) {
+                        //first page so prev is invisible
+                        _prevActive = false;
+                        if (isCategorySelected) {
+                          //reset selected tech and selectd issue
+                          selectTechnicianValue = 32;
+                          _issueDesc = "";
+                          customIssueController.text = "";
+                          //category already selected so next is visible
+                          _nextActive = true;
+                        }
+                      }
+                      if (activeStep == 1) {
+                        _nextActive = true;
+                      }
+                    });
+                  }
                 }
               }
             : null,
@@ -283,11 +306,31 @@ class _StepperProcessState extends State<StepperProcess> {
   }
 
 // THE FOLLOWING TWO VARIABLES ARE REQUIRED TO CONTROL THE STEPPER.
-  int activeStep = 0; // Initial step set to 0.
   bool _prevActive = false;
   bool _nextActive = false;
   int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
   bool _buttonsVisible = true;
+  late int activeStep;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isHiringFromFavs = (widget.hiredSpecificTech == null ? false : true);
+    debugPrint("Hiring from favs: $_isHiringFromFavs");
+    activeStep = 0;
+
+    if (_isHiringFromFavs) {
+      activeStep = 1; // Initial step set to 0.
+      _issueCategory = widget.hiredSpecificTech!.jobTitle!;
+      _assignedTo = widget.hiredSpecificTech!.firstName! +
+          " " +
+          widget.hiredSpecificTech!.familyName!;
+      _price = 0;
+      _prevActive = false;
+      _nextActive = true;
+    }
+  }
 
   Widget header() {
     return Visibility(
@@ -558,6 +601,12 @@ class _StepperProcessState extends State<StepperProcess> {
 ////////////////////////////////////////////////////////////////////////////////
   var isInOnboarding = true;
 
+  void _checkIsTechLiked(int index) {
+    _isLiked = listOfAppropriateTechnicians[index]
+        .favouritedBy!
+        .contains(FirebaseAuth.instance.currentUser!.uid);
+  }
+
   Widget assignedTechnicianProfileOnBoarding() {
     return Stack(
       children: [
@@ -624,16 +673,43 @@ class _StepperProcessState extends State<StepperProcess> {
                     child: Column(
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Align(
                                 alignment: Alignment.topCenter,
                                 child: Text(
-                                  "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
+                                  _isHiringFromFavs
+                                      ? "${widget.hiredSpecificTech!.firstName} ${widget.hiredSpecificTech!.familyName}"
+                                      : "${myAssignedTech?.firstName} ${myAssignedTech?.familyName}",
                                   maxLines: 1,
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )),
+                            Visibility(
+                              visible: !_isHiringFromFavs,
+                              child: Flexible(
+                                flex: 1,
+                                child: SizedBox(
+                                  height: 35,
+                                  width: 35,
+                                  child: FloatingActionButton(
+                                    onPressed: () {
+                                      _isLiked = !_isLiked;
+                                      onLikeButtonTapped(_isLiked);
+                                      setState(() => _isLiked = _isLiked);
+                                    },
+                                    child: Icon(
+                                      Icons.favorite,
+                                      color: _isLiked
+                                          ? Colors.red[800]
+                                          : _darkTxtClr,
+                                    ),
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
                             // SizedBox(width: 5,),
                             // InkWell(
                             //     onTap: () {},
@@ -650,10 +726,12 @@ class _StepperProcessState extends State<StepperProcess> {
                         Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              myAssignedTech?.jobTitle ?? "null",
+                              _isHiringFromFavs
+                                  ? widget.hiredSpecificTech!.jobTitle!
+                                  : myAssignedTech?.jobTitle ?? "null",
                               maxLines: 1,
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             )),
                         SizedBox(
                           height: 5,
@@ -664,17 +742,19 @@ class _StepperProcessState extends State<StepperProcess> {
                               children: [
                                 Icon(
                                   Icons.location_on_rounded,
-                                  color: Colors.blueAccent,
+                                  color: Colors.red,
                                 ),
                                 SizedBox(
                                   width: 5,
                                 ),
                                 Text(
-                                  myAssignedTech?.location ?? "location",
+                                  _isHiringFromFavs
+                                      ? widget.hiredSpecificTech!.location!
+                                      : myAssignedTech?.location ?? "location",
                                   maxLines: 1,
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ],
                             )),
@@ -699,103 +779,44 @@ class _StepperProcessState extends State<StepperProcess> {
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(
                                     sigmaX: 10.0, sigmaY: 10.0),
-                                child: Container(
-                                  width: _statsWidth,
-                                  height: _statsHeight,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(30)),
-                                      border: Border.all(
-                                          width: 2, color: _jobsBoxClr),
-                                      color: Colors.grey.shade200
-                                          .withOpacity(0.25)),
-                                  child: Center(
-                                      child: Center(
-                                          child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Icon(Icons.handyman,
-                                              color: _jobsBoxClr)),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topCenter,
-                                        child: Text(
-                                          myAssignedTech?.jobsCompleted
-                                                  ?.toString() ??
-                                              "0",
-                                          style: TextStyle(
-                                              fontSize: 30, color: _jobsBoxClr),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Jobs",
-                                          style: TextStyle(
-                                              color: _jobsBoxClr,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    ],
-                                  ))),
-                                ),
-                              ),
-                            ))),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        child: Align(
-                            alignment: Alignment.topCenter,
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                    sigmaX: 10.0, sigmaY: 10.0),
-                                child: Container(
-                                  width: _statsWidth,
-                                  height: _statsHeight,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(30)),
-                                      border: Border.all(
-                                          width: 2, color: _ratingBoxClr),
-                                      color: Colors.grey.shade200
-                                          .withOpacity(0.25)),
-                                  child: Center(
+                                child: Material(
+                                  color: Colors.white54,
+                                  child: Container(
+                                    width: _statsWidth,
+                                    height: _statsHeight,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        border: Border.all(
+                                            width: 2, color: _jobsBoxClr),
+                                        color: Colors.grey.shade200
+                                            .withOpacity(0.25)),
                                     child: Center(
-                                        child: Column(
+                                        child: Center(
+                                            child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         Align(
                                             alignment: Alignment.topCenter,
-                                            child: Icon(
-                                              Icons.star,
-                                              color: _ratingBoxClr,
-                                            )),
+                                            child: Icon(Icons.handyman,
+                                                color: _jobsBoxClr)),
                                         SizedBox(
                                           height: 5,
                                         ),
                                         Align(
                                           alignment: Alignment.topCenter,
                                           child: Text(
-                                            myAssignedTech?.rating
-                                                    ?.toString() ??
-                                                "0.0",
+                                            _isHiringFromFavs
+                                                ? widget.hiredSpecificTech!
+                                                    .jobsCompleted!
+                                                    .toString()
+                                                : myAssignedTech?.jobsCompleted
+                                                        ?.toString() ??
+                                                    "0",
                                             style: TextStyle(
                                                 fontSize: 30,
-                                                color: _ratingBoxClr),
+                                                color: _jobsBoxClr),
                                           ),
                                         ),
                                         SizedBox(
@@ -804,14 +825,14 @@ class _StepperProcessState extends State<StepperProcess> {
                                         Align(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            "Rating",
+                                            "Jobs",
                                             style: TextStyle(
-                                                color: _ratingBoxClr,
+                                                color: _jobsBoxClr,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         )
                                       ],
-                                    )),
+                                    ))),
                                   ),
                                 ),
                               ),
@@ -830,53 +851,135 @@ class _StepperProcessState extends State<StepperProcess> {
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(
                                     sigmaX: 10.0, sigmaY: 10.0),
-                                child: Container(
-                                  width: _statsWidth,
-                                  height: _statsHeight,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(30)),
-                                      border: Border.all(
-                                          width: 2, color: _completedBoxClr),
-                                      color: Colors.grey.shade200
-                                          .withOpacity(0.25)),
-                                  child: Center(
+                                child: Material(
+                                  color: Colors.white54,
+                                  child: Container(
+                                    width: _statsWidth,
+                                    height: _statsHeight,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        border: Border.all(
+                                            width: 2, color: _ratingBoxClr),
+                                        color: Colors.grey.shade200
+                                            .withOpacity(0.25)),
                                     child: Center(
-                                        child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Align(
+                                      child: Center(
+                                          child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Align(
+                                              alignment: Alignment.topCenter,
+                                              child: Icon(
+                                                Icons.star,
+                                                color: _ratingBoxClr,
+                                              )),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Align(
                                             alignment: Alignment.topCenter,
-                                            child: Icon(
-                                              Icons.handshake,
-                                              color: _completedBoxClr,
-                                            )),
-                                        Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Text(
-                                            "${myAssignedTech?.completionRate?.toString()}"
-                                            "%",
-                                            style: TextStyle(
-                                                fontSize: 30,
-                                                color: _completedBoxClr),
+                                            child: Text(
+                                              _isHiringFromFavs
+                                                  ? widget.hiredSpecificTech!
+                                                      .rating!
+                                                      .toString()
+                                                  : myAssignedTech?.rating
+                                                          ?.toString() ??
+                                                      "0.0",
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  color: _ratingBoxClr),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Align(
-                                          //todo: Check if comp rate can be 0% when new user and use ??
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "Completion",
-                                            style: TextStyle(
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "Rating",
+                                              style: TextStyle(
+                                                  color: _ratingBoxClr,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ))),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                    sigmaX: 10.0, sigmaY: 10.0),
+                                child: Material(
+                                  color: Colors.white54,
+                                  child: Container(
+                                    width: _statsWidth,
+                                    height: _statsHeight,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        border: Border.all(
+                                            width: 2, color: _completedBoxClr),
+                                        color: Colors.grey.shade200
+                                            .withOpacity(0.25)),
+                                    child: Center(
+                                      child: Center(
+                                          child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Align(
+                                              alignment: Alignment.topCenter,
+                                              child: Icon(
+                                                Icons.handshake,
                                                 color: _completedBoxClr,
-                                                fontWeight: FontWeight.bold),
+                                              )),
+                                          Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Text(
+                                              _isHiringFromFavs
+                                                  ? widget.hiredSpecificTech!
+                                                      .completionRate!
+                                                      .toString()
+                                                  : "${myAssignedTech?.completionRate?.toString()}"
+                                                      "%",
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  color: _completedBoxClr),
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Align(
+                                            //todo: Check if comp rate can be 0% when new user and use ??
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "Completion",
+                                              style: TextStyle(
+                                                  color: _completedBoxClr,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -918,22 +1021,24 @@ class _StepperProcessState extends State<StepperProcess> {
                                   physics: ScrollPhysics(),
                                   children: [
                                     Text(
-                                      myAssignedTech?.personalDesc ??
-                                          AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[2] +
+                                      _isHiringFromFavs
+                                          ? widget.hiredSpecificTech!.techDesc!
+                                          : myAssignedTech?.techDesc ??
                                               AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1] +
-                                              AppStrings.listOfReviews[1],
+                                                  AppStrings.listOfReviews[2] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1] +
+                                                  AppStrings.listOfReviews[1],
                                       maxLines: _isDescExpanded ? 8 : 4,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -956,6 +1061,15 @@ class _StepperProcessState extends State<StepperProcess> {
                       width: double.infinity,
                       height: 130,
                       decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 3,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(0, 4), // changes position of shadow
+                            ),
+                          ],
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(30))),
                       child: Material(
@@ -969,7 +1083,10 @@ class _StepperProcessState extends State<StepperProcess> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PortfolioSummary(
-                                        myAssignedTech!.technicianUid!)));
+                                        _isHiringFromFavs
+                                            ? widget.hiredSpecificTech!
+                                                .technicianUid!
+                                            : myAssignedTech!.technicianUid!)));
                           },
                           child: Container(
                             // margin: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
@@ -1028,7 +1145,11 @@ class _StepperProcessState extends State<StepperProcess> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TechnicianReviews(
-                                      false, myAssignedTech!.technicianUid!)),
+                                      false,
+                                      _isHiringFromFavs
+                                          ? widget
+                                              .hiredSpecificTech!.technicianUid!
+                                          : myAssignedTech!.technicianUid!)),
                             );
                           },
                           child: Container(
@@ -1086,16 +1207,21 @@ class _StepperProcessState extends State<StepperProcess> {
   final Color _completedBoxClr = HexColor("#96878D");
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return isLiked;
+    }
+
     /// send your request here
-    debugPrint("===========1============");
     var ref = FirebaseFirestore.instance.collection("technicians");
     var uid = FirebaseAuth.instance.currentUser!.uid;
-    debugPrint("===========2============");
-    debugPrint(myAssignedTech!.technicianUid.toString());
-
     List listFavs = myAssignedTech!.favouritedBy!;
-    debugPrint("User favs are (from like): " + listFavs.toString());
-    debugPrint("===========3============");
 
     if (listFavs.contains(uid)) {
       listFavs.remove(uid);
@@ -1110,12 +1236,15 @@ class _StepperProcessState extends State<StepperProcess> {
         AppStrings.numberOfFavouritesKey: listFavs.length,
       }, SetOptions(merge: true)).then((value) => isLiked = true);
     }
+    debugPrint("Like status is: $_isLiked");
 
     /// if failed, you can do nothing
     // return success? !isLiked:isLiked;
 
     return isLiked;
   }
+
+  bool _isLiked = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -1286,7 +1415,7 @@ class _StepperProcessState extends State<StepperProcess> {
                     requestAcceptanceRate:
                         element.data()[AppStrings.requestAcceptanceRateKey],
                     firstName: element.data()[AppStrings.firstNameKey],
-                    personalDesc: element.data()[AppStrings.issueDescKey],
+                    techDesc: element.data()[AppStrings.issueDescKey],
                     numberOfPortfolioItems:
                         element.data()[AppStrings.portfolioItemsKey],
                     numberOfReviews:
@@ -1349,7 +1478,7 @@ class _StepperProcessState extends State<StepperProcess> {
                     requestAcceptanceRate:
                         element.data()[AppStrings.requestAcceptanceRateKey],
                     firstName: element.data()[AppStrings.firstNameKey],
-                    personalDesc: element.data()[AppStrings.issueDescKey],
+                    techDesc: element.data()[AppStrings.technicianDesc],
                     numberOfPortfolioItems:
                         element.data()[AppStrings.portfolioItemsKey],
                     numberOfReviews:
@@ -1728,6 +1857,7 @@ class _StepperProcessState extends State<StepperProcess> {
     setState(() {
       activeStep++;
       selectTechnicianValue = index;
+      _checkIsTechLiked(index);
     });
   }
 
@@ -1972,7 +2102,6 @@ class _StepperProcessState extends State<StepperProcess> {
       customIssueController.text = _issueDesc;
       setState(() => selectIssueValue = index);
       Navigator.pop(context);
-
     } else if (isCustomIssue) {
       _isCustomIssue = isCustomIssue;
       _issueDesc = customIssueController.text.trim();
@@ -1980,8 +2109,6 @@ class _StepperProcessState extends State<StepperProcess> {
       Navigator.pop(context);
     }
     debugPrint("issue desc is " + _issueDesc.toString());
-
-
   }
 
   FocusNode firstFocusNode = FocusNode();
@@ -2232,7 +2359,6 @@ class _StepperProcessState extends State<StepperProcess> {
     firstFocusNode.removeListener(() {});
     super.dispose();
   }
-
 
   Widget categoryPageHeader(bool visible) {
     return Container(

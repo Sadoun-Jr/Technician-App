@@ -110,6 +110,7 @@ class AppStrings {
   static String mapPricesOfApplianceIssuesKey = "pricesOfApplianceIssues";
   static String ageKey= "age";
   static String subLocationKey = "subLocation";
+  static String technicianDesc = "techDesc";
 
   //portfolio database keys
   static String portfolioUidkey = "portfolioUid";

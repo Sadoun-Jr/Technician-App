@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/technician%20profile%20page.dart';
@@ -57,12 +58,13 @@ class _UserFavouritesState extends State<UserFavourites> {
     listOfFavTechnicians = [];
     var technicianCollection =
         FirebaseFirestore.instance.collection("technicians");
+    var uid = FirebaseAuth.instance.currentUser!.uid;
 
     //looking by trades
     await technicianCollection
         .where(AppStrings.listOfFavouritedByKey,
             arrayContains:
-                "E1SRhjYEJuZDsk4Er8nxzciYoAL2") //TODO: change to dynamic
+                uid) //TODO: change to dynamic
         .get()
         .then((value) => {
               value.docs.forEach((element) {
@@ -105,7 +107,7 @@ class _UserFavouritesState extends State<UserFavourites> {
                   requestAcceptanceRate:
                       element.data()[AppStrings.requestAcceptanceRateKey],
                   firstName: element.data()[AppStrings.firstNameKey],
-                  personalDesc: element.data()[AppStrings.issueDescKey],
+                  techDesc: element.data()[AppStrings.technicianDesc],
                   numberOfPortfolioItems:
                       element.data()[AppStrings.portfolioItemsKey],
                   numberOfReviews:
@@ -176,8 +178,12 @@ class _UserFavouritesState extends State<UserFavourites> {
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(30)),
                                                 splashColor: _splashClr,
-                                                onTap: () =>
-                                                    {},
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => TechnicianMainProfilePage(
+                                                            listOfFavTechnicians[index].technicianUid!)))
+                                                    ,
                                                 child: AnimatedContainer(
                                                   duration:
                                                       Duration(milliseconds: 200),
@@ -372,7 +378,7 @@ class _UserFavouritesState extends State<UserFavourites> {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                        "No technicians, please try another issue.",
+                                        "No Favourites, start liking some technicians!",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     )
@@ -390,13 +396,13 @@ class _UserFavouritesState extends State<UserFavourites> {
                   child: Column(
                     children: [
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Lottie.asset('assets/loading gear.json',
                               height: 75,
                               width: 75,
-                              alignment: Alignment.center,
+                              alignment: Alignment.bottomCenter,
                               animate: true),
                         ),
                       ),

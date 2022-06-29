@@ -268,7 +268,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
             rating: double.parse(
                 element.data()[AppStrings.overallRatingKey].toString()),
             firstName: element.data()[AppStrings.firstNameKey],
-            personalDesc: element.data()[AppStrings.issueDescKey],
+            techDesc: element.data()[AppStrings.issueDescKey],
           );
 
           listOfSearchedTechnicians.add(technician);
