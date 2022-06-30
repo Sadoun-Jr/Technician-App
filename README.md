@@ -6,9 +6,9 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- added "hire me" and "like" to tech profile page
-- styled tech profile page
-- KNOWN BUG: hire me for any tech other than the first 1 throws null exc (fixed)
+- Added bouncing animations to category items in page 1 stepper
+- Fixed technicians not showing up bug when appliance is selected
+- Added background color to cards to select technician in page 3 stepepr
 
 ## (  ) Creating and Styling the layouts
 

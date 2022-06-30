@@ -1327,8 +1327,6 @@ class _StepperProcessState extends State<StepperProcess>
   }
 
   Future<void> getAppropriateTechnicians() async {
-    listOfFavourites.clear();
-
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -1343,6 +1341,8 @@ class _StepperProcessState extends State<StepperProcess>
           backgroundColor: Colors.red);
       return;
     }
+
+    listOfFavourites.clear();
 
     _issuedByUid = FirebaseAuth.instance.currentUser!.uid;
     listOfAppropriateTechnicians.clear();
@@ -1363,130 +1363,139 @@ class _StepperProcessState extends State<StepperProcess>
               })
             });
 
-    //looking by trades
-    if (!isAppliance) {
-      await technicianCollection
-          .where(AppStrings.jobTitleKey, isEqualTo: _issueCategory)
-          .orderBy(AppStrings.overallRatingKey, descending: true)
-          .get()
-          .then((value) => {
-                value.docs.forEach((element) {
-                  Technician i = Technician(
-                    technicianUid: element.data()[AppStrings.technicianUidKey],
-                    accountCreationTimeStamp:
-                        element.data()[AppStrings.accountCreationTimeStampKey],
-                    appliancesSubscribedTo:
-                        element.data()[AppStrings.appliancesSubscribedToKey],
-                    completionRate:
-                        element.data()[AppStrings.completionRateKey],
-                    email: element.data()[AppStrings.emailKey],
-                    familyName: element.data()[AppStrings.familyNameKey],
-                    favouritedBy:
-                        element.data()[AppStrings.listOfFavouritedByKey],
-                    image: element.data()[AppStrings.imageKey],
-                    isAvailable:
-                        element.data()[AppStrings.isAvailableKey], //CHECK THIS
-                    isVerifiedById:
-                        element.data()[AppStrings.isVerifiedByIdKey],
-                    isPreferred: element.data()[AppStrings.isPreferredKey],
-                    jobsCompleted: element.data()[AppStrings.jobsCompletedKey],
-                    jobsDeclined: element.data()[AppStrings.jobsDeclinedKey],
-                    numberOfJobsPaidPhysically:
-                        element.data()[AppStrings.jobsPaidPhysicallyKey],
-                    numberOfJobsPaidThroughApp:
-                        element.data()[AppStrings.jobsPaidThroughAppKey],
-                    numberOfJobsTerminatedMidWork:
-                        element.data()[AppStrings.jobsTerminatedMidWorkKey],
-                    location: element.data()[AppStrings.locationKey],
-                    jobTitle: element
-                        .data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
-                    pricesForJobIssues:
-                        element.data()[AppStrings.mapPricesOfJobIssuesKey],
-                    pricesForAppliancesSubscribedToIssues: element
-                        .data()[AppStrings.mapPricesOfApplianceIssuesKey],
-                    numberOfFavourites:
-                        element.data()[AppStrings.numberOfFavouritesKey],
-                    rating: double.parse(
-                        element.data()[AppStrings.overallRatingKey].toString()),
-                    phoneNumber: element.data()[AppStrings.phoneNumberKey],
-                    requestAcceptanceRate:
-                        element.data()[AppStrings.requestAcceptanceRateKey],
-                    firstName: element.data()[AppStrings.firstNameKey],
-                    techDesc: element.data()[AppStrings.issueDescKey],
-                    numberOfPortfolioItems:
-                        element.data()[AppStrings.portfolioItemsKey],
-                    numberOfReviews:
-                        element.data()[AppStrings.numberOfReviewsKey],
-                  );
-                  listOfAppropriateTechnicians.add(i);
-                })
-              });
-      debugPrint(
-          "list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
-    }
+    try{
+      if (!isAppliance) {
+        await technicianCollection
+            .where(AppStrings.jobTitleKey, isEqualTo: _issueCategory)
+            .orderBy(AppStrings.overallRatingKey, descending: true)
+            .get()
+            .then((value) => {
+          value.docs.forEach((element) {
+            Technician i = Technician(
+              technicianUid: element.data()[AppStrings.technicianUidKey],
+              accountCreationTimeStamp:
+              element.data()[AppStrings.accountCreationTimeStampKey],
+              appliancesSubscribedTo:
+              element.data()[AppStrings.appliancesSubscribedToKey],
+              completionRate:
+              element.data()[AppStrings.completionRateKey],
+              email: element.data()[AppStrings.emailKey],
+              familyName: element.data()[AppStrings.familyNameKey],
+              favouritedBy:
+              element.data()[AppStrings.listOfFavouritedByKey],
+              image: element.data()[AppStrings.imageKey],
+              isAvailable:
+              element.data()[AppStrings.isAvailableKey], //CHECK THIS
+              isVerifiedById:
+              element.data()[AppStrings.isVerifiedByIdKey],
+              isPreferred: element.data()[AppStrings.isPreferredKey],
+              jobsCompleted: element.data()[AppStrings.jobsCompletedKey],
+              jobsDeclined: element.data()[AppStrings.jobsDeclinedKey],
+              numberOfJobsPaidPhysically:
+              element.data()[AppStrings.jobsPaidPhysicallyKey],
+              numberOfJobsPaidThroughApp:
+              element.data()[AppStrings.jobsPaidThroughAppKey],
+              numberOfJobsTerminatedMidWork:
+              element.data()[AppStrings.jobsTerminatedMidWorkKey],
+              location: element.data()[AppStrings.locationKey],
+              jobTitle: element
+                  .data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
+              pricesForJobIssues:
+              element.data()[AppStrings.mapPricesOfJobIssuesKey],
+              pricesForAppliancesSubscribedToIssues: element
+                  .data()[AppStrings.mapPricesOfApplianceIssuesKey],
+              numberOfFavourites:
+              element.data()[AppStrings.numberOfFavouritesKey],
+              rating: double.parse(
+                  element.data()[AppStrings.overallRatingKey].toString()),
+              phoneNumber: element.data()[AppStrings.phoneNumberKey],
+              requestAcceptanceRate:
+              element.data()[AppStrings.requestAcceptanceRateKey],
+              firstName: element.data()[AppStrings.firstNameKey],
+              techDesc: element.data()[AppStrings.issueDescKey],
+              numberOfPortfolioItems:
+              element.data()[AppStrings.portfolioItemsKey],
+              numberOfReviews:
+              element.data()[AppStrings.numberOfReviewsKey],
+            );
+            listOfAppropriateTechnicians.add(i);
+          })
+        });
+        debugPrint(
+            "list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
+      }
 
-    //looking by appliances
-    else {
-      await technicianCollection
-          .where(AppStrings.appliancesSubscribedToKey,
-              arrayContains: _issueCategory)
-          .orderBy(AppStrings.overallRatingKey, descending: true)
-          .get()
-          .then((value) => {
-                value.docs.forEach((element) {
-                  Technician i = Technician(
-                    technicianUid: element.data()[AppStrings.technicianUidKey],
-                    accountCreationTimeStamp:
-                        element.data()[AppStrings.accountCreationTimeStampKey],
-                    appliancesSubscribedTo:
-                        element.data()[AppStrings.appliancesSubscribedToKey],
-                    completionRate:
-                        element.data()[AppStrings.completionRateKey],
-                    email: element.data()[AppStrings.emailKey],
-                    familyName: element.data()[AppStrings.familyNameKey],
-                    favouritedBy:
-                        element.data()[AppStrings.listOfFavouritedByKey],
-                    image: element.data()[AppStrings.imageKey],
-                    isAvailable:
-                        element.data()[AppStrings.isAvailableKey], //CHECK THIS
-                    isVerifiedById:
-                        element.data()[AppStrings.isVerifiedByIdKey],
-                    isPreferred: element.data()[AppStrings.isPreferredKey],
-                    jobsCompleted: element.data()[AppStrings.jobsCompletedKey],
-                    jobsDeclined: element.data()[AppStrings.jobsDeclinedKey],
-                    numberOfJobsPaidPhysically:
-                        element.data()[AppStrings.jobsPaidPhysicallyKey],
-                    numberOfJobsPaidThroughApp:
-                        element.data()[AppStrings.jobsPaidThroughAppKey],
-                    numberOfJobsTerminatedMidWork:
-                        element.data()[AppStrings.jobsTerminatedMidWorkKey],
-                    location: element.data()[AppStrings.locationKey],
-                    jobTitle: element
-                        .data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
-                    pricesForJobIssues:
-                        element.data()[AppStrings.mapPricesOfJobIssuesKey],
-                    pricesForAppliancesSubscribedToIssues: element
-                        .data()[AppStrings.mapPricesOfApplianceIssuesKey],
-                    numberOfFavourites:
-                        element.data()[AppStrings.numberOfFavouritesKey],
-                    rating: double.parse(
-                        element.data()[AppStrings.overallRatingKey].toString()),
-                    phoneNumber: element.data()[AppStrings.phoneNumberKey],
-                    requestAcceptanceRate:
-                        element.data()[AppStrings.requestAcceptanceRateKey],
-                    firstName: element.data()[AppStrings.firstNameKey],
-                    techDesc: element.data()[AppStrings.technicianDesc],
-                    numberOfPortfolioItems:
-                        element.data()[AppStrings.portfolioItemsKey],
-                    numberOfReviews:
-                        element.data()[AppStrings.numberOfReviewsKey],
-                  );
-                  listOfAppropriateTechnicians.add(i);
-                })
-              });
-      debugPrint(
-          "list of appropriate techs has: ${listOfAppropriateTechnicians.length}");
+      //looking by appliances
+      else {
+        await technicianCollection
+            .where(AppStrings.appliancesSubscribedToKey,
+            arrayContains: _issueCategory)
+            .orderBy(AppStrings.overallRatingKey, descending: true)
+            .get()
+            .then((value) => {
+          value.docs.forEach((element) {
+            Technician i = Technician(
+              technicianUid: element.data()[AppStrings.technicianUidKey],
+              accountCreationTimeStamp:
+              element.data()[AppStrings.accountCreationTimeStampKey],
+              appliancesSubscribedTo:
+              element.data()[AppStrings.appliancesSubscribedToKey],
+              completionRate:
+              element.data()[AppStrings.completionRateKey],
+              email: element.data()[AppStrings.emailKey],
+              familyName: element.data()[AppStrings.familyNameKey],
+              favouritedBy:
+              element.data()[AppStrings.listOfFavouritedByKey],
+              image: element.data()[AppStrings.imageKey],
+              isAvailable:
+              element.data()[AppStrings.isAvailableKey], //CHECK THIS
+              isVerifiedById:
+              element.data()[AppStrings.isVerifiedByIdKey],
+              isPreferred: element.data()[AppStrings.isPreferredKey],
+              jobsCompleted: element.data()[AppStrings.jobsCompletedKey],
+              jobsDeclined: element.data()[AppStrings.jobsDeclinedKey],
+              numberOfJobsPaidPhysically:
+              element.data()[AppStrings.jobsPaidPhysicallyKey],
+              numberOfJobsPaidThroughApp:
+              element.data()[AppStrings.jobsPaidThroughAppKey],
+              numberOfJobsTerminatedMidWork:
+              element.data()[AppStrings.jobsTerminatedMidWorkKey],
+              location: element.data()[AppStrings.locationKey],
+              jobTitle: element
+                  .data()[AppStrings.jobTitleKey], //NULL, ADD IT IN DB
+              pricesForJobIssues:
+              element.data()[AppStrings.mapPricesOfJobIssuesKey],
+              pricesForAppliancesSubscribedToIssues: element
+                  .data()[AppStrings.mapPricesOfApplianceIssuesKey],
+              numberOfFavourites:
+              element.data()[AppStrings.numberOfFavouritesKey],
+              rating: double.parse(
+                  element.data()[AppStrings.overallRatingKey].toString()),
+              phoneNumber: element.data()[AppStrings.phoneNumberKey],
+              requestAcceptanceRate:
+              element.data()[AppStrings.requestAcceptanceRateKey],
+              firstName: element.data()[AppStrings.firstNameKey],
+              techDesc: element.data()[AppStrings.technicianDesc],
+              numberOfPortfolioItems:
+              element.data()[AppStrings.portfolioItemsKey],
+              numberOfReviews:
+              element.data()[AppStrings.numberOfReviewsKey],
+            );
+            listOfAppropriateTechnicians.add(i);
+          })
+        });
+        debugPrint(
+            "list of appropriate techs has: ${listOfAppropriateTechnicians.length} technicians"
+                " and the first has the Uid: ${listOfAppropriateTechnicians[0].technicianUid}");
+      }
+    } catch(e){
+      if(activeStep == 2 && listOfAppropriateTechnicians.isNotEmpty){
+        Fluttertoast.showToast(msg: "Error fetching technicians", backgroundColor: Colors.red);
+      }
+      debugPrint(e.toString());
     }
+    //looking by trades
+
   }
 
   Widget selectTechnicianOnboarding() {
@@ -1496,7 +1505,7 @@ class _StepperProcessState extends State<StepperProcess>
           if (snapshot.connectionState == ConnectionState.done) {
             listOfAppropriateTechnicians.toSet().toList();
             debugPrint(
-                "Filtered list of appropriate techs to: ${listOfAppropriateTechnicians.length}");
+                "Filtered list of appropriate techs to: ${listOfAppropriateTechnicians.length} technicians");
             return Container(
               margin: EdgeInsets.fromLTRB(5, 10, 5, 80),
               child: ListView(
@@ -1512,266 +1521,262 @@ class _StepperProcessState extends State<StepperProcess>
                             physics: ScrollPhysics(),
                             itemCount: listOfAppropriateTechnicians.length,
                             itemBuilder: (context, index) {
-                              return Visibility(
-                                  visible: !isAppliance
-                                      ? true
-                                      : listOfAppropriateTechnicians[index]
-                                                  .pricesForAppliancesSubscribedToIssues![
-                                              _issueDesc] !=
-                                          null,
-                                  child: Container(
-                                    height: 100,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 1, horizontal: 4),
-                                    child: Align(
-                                      alignment: Alignment.topCenter,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: 10.0, sigmaY: 10.0),
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: 90,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(30)),
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: Colors.white),
-                                                color: Colors.grey.shade200
-                                                    .withOpacity(0.25)),
-                                            child: InkWell(
+                              return Container(
+                                height: 100,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 1, horizontal: 4),
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(30)),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 10.0, sigmaY: 10.0),
+                                      child: Material(
+                                        color: Colors.white54,
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: 90,
+                                          decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(30)),
-                                              splashColor: _splashClr,
-                                              onTap: () =>
-                                                  {setAssignedTo(index)},
-                                              child: AnimatedContainer(
-                                                duration:
-                                                    Duration(milliseconds: 200),
-                                                decoration: BoxDecoration(
-                                                    color:
-                                                        selectTechnicianValue ==
-                                                                index
-                                                            ? _btnColor
-                                                            : Colors
-                                                                .transparent,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                30))),
-                                                child: Row(children: <Widget>[
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        SizedBox(
-                                                          width: 16,
-                                                        ),
-                                                        Container(
-                                                          margin: EdgeInsets
-                                                              .fromLTRB(
-                                                                  0, 16, 0, 16),
-                                                          child: Stack(
-                                                              children: [
-                                                                listOfAppropriateTechnicians[index]
-                                                                            .image ==
-                                                                        null
-                                                                    ? Container(
-                                                                        decoration: BoxDecoration(
-                                                                            shape: BoxShape
-                                                                                .circle,
-                                                                            color: Colors
-                                                                                .white),
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .person,
-                                                                          size:
-                                                                              57.5,
-                                                                          color:
-                                                                              Colors.black12,
-                                                                        ))
-                                                                    : Container(
-                                                                        decoration: BoxDecoration(
-                                                                            shape:
-                                                                                BoxShape.circle,
-                                                                            border: Border.all(width: 2, color: Colors.white)),
-                                                                        child:
-                                                                            CircleAvatar(
-                                                                          backgroundColor:
-                                                                              Colors.white70,
-                                                                          maxRadius:
-                                                                              28.5,
-                                                                          backgroundImage:
-                                                                              NetworkImage(listOfAppropriateTechnicians[index].image!),
-                                                                          // child: Image.network(
-                                                                          //   myAssignedTech!.image!, height: 125, width: 125,),
-                                                                        ),
-                                                                      ),
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .bottomCenter,
-                                                                  child:
-                                                                      Visibility(
-                                                                    visible: listOfAppropriateTechnicians[
-                                                                            index]
-                                                                        .isAvailable!,
-                                                                    child: CircleAvatar(
-                                                                        maxRadius:
-                                                                            7,
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Colors.white),
+                                              color: Colors.grey.shade200
+                                                  .withOpacity(0.25)),
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30)),
+                                            splashColor: _splashClr,
+                                            onTap: () =>
+                                                {setAssignedTo(index)},
+                                            child: AnimatedContainer(
+                                              duration:
+                                                  Duration(milliseconds: 200),
+                                              decoration: BoxDecoration(
+                                                  color:
+                                                      selectTechnicianValue ==
+                                                              index
+                                                          ? _btnColor
+                                                          : Colors
+                                                              .transparent,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              30))),
+                                              child: Row(children: <Widget>[
+                                                Expanded(
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        width: 16,
+                                                      ),
+                                                      Container(
+                                                        margin: EdgeInsets
+                                                            .fromLTRB(
+                                                                0, 16, 0, 16),
+                                                        child: Stack(
+                                                            children: [
+                                                              listOfAppropriateTechnicians[index]
+                                                                          .image ==
+                                                                      null
+                                                                  ? Container(
+                                                                      decoration: BoxDecoration(
+                                                                          shape: BoxShape
+                                                                              .circle,
+                                                                          color: Colors
+                                                                              .white),
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .person,
+                                                                        size:
+                                                                            57.5,
+                                                                        color:
+                                                                            Colors.black12,
+                                                                      ))
+                                                                  : Container(
+                                                                      decoration: BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                          border: Border.all(width: 2, color: Colors.white)),
+                                                                      child:
+                                                                          CircleAvatar(
                                                                         backgroundColor:
-                                                                            Colors.green),
-                                                                  ),
-                                                                )
-                                                              ]),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 16,
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                            margin: EdgeInsets
-                                                                .fromLTRB(0, 23,
-                                                                    16, 16),
-                                                            color: Colors
-                                                                .transparent,
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: <
-                                                                  Widget>[
-                                                                Row(
-                                                                  children: [
-                                                                    Text(
-                                                                      listOfAppropriateTechnicians[index]
-                                                                              .firstName ??
-                                                                          "null",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              18),
+                                                                            Colors.white70,
+                                                                        maxRadius:
+                                                                            28.5,
+                                                                        backgroundImage:
+                                                                            NetworkImage(listOfAppropriateTechnicians[index].image!),
+                                                                        // child: Image.network(
+                                                                        //   myAssignedTech!.image!, height: 125, width: 125,),
+                                                                      ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      listOfAppropriateTechnicians[index]
-                                                                              .familyName ??
-                                                                          "null",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              18),
-                                                                    ),
-                                                                  ],
+                                                              Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .bottomCenter,
+                                                                child:
+                                                                    Visibility(
+                                                                  visible: listOfAppropriateTechnicians[
+                                                                          index]
+                                                                      .isAvailable!,
+                                                                  child: CircleAvatar(
+                                                                      maxRadius:
+                                                                          7,
+                                                                      backgroundColor:
+                                                                          Colors.green),
                                                                 ),
-                                                                SizedBox(
-                                                                  height: 6,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Text(
+                                                              )
+                                                            ]),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 16,
+                                                      ),
+                                                      Expanded(
+                                                        child: Container(
+                                                          margin: EdgeInsets
+                                                              .fromLTRB(0, 23,
+                                                                  16, 16),
+                                                          color: Colors
+                                                              .transparent,
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: <
+                                                                Widget>[
+                                                              Row(
+                                                                children: [
+                                                                  Text(
                                                                     listOfAppropriateTechnicians[index]
-                                                                            .jobTitle ??
+                                                                            .firstName ??
                                                                         "null",
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                            13,
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade600,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                    maxLines: 1,
+                                                                            18),
                                                                   ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          padding: EdgeInsets
-                                                              .fromLTRB(16, 16,
-                                                                  0, 16),
-                                                          child: Column(
-                                                            children: [
-                                                              //price commented out
-                                                              // Visibility(
-                                                              //   visible:
-                                                              //       !_isCustomIssue,
-                                                              //   child: Align(
-                                                              //     alignment:
-                                                              //         Alignment
-                                                              //             .topLeft,
-                                                              //     child: Text(
-                                                              //       isAppliance
-                                                              //           ? listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueDesc].toString() +
-                                                              //               "\$"
-                                                              //           : listOfAppropriateTechnicians[index].pricesForJobIssues![_issueDesc].toString() +
-                                                              //               "\$",
-                                                              //     ),
-                                                              //   ),
-                                                              // ),
-                                                              Expanded(
-                                                                child:
-                                                                    Container(
-                                                                  margin: EdgeInsets
-                                                                      .fromLTRB(
-                                                                          0,
-                                                                          5,
-                                                                          10,
-                                                                          0),
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Text(
-                                                                            listOfAppropriateTechnicians[index].rating.toString(),
-                                                                            style:
-                                                                                TextStyle(fontSize: 16, fontWeight: listOfAppropriateTechnicians[index].isAvailable! ? FontWeight.bold : FontWeight.normal),
-                                                                          ),
-                                                                          Container(
-                                                                            margin: EdgeInsets.fromLTRB(
-                                                                                5,
-                                                                                0,
-                                                                                16,
-                                                                                0),
-                                                                            child: Icon(Icons.star,
-                                                                                size: 16,
-                                                                                color: Colors.orangeAccent
-                                                                                // HexColor(
-                                                                                //     "FFD700"),
-                                                                                ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                          height:
-                                                                              7),
-                                                                      Align(
-                                                                          alignment: Alignment
-                                                                              .bottomCenter,
-                                                                          child:
-                                                                              Text(listOfAppropriateTechnicians[index].location ?? "")),
-                                                                    ],
+                                                                  SizedBox(
+                                                                    width: 5,
                                                                   ),
-                                                                ),
+                                                                  Text(
+                                                                    listOfAppropriateTechnicians[index]
+                                                                            .familyName ??
+                                                                        "null",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            18),
+                                                                  ),
+                                                                ],
                                                               ),
+                                                              SizedBox(
+                                                                height: 6,
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  listOfAppropriateTechnicians[index]
+                                                                          .jobTitle ??
+                                                                      "null",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade600,
+                                                                      fontWeight:
+                                                                          FontWeight.bold),
+                                                                  maxLines: 1,
+                                                                ),
+                                                              )
                                                             ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .fromLTRB(16, 16,
+                                                                0, 16),
+                                                        child: Column(
+                                                          children: [
+                                                            //price commented out
+                                                            // Visibility(
+                                                            //   visible:
+                                                            //       !_isCustomIssue,
+                                                            //   child: Align(
+                                                            //     alignment:
+                                                            //         Alignment
+                                                            //             .topLeft,
+                                                            //     child: Text(
+                                                            //       isAppliance
+                                                            //           ? listOfAppropriateTechnicians[index].pricesForAppliancesSubscribedToIssues![_issueDesc].toString() +
+                                                            //               "\$"
+                                                            //           : listOfAppropriateTechnicians[index].pricesForJobIssues![_issueDesc].toString() +
+                                                            //               "\$",
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+                                                            Expanded(
+                                                              child:
+                                                                  Container(
+                                                                margin: EdgeInsets
+                                                                    .fromLTRB(
+                                                                        0,
+                                                                        5,
+                                                                        10,
+                                                                        0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          listOfAppropriateTechnicians[index].rating.toString(),
+                                                                          style:
+                                                                              TextStyle(fontSize: 16, fontWeight: listOfAppropriateTechnicians[index].isAvailable! ? FontWeight.bold : FontWeight.normal),
+                                                                        ),
+                                                                        Container(
+                                                                          margin: EdgeInsets.fromLTRB(
+                                                                              5,
+                                                                              0,
+                                                                              16,
+                                                                              0),
+                                                                          child: Icon(Icons.star,
+                                                                              size: 16,
+                                                                              color: Colors.orangeAccent
+                                                                              // HexColor(
+                                                                              //     "FFD700"),
+                                                                              ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            7),
+                                                                    Align(
+                                                                        alignment: Alignment
+                                                                            .bottomCenter,
+                                                                        child:
+                                                                            Text(listOfAppropriateTechnicians[index].location ?? "")),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ]),
-                                              ),
+                                                ),
+                                              ]),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ));
+                                  ),
+                                ),
+                              );
                             })
                         : Center(
                             child: Column(
@@ -2183,12 +2188,18 @@ class _StepperProcessState extends State<StepperProcess>
     selectCategoryValue = 222222;
     _isSortedByTrades = false;
     setState(() => _isSortedByAppliance = true);
+    for(int i =0; i<animationControllerMap.length; i++){
+      animationControllerMap[i]!.forward(from: 0.5);
+    }
   }
 
   void sortByTrades() {
     selectCategoryValue = 2222222;
     _isSortedByAppliance = false;
     setState(() => _isSortedByTrades = true);
+    for(int i =0; i<animationControllerMap.length; i++){
+      animationControllerMap[i]!.forward(from: 0.5);
+    }
   }
 
   // void categorySelected() {
@@ -2225,7 +2236,7 @@ class _StepperProcessState extends State<StepperProcess>
         splashColor: _splashClr,
         highlightColor: Colors.white,
         onTap: () {
-          _animationController.forward(from: 0.6);
+          animationControllerMap[index]!.forward(from: 0.5);
           isCategorySelected = true;
           _nextActive = true;
           setState(() => selectCategoryValue = index);
@@ -2233,7 +2244,7 @@ class _StepperProcessState extends State<StepperProcess>
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: ScaleTransition(
-          scale: _animation,
+          scale: animationMap[index]!,
           child: Container(
               decoration: BoxDecoration(
                 color: selectCategoryValue == index
@@ -2284,12 +2295,6 @@ class _StepperProcessState extends State<StepperProcess>
     );
   }
 
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _animationController,
-    curve: Curves.bounceInOut,
-  );
-  late AnimationController _animationController;
-
   @override
   void initState() {
     super.initState();
@@ -2298,12 +2303,95 @@ class _StepperProcessState extends State<StepperProcess>
     debugPrint("Hiring from favs: $_isHiringFromFavs");
     activeStep = 0;
 
+    //set up animation controllers
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 750),
       vsync: this,
     );
     _animationController.forward();
 
+    _animationController0 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController0.forward();
+
+    _animationController1 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController1.forward();
+
+
+    _animationController2 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController2.forward();
+
+    _animationController3 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController3.forward();
+
+    _animationController4 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController4.forward();
+
+    _animationController5 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController5.forward();
+
+    _animationController6 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController6.forward();
+
+    _animationController7 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController7.forward();
+
+    _animationController8 = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController8.forward();
+
+    //set up animation maps
+    animationMap = {
+      0: _animation0,
+      1: _animation1,
+      2: _animation2,
+      3: _animation3,
+      4: _animation4,
+      5: _animation5,
+      6: _animation6,
+      7: _animation7,
+      8: _animation8,
+
+    };
+
+    animationControllerMap = {
+      0: _animationController0,
+      1: _animationController1,
+      2: _animationController2,
+      3: _animationController3,
+      4: _animationController4,
+      5: _animationController5,
+      6: _animationController6,
+      7: _animationController7,
+      8: _animationController8,
+    };
+
+    //page accessed from hire a specfic dev from favourites
     if (_isHiringFromFavs) {
       activeStep = 1; // Initial step set to 0.
       _issueCategory = widget.hiredSpecificTech!.jobTitle!;
@@ -2323,7 +2411,7 @@ class _StepperProcessState extends State<StepperProcess>
         splashColor: _splashClr,
         highlightColor: Colors.white,
         onTap: () {
-          _animationController.forward(from: 0.2);
+          animationControllerMap[index]!.forward(from: 0.5);
           isCategorySelected = true;
           _nextActive = true;
           setState(() => selectCategoryValue = index);
@@ -2331,7 +2419,7 @@ class _StepperProcessState extends State<StepperProcess>
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: ScaleTransition(
-          scale: _animation,
+          scale: animationMap[index]!,
           child: Container(
               decoration: BoxDecoration(
                 color: selectCategoryValue == index
@@ -2388,17 +2476,6 @@ class _StepperProcessState extends State<StepperProcess>
       ),
     );
   }
-
-  bool _isIssueDescribed = false;
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    customIssueController.dispose();
-    firstFocusNode.removeListener(() {});
-    super.dispose();
-  }
-
   Widget categoryPageHeader(bool visible) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 8, 0, 16),
@@ -2417,7 +2494,7 @@ class _StepperProcessState extends State<StepperProcess>
               child: InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(50)),
                 onTap: () {
-                  sortByTrades;
+                  sortByTrades();
                   setState(() {
                     _nextActive = false;
                     selectTechnicianValue = 44;
@@ -2478,11 +2555,93 @@ class _StepperProcessState extends State<StepperProcess>
   void setIssueCategory(int category, bool isSortedByTechnician) {
     if (isSortedByTechnician) {
       setState(() =>
-          _issueCategory = CommonIssues.listOfTechnicianCategories[category]);
+      _issueCategory = CommonIssues.listOfTechnicianCategories[category]);
     } else {
       setState(() =>
-          _issueCategory = CommonIssues.listOfAppliancesCategories[category]);
+      _issueCategory = CommonIssues.listOfAppliancesCategories[category]);
     }
     debugPrint("Category set to $_issueCategory");
   }
+
+
+  bool _isIssueDescribed = false;
+
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController;
+
+  late final Animation<double> _animation0 = CurvedAnimation(
+    parent: _animationController0,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController0;
+
+  late final Animation<double> _animation1 = CurvedAnimation(
+    parent: _animationController1,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController1;
+
+  late final Animation<double> _animation2 = CurvedAnimation(
+    parent: _animationController2,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController2;
+
+  late final Animation<double> _animation3 = CurvedAnimation(
+    parent: _animationController3,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController3;
+
+  late final Animation<double> _animation4 = CurvedAnimation(
+    parent: _animationController4,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController4;
+
+  late final Animation<double> _animation5 = CurvedAnimation(
+    parent: _animationController5,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController5;
+
+  late final Animation<double> _animation6 = CurvedAnimation(
+    parent: _animationController6,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController6;
+
+  late final Animation<double> _animation7 = CurvedAnimation(
+    parent: _animationController7,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController7;
+
+  late final Animation<double> _animation8 = CurvedAnimation(
+    parent: _animationController8,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController8;
+
+  late final Animation<double> _animation9 = CurvedAnimation(
+    parent: _animationController9,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController9;
+
+  late Map<int, Animation<double>> animationMap;
+  late Map<int, AnimationController> animationControllerMap;
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    customIssueController.dispose();
+    firstFocusNode.removeListener(() {});
+    super.dispose();
+  }
+
+
 }
