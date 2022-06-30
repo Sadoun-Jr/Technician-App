@@ -55,6 +55,10 @@ class AppStrings {
   static int timeCompletedNY = 0;
   static String descNY = "No description made";
 
+  //shared prefs keys
+  static String currentUserFirstName = "first name";
+  static String currentUserFamilyName = "family name";
+  static String currentUserProfilePicLink = "pic link";
 
   //issue database keys
   static String issueCategoryKey = "issueCategory";

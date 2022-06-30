@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
 import 'package:technicians/layouts/stats.dart';
@@ -14,6 +15,7 @@ import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/navigation%20drawer.dart';
 import 'package:technicians/widgets/slider.dart';
+import '../models/consumer object.dart';
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
 
@@ -40,7 +42,35 @@ class _LoginLayoutState extends State<LoginLayout> {
         if (snapshot.hasData) {
           return selectionScreen();
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return SizedBox(
+            height: MediaQuery.of(context).size.height - 125,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Lottie.asset('assets/loading gear.json',
+                        height: 75,
+                        width: 75,
+                        alignment: Alignment.bottomCenter,
+                        animate: true),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "Loading...",
+                        style: TextStyle(
+                            color: Colors.black54, fontWeight: FontWeight.bold),
+                      )),
+                ),
+              ],
+            ),
+          );
         } else {
           return loginLayout();
         }
@@ -253,6 +283,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Future signIn() async {
+    prefs = await SharedPreferences.getInstance();
     Fluttertoast.cancel();
 
     //check if there is connection
@@ -336,98 +367,177 @@ class _LoginLayoutState extends State<LoginLayout> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-int xyz = 4;
+
+  String _currentUserFirstName = "";
+  String _currentUserFamilyName = "";
+  String _currentUserProfilePicLink = "";
+  SharedPreferences? prefs;
+
+  Future<void> initalisePrefs() async {
+     prefs = await SharedPreferences.getInstance();
+  }
+
   Widget selectionScreen() {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      drawer: NavDrawer(),
-      appBar: AppBar(
-        title: Row(
-          children: const [
-            CircleAvatar(
-              backgroundColor: Colors.grey,
-              maxRadius: 30,
-            ),
-            SizedBox(
-              width: 30,
-            ),
-            Text(
-              "Ahmed Selim",
-              style: TextStyle(color: Colors.black54),
-            )
-          ],
-        ),
-        toolbarHeight: 80,
-        iconTheme: IconThemeData(color: Colors.black54, size: 25),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Stack(
-        children: [
-          Hero(
-            tag: "bg",
-            child: Image.asset(
-              "assets/abstract bg.jpg",
-              fit: BoxFit.cover,
-              height: double.infinity,
-              width: double.infinity,
-              alignment: Alignment.center,
-            ),
-          ),
-          Center(
-            child: ListView(
-              shrinkWrap: true,
-              physics: ScrollPhysics(),
-              children: [
-                Row(
+    return FutureBuilder(
+      future: initalisePrefs(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Scaffold(
+              extendBodyBehindAppBar: true,
+              drawer: NavDrawer(),
+              appBar: AppBar(
+
+                title: Row(
                   children: [
-                    Flexible(
-                        child: circleBtn("assets/dash fix.png", "Order",
-                            Colors.red[200], "123124", () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => StepperProcess()),
-                              );
-                            }
-                        )),
-                    Flexible(
-                        child: circleBtn("assets/dash wiat.png", "Pending",
-                            Colors.yellow[200], "2314",
-                                () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => PendingAndCompletedOrders()),
-                              );
-                            }))
-                  ],
-                ),
-                Row(
-                  children: [
-                    Flexible(
-                        child: circleBtn("assets/dash done 2.png", "Done",
-                            Colors.green[200], "12",
-                                () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Stats()),
-                              );
-                            })),
-                    Flexible(
-                      child: circleBtn("assets/dash stats 2.png", "Stats",
-                          Colors.grey[200], "1", () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Stats()),
-                        );
-                      }),
+                    prefs!
+                            .getString(AppStrings.currentUserProfilePicLink)!
+                            .isEmpty
+                        ? Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.white),
+                            child: Icon(
+                              Icons.person,
+                              size: 57.5,
+                              color: Colors.black12,
+                            ))
+                        : Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(width: 2, color: Colors.white)),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white70,
+                              maxRadius: 28.5,
+                              backgroundImage: NetworkImage(prefs!.getString(
+                                  AppStrings.currentUserProfilePicLink)!),
+                              // child: Image.network(
+                              //   myAssignedTech!.image!, height: 125, width: 125,),
+                            ),
+                          ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Text(
+                      prefs!.getString(AppStrings.currentUserFirstName)! +
+                          " " +
+                          prefs!.getString(AppStrings.currentUserFamilyName)!,
+                      style: TextStyle(color: Colors.black54),
                     )
                   ],
+                ),
+                toolbarHeight: 80,
+                iconTheme: IconThemeData(color: Colors.black54, size: 25),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              ),
+              body: Stack(children: [
+                Hero(
+                  tag: "bg",
+                  child: Image.asset(
+                    "assets/abstract bg.jpg",
+                    fit: BoxFit.cover,
+                    height: double.infinity,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                  ),
+                ),
+                Center(
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                              child: circleBtn("assets/dash fix.png", "Order",
+                                  Colors.red[200], "123124", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => StepperProcess()),
+                            );
+                          })),
+                          Flexible(
+                              child: circleBtn("assets/dash wiat.png",
+                                  "Pending", Colors.yellow[200], "2314", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PendingAndCompletedOrders()),
+                            );
+                          }))
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                              child: circleBtn("assets/dash done 2.png", "Done",
+                                  Colors.green[200], "12", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Stats()),
+                            );
+                          })),
+                          Flexible(
+                            child: circleBtn("assets/dash stats 2.png", "Stats",
+                                Colors.grey[200], "1", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Stats()),
+                              );
+                            }),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 )
-              ],
-            ),
-          )
-        ],
-      ),
+              ]));
+        } else {
+          return Stack(
+            children: [
+              Image.asset(
+                "assets/abstract bg.jpg",
+                fit: BoxFit.cover,
+                height: double.infinity,
+                width: double.infinity,
+                alignment: Alignment.center,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 125,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Lottie.asset('assets/loading gear.json',
+                            height: 75,
+                            width: 75,
+                            alignment: Alignment.center,
+                            animate: true),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            "Loading account data...",
+                            style: TextStyle(
+                                color: Colors.black54, fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 
@@ -458,29 +568,29 @@ int xyz = 4;
                             color: Colors.grey.shade200.withOpacity(0.25)),
                         child: Center(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Image.asset(
-                                    image,
-                                    height: 40,
-                                    width: 40,
-                                  ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Image.asset(
+                                image,
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Flexible(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  text,
+                                  style: TextStyle(fontSize: 20),
                                 ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Flexible(
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      text,
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )),
+                              ),
+                            )
+                          ],
+                        )),
                       ),
                     ),
                   ),

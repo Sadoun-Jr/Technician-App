@@ -6,9 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Styled search page
-- Hidden search by job
-- Added search by first name only
+- Added name and profile pic to home page and drawer
+
 
 ## (  ) Creating and Styling the layouts
 

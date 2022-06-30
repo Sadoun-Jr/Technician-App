@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -522,6 +523,16 @@ class _GlobalSearchState extends State<GlobalSearch> {
       String firstName
       // String jobTitle
       ) async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
     try {
       String capitalizedFirstName = firstName.capitalize();
 

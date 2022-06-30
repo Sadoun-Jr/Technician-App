@@ -384,6 +384,10 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
         Navigator.of(context).pushNamedAndRemoveUntil(
             '/dashboard or login', (Route<dynamic> route) => false);
 
+        await prefs?.setString(AppStrings.currentUserFirstName, firstNameController.text.trim().toString());
+        await prefs?.setString(AppStrings.currentUserFamilyName, familyNameController.text.trim().toString());
+        await prefs?.setString(AppStrings.currentUserProfilePicLink, profilePicUrl);
+
       }catch (e) {
         debugPrint(e.toString());
         Fluttertoast.showToast(msg: "Error saving data", backgroundColor: Colors.redAccent);
@@ -403,7 +407,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
       // Create a Reference to the file
       Reference ref = FirebaseStorage.instance
           .ref()
-          .child('5Fr6UOALS9clOwcgnP4W')
+          .child(FirebaseAuth.instance.currentUser!.uid)
           .child("/profile_pic")
           .child("/${file!.path}");
       setState(() {

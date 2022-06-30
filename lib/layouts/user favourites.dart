@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:technicians/layouts/technician%20profile%20page.dart';
 import 'package:technicians/models/technician%20object.dart';
@@ -58,6 +60,18 @@ class _UserFavouritesState extends State<UserFavourites> {
   List<Technician> listOfFavTechnicians = [];
 
   Future<void> getAppropriateTechnicians() async {
+
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
     listOfFavTechnicians = [];
     var technicianCollection =
         FirebaseFirestore.instance.collection("technicians");

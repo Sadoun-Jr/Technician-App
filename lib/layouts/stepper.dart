@@ -45,7 +45,7 @@ class _StepperProcessState extends State<StepperProcess>
   bool _isHiringFromFavs = false;
   bool _isCustomIssue = false;
   bool _isCompleted = false;
-  String _assignedTo = " ";
+  String _assignedTo = "";
   String _technicianRating = " ";
   String _technicianReview = " ";
   String _timeRequested = " ";
@@ -215,6 +215,7 @@ class _StepperProcessState extends State<StepperProcess>
                         _confirmOrder();
                       } else {
                         activeStep++;
+                        debugPrint("Active Step: $activeStep");
                         //describe issue page
                         if (activeStep == 1) {
                           //navigating after first page
@@ -222,7 +223,7 @@ class _StepperProcessState extends State<StepperProcess>
                           _nextActive = true;
 
                           //technician already selected
-                          if (_assignedTo != " ") {
+                          if (_assignedTo != "") {
                             _nextActive = true;
                           }
                         }
@@ -231,8 +232,9 @@ class _StepperProcessState extends State<StepperProcess>
                           _setDesc();
 
                           //technician already selected
-                          if (_assignedTo != " " && listOfAppropriateTechnicians.isNotEmpty) {
+                          if (_assignedTo != "" && listOfAppropriateTechnicians.isNotEmpty) {
                             _nextActive = true;
+                            _prevActive = true;
                           } else {
                             _nextActive = false;
                           }
@@ -1914,8 +1916,8 @@ class _StepperProcessState extends State<StepperProcess>
               Container(
                 margin: EdgeInsets.fromLTRB(0, 16, 10, 10),
                 child: Text(
-                  "Describe your issue",
-                  style: TextStyle(fontSize: 25, color: Colors.black54),
+                  "Describe your issue (optional)",
+                  style: TextStyle(fontSize: 22, color: Colors.black54),
                 ),
               ),
               SizedBox(
