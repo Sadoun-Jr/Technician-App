@@ -66,7 +66,8 @@ class _StepperProcessState extends State<StepperProcess>
   Color _whiteText = Colors.white;
   Color _midWhite = Colors.white54;
 
-  final Color _btnColor = HexColor("#d4c4ca");
+  final Color _lightPrimary = HexColor("#d4c4ca");
+  final Color _btnColor = HexColor("#96878D");
   final Color _splashClr = Colors.white;
   final Gradient _bgGradiaet = LinearGradient(
       begin: Alignment.topCenter,
@@ -230,7 +231,7 @@ class _StepperProcessState extends State<StepperProcess>
                           _setDesc();
 
                           //technician already selected
-                          if (_assignedTo != " ") {
+                          if (_assignedTo != " " && listOfAppropriateTechnicians.isNotEmpty) {
                             _nextActive = true;
                           } else {
                             _nextActive = false;
@@ -698,7 +699,7 @@ class _StepperProcessState extends State<StepperProcess>
                                       Icons.favorite,
                                       color: _isLiked
                                           ? Colors.red[800]
-                                          : _darkTxtClr,
+                                          : _lightPrimary,
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
@@ -1559,7 +1560,7 @@ class _StepperProcessState extends State<StepperProcess>
                                                   color:
                                                       selectTechnicianValue ==
                                                               index
-                                                          ? _btnColor
+                                                          ? _lightPrimary
                                                           : Colors
                                                               .transparent,
                                                   borderRadius:
@@ -2560,6 +2561,7 @@ class _StepperProcessState extends State<StepperProcess>
       setState(() =>
       _issueCategory = CommonIssues.listOfAppliancesCategories[category]);
     }
+    _assignedTo = "";
     debugPrint("Category set to $_issueCategory");
   }
 

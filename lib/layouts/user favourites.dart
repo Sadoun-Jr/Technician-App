@@ -21,8 +21,9 @@ class UserFavourites extends StatefulWidget {
 
 class _UserFavouritesState extends State<UserFavourites> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final Color _btnColor = HexColor("#d4c4ca");
+  final Color _btnColor = HexColor("#96878D");
   final Color _splashClr = Colors.white;
+  final Color _lightPrimary = HexColor("#d4c4ca");
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,9 @@ class _UserFavouritesState extends State<UserFavourites> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
                 bottom:
-                    Radius.elliptical(MediaQuery.of(context).size.width, 32))),
+                Radius.circular(15)
+                    // Radius.elliptical(MediaQuery.of(context).size.width, 32)
+            )),
       ),
       body: listOfFavTechniciansLayout(),
     );
@@ -138,256 +141,248 @@ class _UserFavouritesState extends State<UserFavourites> {
                     "Filtered list of appropriate techs to: ${listOfFavTechnicians.length}");
                 return Container(
                   margin: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    children: <Widget>[
-                      Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: listOfFavTechnicians.isNotEmpty
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
-                                itemCount: listOfFavTechnicians.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    height: 100,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 1, horizontal: 4),
-                                    child: Align(
-                                      alignment: Alignment.topCenter,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: 10.0, sigmaY: 10.0),
-                                          child: Material(
-                                            color: Colors.white54,
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 90,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(30)),
-                                                  border: Border.all(
-                                                      width: 3,
-                                                      color: Colors.white),
-                                                      ),
-                                              child: InkWell(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(30)),
-                                                splashColor: _splashClr,
-                                                onTap: () => Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => TechnicianMainProfilePage(
-                                                            listOfFavTechnicians[index].technicianUid!)))
-                                                    ,
-                                                child: AnimatedContainer(
-                                                  duration:
-                                                      Duration(milliseconds: 200),
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          selectTechnicianValue ==
-                                                                  index
-                                                              ? _btnColor
-                                                              : Colors
-                                                                  .transparent,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  30))),
-                                                  child: Row(children: <Widget>[
-                                                    Expanded(
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          SizedBox(
-                                                            width: 16,
-                                                          ),
-                                                          Container(
-                                                            margin: EdgeInsets
-                                                                .fromLTRB(
-                                                                    0, 16, 0, 16),
-                                                            child: Stack(
-                                                                children: [
-                                                                  listOfFavTechnicians[index]
-                                                                              .image ==
-                                                                          null
-                                                                      ? Container(
-                                                                          decoration: BoxDecoration(
-                                                                              shape: BoxShape
-                                                                                  .circle,
-                                                                              color: Colors
-                                                                                  .white),
-                                                                          child:
-                                                                              Icon(
-                                                                            Icons
-                                                                                .person,
-                                                                            size:
-                                                                                57.5,
-                                                                            color:
-                                                                                Colors.black12,
-                                                                          ))
-                                                                      : Container(
-                                                                          decoration: BoxDecoration(
-                                                                              shape:
-                                                                                  BoxShape.circle,
-                                                                              border: Border.all(width: 2, color: Colors.white)),
-                                                                          child:
-                                                                              CircleAvatar(
-                                                                            backgroundColor:
-                                                                                Colors.white70,
-                                                                            maxRadius:
-                                                                                28.5,
-                                                                            backgroundImage:
-                                                                                NetworkImage(listOfFavTechnicians[index].image!),
-                                                                            // child: Image.network(
-                                                                            //   myAssignedTech!.image!, height: 125, width: 125,),
-                                                                          ),
-                                                                        ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .bottomCenter,
+                  height: MediaQuery.of(context).size.height,
+                  child: listOfFavTechnicians.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemCount: listOfFavTechnicians.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 100,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 4),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(30)),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                        sigmaX: 10.0, sigmaY: 10.0),
+                                    child: Material(
+                                      color: Colors.white54,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30)),
+                                            border: Border.all(
+                                                width: 3,
+                                                color: Colors.white),
+                                                ),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30)),
+                                          splashColor: _splashClr,
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => TechnicianMainProfilePage(
+                                                      listOfFavTechnicians[index].technicianUid!)))
+                                              ,
+                                          child: AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    selectTechnicianValue ==
+                                                            index
+                                                        ? _btnColor
+                                                        : Colors
+                                                            .transparent,
+                                                borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            30))),
+                                            child: Row(children: <Widget>[
+                                              Expanded(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Container(
+                                                      margin: EdgeInsets
+                                                          .fromLTRB(
+                                                              0, 16, 0, 16),
+                                                      child: Stack(
+                                                          children: [
+                                                            listOfFavTechnicians[index]
+                                                                        .image ==
+                                                                    null
+                                                                ? Container(
+                                                                    decoration: BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        color: Colors
+                                                                            .white),
                                                                     child:
-                                                                        Visibility(
-                                                                      visible: listOfFavTechnicians[
-                                                                              index]
-                                                                          .isAvailable!,
-                                                                      child: CircleAvatar(
-                                                                          maxRadius:
-                                                                              7,
-                                                                          backgroundColor:
-                                                                              Colors.green),
+                                                                        Icon(
+                                                                      Icons
+                                                                          .person,
+                                                                      size:
+                                                                          57.5,
+                                                                      color:
+                                                                          Colors.black12,
+                                                                    ))
+                                                                : Container(
+                                                                    decoration: BoxDecoration(
+                                                                        shape:
+                                                                            BoxShape.circle,
+                                                                        border: Border.all(width: 2, color: Colors.white)),
+                                                                    child:
+                                                                        CircleAvatar(
+                                                                      backgroundColor:
+                                                                          Colors.white70,
+                                                                      maxRadius:
+                                                                          28.5,
+                                                                      backgroundImage:
+                                                                          NetworkImage(listOfFavTechnicians[index].image!),
+                                                                      // child: Image.network(
+                                                                      //   myAssignedTech!.image!, height: 125, width: 125,),
                                                                     ),
-                                                                  )
-                                                                ]),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 16,
-                                                          ),
-                                                          Expanded(
-                                                            child: Container(
-                                                              margin: EdgeInsets
-                                                                  .fromLTRB(0, 23,
-                                                                      16, 16),
-                                                              color: Colors
-                                                                  .transparent,
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: <
-                                                                    Widget>[
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        listOfFavTechnicians[index]
-                                                                                .firstName ??
-                                                                            "null",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                18),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: 5,
-                                                                      ),
-                                                                      Text(
-                                                                        listOfFavTechnicians[index]
-                                                                                .familyName ??
-                                                                            "null",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                18),
-                                                                      ),
-                                                                    ],
                                                                   ),
-                                                                  SizedBox(
-                                                                    height: 6,
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      listOfFavTechnicians[index]
-                                                                              .jobTitle ??
-                                                                          "null",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13,
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .shade600,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                      maxLines: 1,
-                                                                    ),
-                                                                  )
-                                                                ],
+                                                            Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .bottomCenter,
+                                                              child:
+                                                                  Visibility(
+                                                                visible: listOfFavTechnicians[
+                                                                        index]
+                                                                    .isAvailable!,
+                                                                child: CircleAvatar(
+                                                                    maxRadius:
+                                                                        7,
+                                                                    backgroundColor:
+                                                                        Colors.green),
                                                               ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            padding: EdgeInsets
-                                                                .fromLTRB(16, 16,
-                                                                    0, 16),
-                                                            child: Column(
+                                                            )
+                                                          ]),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        margin: EdgeInsets
+                                                            .fromLTRB(0, 23,
+                                                                16, 16),
+                                                        color: Colors
+                                                            .transparent,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <
+                                                              Widget>[
+                                                            Row(
                                                               children: [
-                                                                Expanded(
-                                                                  child:
-                                                                      Container(
-                                                                    margin: EdgeInsets
-                                                                        .fromLTRB(
-                                                                            0,
-                                                                            5,
-                                                                            10,
-                                                                            0),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        SizedBox(
-                                                                            height:
-                                                                                7),
-                                                                      ],
-                                                                    ),
-                                                                  ),
+                                                                Text(
+                                                                  listOfFavTechnicians[index]
+                                                                          .firstName ??
+                                                                      "null",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  listOfFavTechnicians[index]
+                                                                          .familyName ??
+                                                                      "null",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
                                                                 ),
                                                               ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: 6,
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                listOfFavTechnicians[index]
+                                                                        .jobTitle ??
+                                                                    "null",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        13,
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade600,
+                                                                    fontWeight:
+                                                                        FontWeight.bold),
+                                                                maxLines: 1,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding: EdgeInsets
+                                                          .fromLTRB(16, 16,
+                                                              0, 16),
+                                                      child: Column(
+                                                        children: [
+                                                          Expanded(
+                                                            child:
+                                                                Container(
+                                                              margin: EdgeInsets
+                                                                  .fromLTRB(
+                                                                      0,
+                                                                      5,
+                                                                      10,
+                                                                      0),
+                                                              child: Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                      height:
+                                                                          7),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ]),
+                                                  ],
                                                 ),
                                               ),
-                                            ),
+                                            ]),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  );
-                                })
-                            : Center(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      flex: 6,
-                                      child: Lottie.asset(
-                                        "assets/searching.json",
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        "No Favourites, start liking some technicians!",
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    )
-                                  ],
+                                  ),
                                 ),
                               ),
-                      )
-                    ],
-                  ),
+                            );
+                          })
+                      : Center(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Lottie.asset(
+                                  "assets/searching.json",
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "No Favourites, start liking some technicians!",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                 );
               } else {
                 return SizedBox(

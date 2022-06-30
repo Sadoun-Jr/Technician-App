@@ -6,9 +6,9 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added bouncing animations to category items in page 1 stepper
-- Fixed technicians not showing up bug when appliance is selected
-- Added background color to cards to select technician in page 3 stepepr
+- Styled search page
+- Hidden search by job
+- Added search by first name only
 
 ## (  ) Creating and Styling the layouts
 
