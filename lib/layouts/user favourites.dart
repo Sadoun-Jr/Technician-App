@@ -371,8 +371,8 @@ class _UserFavouritesState extends State<UserFavourites> {
                                   children: [
                                     Expanded(
                                       flex: 6,
-                                      child: Image.asset(
-                                        "assets/no result.png",
+                                      child: Lottie.asset(
+                                        "assets/searching.json",
                                       ),
                                     ),
                                     Expanded(

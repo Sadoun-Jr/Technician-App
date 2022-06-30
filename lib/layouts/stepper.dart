@@ -39,7 +39,8 @@ class StepperProcess extends StatefulWidget {
   State<StepperProcess> createState() => _StepperProcessState();
 }
 
-class _StepperProcessState extends State<StepperProcess> {
+class _StepperProcessState extends State<StepperProcess>
+    with TickerProviderStateMixin {
   static String _issueCategory = CommonIssues.applianceCategory9;
   bool _isHiringFromFavs = false;
   bool _isCustomIssue = false;
@@ -226,7 +227,6 @@ class _StepperProcessState extends State<StepperProcess> {
                         }
                         //select tech page
                         if (activeStep == 2) {
-
                           _setDesc();
 
                           //technician already selected
@@ -316,26 +316,6 @@ class _StepperProcessState extends State<StepperProcess> {
   int upperBound = 4; // upperBound MUST BE total number of icons minus 1.
   bool _buttonsVisible = true;
   late int activeStep;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _isHiringFromFavs = (widget.hiredSpecificTech == null ? false : true);
-    debugPrint("Hiring from favs: $_isHiringFromFavs");
-    activeStep = 0;
-
-    if (_isHiringFromFavs) {
-      activeStep = 1; // Initial step set to 0.
-      _issueCategory = widget.hiredSpecificTech!.jobTitle!;
-      _assignedTo = widget.hiredSpecificTech!.firstName! +
-          " " +
-          widget.hiredSpecificTech!.familyName!;
-      _price = 0;
-      _prevActive = false;
-      _nextActive = true;
-    }
-  }
 
   Widget header() {
     return Visibility(
@@ -442,7 +422,7 @@ class _StepperProcessState extends State<StepperProcess> {
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.pop(context);
-                                      setState(() => _prevActive =true);
+                                      setState(() => _prevActive = true);
                                     },
                                     child: CircleAvatar(
                                       maxRadius: 40,
@@ -505,7 +485,6 @@ class _StepperProcessState extends State<StepperProcess> {
         _nextActive = true;
       });
       return;
-
     }
 
     if (files != null) {
@@ -515,53 +494,52 @@ class _StepperProcessState extends State<StepperProcess> {
     }
 
     // try {
-      //get the current user uid
-      final auth = FirebaseAuth.instance;
-      final User user = auth.currentUser!;
-      final userid = user.uid;
+    //get the current user uid
+    final auth = FirebaseAuth.instance;
+    final User user = auth.currentUser!;
+    final userid = user.uid;
 
-      setState(() => orderStatus = "Creating order");
+    setState(() => orderStatus = "Creating order");
 
-      //create an empty issue with a uid
-      await FirebaseFirestore.instance.collection("issues").add({
-        AppStrings.issueUidKey: " ",
-      }).then((value) async {
-        debugPrint(
-            "Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
-        await FirebaseFirestore.instance
-            .collection("issues")
-            .doc(value.id)
-            .set({
-          AppStrings.listOfImagePathskey: listOfFilePaths,
-          AppStrings.issueCategoryKey: _issueCategory,
-          AppStrings.issueDescKey:
-              _issueDesc == "" ? "No Description made" : _issueDesc,
-          AppStrings.isCompletedKey: false,
-          AppStrings.technicianRatingKey: AppStrings.ratingNY,
-          AppStrings.technicianReviewKey: AppStrings.reviewNY,
-          AppStrings.timeCompletedKey: AppStrings.timeCompletedNY,
-          AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
-          AppStrings.paymentMethodKey: AppStrings.paymentMethodNY,
-          AppStrings.priceKey: _price,
-          AppStrings.issueUidKey: value.id,
-          AppStrings.isEmergencyKey: false,
-          AppStrings.isPaidKey: false,
-          AppStrings.issuedByKey: userid,
-          AppStrings.isAcceptedByTechnicianKey: false,
-          AppStrings.isCanceledByUserKey: false,
-          AppStrings.isTerminatedMidWork: false,
-          AppStrings.issuedToKey: _isHiringFromFavs ? widget.hiredSpecificTech!.technicianUid! : myAssignedTech!.technicianUid
-        });
+    //create an empty issue with a uid
+    await FirebaseFirestore.instance.collection("issues").add({
+      AppStrings.issueUidKey: " ",
+    }).then((value) async {
+      debugPrint(
+          "Issue made with ID# " + value.id + "\nCreated by ID# " + user.uid);
+      await FirebaseFirestore.instance.collection("issues").doc(value.id).set({
+        AppStrings.listOfImagePathskey: listOfFilePaths,
+        AppStrings.issueCategoryKey: _issueCategory,
+        AppStrings.issueDescKey:
+            _issueDesc == "" ? "No Description made" : _issueDesc,
+        AppStrings.isCompletedKey: false,
+        AppStrings.technicianRatingKey: AppStrings.ratingNY,
+        AppStrings.technicianReviewKey: AppStrings.reviewNY,
+        AppStrings.timeCompletedKey: AppStrings.timeCompletedNY,
+        AppStrings.timeRequestedKey: DateTime.now().millisecondsSinceEpoch,
+        AppStrings.paymentMethodKey: AppStrings.paymentMethodNY,
+        AppStrings.priceKey: _price,
+        AppStrings.issueUidKey: value.id,
+        AppStrings.isEmergencyKey: false,
+        AppStrings.isPaidKey: false,
+        AppStrings.issuedByKey: userid,
+        AppStrings.isAcceptedByTechnicianKey: false,
+        AppStrings.isCanceledByUserKey: false,
+        AppStrings.isTerminatedMidWork: false,
+        AppStrings.issuedToKey: _isHiringFromFavs
+            ? widget.hiredSpecificTech!.technicianUid!
+            : myAssignedTech!.technicianUid
       });
+    });
 
-      // _showMyDialog();
-      // Fluttertoast.showToast(msg: "Issue created", backgroundColor: Colors.green);
-      setState(() => orderStatus = "Order created!");
+    // _showMyDialog();
+    // Fluttertoast.showToast(msg: "Issue created", backgroundColor: Colors.green);
+    setState(() => orderStatus = "Order created!");
 
-      Future.delayed(Duration(milliseconds: 2000), () {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            '/dashboard or login', (Route<dynamic> route) => false);
-      });
+    Future.delayed(Duration(milliseconds: 2000), () {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/dashboard or login', (Route<dynamic> route) => false);
+    });
     // } catch (e) {
     //   Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
     //   debugPrint(e.toString());
@@ -1039,7 +1017,9 @@ class _StepperProcessState extends State<StepperProcess> {
                                   children: [
                                     Text(
                                       _isHiringFromFavs
-                                          ? widget.hiredSpecificTech!.techDesc ?? "No Desc"
+                                          ? widget.hiredSpecificTech!
+                                                  .techDesc ??
+                                              "No Desc"
                                           : myAssignedTech?.techDesc ??
                                               AppStrings.listOfReviews[1] +
                                                   AppStrings.listOfReviews[2] +
@@ -1798,8 +1778,8 @@ class _StepperProcessState extends State<StepperProcess> {
                               children: [
                                 Expanded(
                                   flex: 6,
-                                  child: Image.asset(
-                                    "assets/no result.png",
+                                  child: Lottie.asset(
+                                    "assets/searching.json",
                                   ),
                                 ),
                                 Expanded(
@@ -2245,59 +2225,95 @@ class _StepperProcessState extends State<StepperProcess> {
         splashColor: _splashClr,
         highlightColor: Colors.white,
         onTap: () {
+          _animationController.forward(from: 0.6);
           isCategorySelected = true;
           _nextActive = true;
           setState(() => selectCategoryValue = index);
           setIssueCategory(selectCategoryValue, true);
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
-        child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: selectCategoryValue == index
-                  ? _darkTxtClr
-                  : Colors.transparent,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-            ),
-            duration: Duration(milliseconds: 400),
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            child: Align(
-                alignment: Alignment.topCenter,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(width: 2, color: Colors.white),
-                          color: Colors.grey.shade200.withOpacity(0.25)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Image.asset(
-                              selectCategoryValue == index
-                                  ? CommonIssues.listOfSelectedTechImages[index]
-                                  : CommonIssues
-                                      .listOfNotSelectedTechImages[index],
-                              height: 75,
-                              width: 75,
+        child: ScaleTransition(
+          scale: _animation,
+          child: Container(
+              decoration: BoxDecoration(
+                color: selectCategoryValue == index
+                    ? Colors.white
+                    : Colors.transparent,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(width: 0, color: Colors.white),
+                            color: Colors.grey.shade200.withOpacity(0.25)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Image.asset(
+                                selectCategoryValue == index
+                                    ? CommonIssues
+                                        .listOfSelectedTechImages[index]
+                                    : CommonIssues
+                                        .listOfNotSelectedTechImages[index],
+                                height: 75,
+                                width: 75,
+                              ),
                             ),
-                          ),
-                          Expanded(
-                              flex: 1,
-                              child: Text(CommonIssues
-                                  .listOfTechnicianCategories[index]))
-                        ],
+                            Expanded(
+                                flex: 1,
+                                child: Text(CommonIssues
+                                    .listOfTechnicianCategories[index]))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ))),
+                  ))),
+        ),
       ),
     );
+  }
+
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.bounceInOut,
+  );
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isHiringFromFavs = (widget.hiredSpecificTech == null ? false : true);
+    debugPrint("Hiring from favs: $_isHiringFromFavs");
+    activeStep = 0;
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 750),
+      vsync: this,
+    );
+    _animationController.forward();
+
+    if (_isHiringFromFavs) {
+      activeStep = 1; // Initial step set to 0.
+      _issueCategory = widget.hiredSpecificTech!.jobTitle!;
+      _assignedTo = widget.hiredSpecificTech!.firstName! +
+          " " +
+          widget.hiredSpecificTech!.familyName!;
+      _price = 0;
+      _prevActive = false;
+      _nextActive = true;
+    }
   }
 
   Widget appliancesList(int index) {
@@ -2307,63 +2323,68 @@ class _StepperProcessState extends State<StepperProcess> {
         splashColor: _splashClr,
         highlightColor: Colors.white,
         onTap: () {
+          _animationController.forward(from: 0.2);
           isCategorySelected = true;
           _nextActive = true;
           setState(() => selectCategoryValue = index);
           setIssueCategory(selectCategoryValue, false);
         },
         borderRadius: BorderRadius.all(Radius.circular(30)),
-        child: AnimatedContainer(
-            decoration: BoxDecoration(
-              color: selectCategoryValue == index
-                  ? Colors.transparent
-                  : Colors.transparent,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-            ),
-            duration: Duration(milliseconds: 400),
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            child: Align(
-                alignment: Alignment.topCenter,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(
-                              width: 0.1,
-                              color: Colors.white), //todo: fix border width
-                          color: Colors.grey.shade200.withOpacity(0.25)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Image.asset(
-                              selectCategoryValue == index
-                                  ? CommonIssues
-                                      .listOfSelectedApplianceImages[index]
-                                  : CommonIssues
-                                      .listOfNotSelectedApplianceImages[index],
-                              height: 75,
-                              width: 75,
+        child: ScaleTransition(
+          scale: _animation,
+          child: Container(
+              decoration: BoxDecoration(
+                color: selectCategoryValue == index
+                    ? Colors.white
+                    : Colors.transparent,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              // duration: Duration(milliseconds: 400),
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(
+                                width: 0.1,
+                                color: Colors.white), //todo: fix border width
+                            color: Colors.grey.shade200.withOpacity(0.25)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Image.asset(
+                                selectCategoryValue == index
+                                    ? CommonIssues
+                                        .listOfSelectedApplianceImages[index]
+                                    : CommonIssues
+                                            .listOfNotSelectedApplianceImages[
+                                        index],
+                                height: 75,
+                                width: 75,
+                              ),
                             ),
-                          ),
-                          Expanded(
-                              flex: 1,
-                              child: _isSortedByTrades
-                                  ? Text(CommonIssues
-                                      .listOfTechnicianCategories[index])
-                                  : Text(CommonIssues
-                                      .listOfAppliancesCategories[index]))
-                        ],
+                            Expanded(
+                                flex: 1,
+                                child: _isSortedByTrades
+                                    ? Text(CommonIssues
+                                        .listOfTechnicianCategories[index])
+                                    : Text(CommonIssues
+                                        .listOfAppliancesCategories[index]))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ))),
+                  ))),
+        ),
       ),
     );
   }
@@ -2372,6 +2393,7 @@ class _StepperProcessState extends State<StepperProcess> {
 
   @override
   void dispose() {
+    _animationController.dispose();
     customIssueController.dispose();
     firstFocusNode.removeListener(() {});
     super.dispose();
@@ -2397,6 +2419,9 @@ class _StepperProcessState extends State<StepperProcess> {
                 onTap: () {
                   sortByTrades;
                   setState(() {
+                    _nextActive = false;
+                    selectTechnicianValue = 44;
+                    selectCategoryValue = 53;
                     _isSortedByAppliance = false;
                     _isSortedByTrades = true;
                   });
@@ -2425,6 +2450,9 @@ class _StepperProcessState extends State<StepperProcess> {
                 onTap: () {
                   sortByApplicances();
                   setState(() {
+                    _nextActive = false;
+                    selectTechnicianValue = 44;
+                    selectCategoryValue = 53;
                     _isSortedByAppliance = true;
                     _isSortedByTrades = false;
                   });
