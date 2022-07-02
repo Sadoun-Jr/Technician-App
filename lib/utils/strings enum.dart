@@ -59,6 +59,12 @@ class AppStrings {
   static String currentUserFirstName = "first name";
   static String currentUserFamilyName = "family name";
   static String currentUserProfilePicLink = "pic link";
+  static String currentUserGender = "gender";
+  static String currentUserProvince = "province";
+  static String currentUserAddress = "address";
+  static String currentUserCity = "city";
+  static String currentUserPhoneNumber = "phone";
+  static String currentUserAge = "age";
 
   //issue database keys
   static String issueCategoryKey = "issueCategory";
@@ -110,9 +116,11 @@ class AppStrings {
   static String listOfFavouritedByKey = "favouritedBy";
   static String numberOfReviewsKey = "numberOfReviews";
   static String locationKey = "location";
+  static String genderKey = "gender";
+  static String addressKey = "address";
   static String mapPricesOfJobIssuesKey = "pricesOfJobIssues";
   static String mapPricesOfApplianceIssuesKey = "pricesOfApplianceIssues";
-  static String ageKey= "age";
+  static String ageKey = "age";
   static String subLocationKey = "subLocation";
   static String technicianDesc = "techDesc";
 
@@ -366,6 +374,136 @@ class AppStrings {
     "South Sinai",
     "Suez"
   ];
+
+  static List<String> citiesList = [
+    'الزقازيق',
+    'العاشر من رمضان',
+    'منيا القمح',
+    'بِلْبيس',
+    'مشتول السوق',
+    'القنايات',
+    'أبو حَمّاد',
+    'القُرين',
+    'هِهْيا',
+    'أبو كبير',
+    'فاقوس',
+    'الصالحية الجديدة',
+    'الإبراهيمية',
+    'ديرب نجم',
+    'كفر صقر',
+    'أولاد صقر',
+    'الحسينية',
+    'صان الحجر القبلية',
+    'منشأة أبو عمر',
+    'الزيتون',
+    'حي الزاوية الحمراء',
+    'حدائق القبة'
+    'الشرابية',
+    'الساحل',
+    'شبرا',
+    ' روض الفرج',
+    'الأميرية',
+    'السلام أول',
+    'السلام ثان',
+    'المرج',
+    'لمطرية',
+    'عين شمس',
+    'النزهة',
+    'مصر الجديدة',
+    'شرق مدينة نصر',
+    'غرب مدينة نصر',
+    'الوايلي',
+    ' منشأة ناصر',
+    'وسط',
+    'باب الشعرية',
+    'الأزبكية',
+    'بولاق',
+    'الموسكي',
+    'عابدين',
+    'غرب',
+    'المقطم',
+    'الخليفة',
+    'السيدة زينب',
+    'مصر القديمة',
+    'دار السلام',
+    'البساتين',
+    'المعادي',
+    'طره',
+    'المعصرة',
+    '15 مايو',
+    'حلوان',
+    'التبين',
+    'القاهرة الجديدة',
+    'بدر',
+    'الشروق',
+  ];
+
+  static Map<String, List<String>> citiesMap = {
+    'Sharqia': [
+      'الزقازيق',
+      'العاشر من رمضان',
+      'منيا القمح',
+      'بِلْبيس',
+      'مشتول السوق',
+      'القنايات',
+      'أبو حَمّاد',
+      'القُرين',
+      'هِهْيا',
+      'أبو كبير',
+      'فاقوس',
+      'الصالحية الجديدة',
+      'الإبراهيمية',
+      'ديرب نجم',
+      'كفر صقر',
+      'أولاد صقر',
+      'الحسينية',
+      'صان الحجر القبلية',
+      'منشأة أبو عمر',
+    ],
+    'Cairo': [
+      'الزيتون',
+      'حي الزاوية الحمراء',
+      'حدائق القبة'
+      'الشرابية',
+      'الساحل',
+      'شبرا',
+      ' روض الفرج',
+      'الأميرية',
+      'السلام أول',
+      'السلام ثان',
+      'المرج',
+      'لمطرية',
+      'عين شمس',
+      'النزهة',
+      'مصر الجديدة',
+      'شرق مدينة نصر',
+      'غرب مدينة نصر',
+      'الوايلي',
+      ' منشأة ناصر',
+      'وسط',
+      'باب الشعرية',
+      'الأزبكية',
+      'بولاق',
+      'الموسكي',
+      'عابدين',
+      'غرب',
+      'المقطم',
+      'الخليفة',
+      'السيدة زينب',
+      'مصر القديمة',
+      'دار السلام',
+      'البساتين',
+      'المعادي',
+      'طره',
+      'المعصرة',
+      '15 مايو',
+      'حلوان',
+      'التبين',
+      'القاهرة الجديدة',
+      'بدر',
+      'الشروق',
+    ]
+  };
 
   static String notCompletedYet = "Not yet";
 }

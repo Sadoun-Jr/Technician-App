@@ -50,8 +50,9 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
           ),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
-                  bottom: Radius.elliptical(
-                      MediaQuery.of(context).size.width, 32))),
+               bottom: Radius.circular(5)))
+                  // bottom: Radius.elliptical(
+                  //     MediaQuery.of(context).size.width, 32))),
         ),
         body: Stack(
           children: [

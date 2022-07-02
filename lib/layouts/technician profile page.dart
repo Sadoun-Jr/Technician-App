@@ -984,6 +984,9 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
     super.dispose();
   }
 
+
+  final Color _btnColor = HexColor("#d4c4ca");
+  final Color _splashClr = Colors.white;
   final Color _darkTxtClr = HexColor("#96878D");
   bool _isDescExpanded = false;
   double _statsHeight = 105;
@@ -991,6 +994,5 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
   final Color _jobsBoxClr = HexColor("#96878D");
   final Color _ratingBoxClr = HexColor("#96878D");
   final Color _completedBoxClr = HexColor("#96878D");
-  final Color _btnColor = HexColor("#d4c4ca");
-  final Color _splashClr = Colors.white;
+
 }

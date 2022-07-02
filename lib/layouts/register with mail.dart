@@ -367,7 +367,8 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       // Navigator.of(context).pushNamedAndRemoveUntil(
       //     '/dashboard or login', (Route<dynamic> route) => false);
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SetPersonalDetails(false)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          SetPersonalDetails(false, gender: null, city: null, age: null, profilePicLink: null, firstName: null, familyName: null, province: null, phoneNumber: null,)));
 
     } catch (e) {
       debugPrint("Sign up error: " + e.toString());

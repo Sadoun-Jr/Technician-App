@@ -65,7 +65,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                   bottom:
-                  Radius.circular(15)
+                  Radius.circular(5)
                 // Radius.elliptical(MediaQuery.of(context).size.width, 32)
               )),
         ),
@@ -106,8 +106,8 @@ class _GlobalSearchState extends State<GlobalSearch> {
                       margin: EdgeInsets.all(16),
                       child: Text("Type the inputs that you want", style: TextStyle(fontSize: 18),),
                     ),
-                    myController(firstNameController, 1, "First name"),
-                    myController(familyNameController, 1, "Family name"),
+                    customTextEditor(firstNameController, 1, "First name"),
+                    customTextEditor(familyNameController, 1, "Family name"),
 
                     //=========search by job============
                     // DropdownButton<String>(
@@ -581,7 +581,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
   }
 
 
-  Widget myController(
+  Widget customTextEditor(
       TextEditingController controller, int maxLines, String labelText) {
     return Container(
       // margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -603,7 +603,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25.0),
             borderSide: BorderSide(
-              color: Colors.white,
+              color: _darkTxtClr,
               width: 1.25,
             ),
           ),
@@ -614,7 +614,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
           labelStyle: TextStyle(color: _darkTxtClr),
           hintStyle: TextStyle(color: _darkTxtClr),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white, width: 2.5),
+            borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
             borderRadius: BorderRadius.circular(25.0),
           ),
         ),

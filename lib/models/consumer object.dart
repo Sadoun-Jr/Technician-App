@@ -18,6 +18,7 @@ class Consumer {
   String? subLocation;
   int? age;
   List? listOfFavourites;
+  //String gender;
 
   Consumer({
      required this.firstName,

@@ -29,8 +29,12 @@ class _NavDrawerState extends State<NavDrawer> {
 
   String _currentUserFirstName = "";
   String _currentUserFamilyName = "";
-  String _currentUserProfilePicLink = "";
-
+  String? _currentUserProfilePicLink;
+  String _currentUserGender = "";
+  int _currentUserAge = 0;
+  String _currentUserProvince = "";
+  String _currentUserCity = "";
+  int _currentUserPhoneNumber = 0;
 
   Future<void> getPrefs() async {
       prefs = await SharedPreferences.getInstance();
@@ -38,6 +42,11 @@ class _NavDrawerState extends State<NavDrawer> {
       _currentUserFirstName = prefs!.getString(AppStrings.currentUserFirstName)!;
       _currentUserFamilyName = prefs!.getString(AppStrings.currentUserFamilyName)!;
       _currentUserProfilePicLink = prefs!.getString(AppStrings.currentUserProfilePicLink)!;
+      _currentUserGender = prefs!.getString(AppStrings.currentUserGender)!;
+      _currentUserAge = prefs!.getInt(AppStrings.currentUserAge)!;
+      _currentUserProvince = prefs!.getString(AppStrings.currentUserProvince)!;
+      _currentUserPhoneNumber = prefs!.getInt(AppStrings.currentUserPhoneNumber)!;
+      _currentUserCity = prefs!.getString(AppStrings.currentUserCity)!;
 
   }
 
@@ -91,9 +100,21 @@ class _NavDrawerState extends State<NavDrawer> {
                         DrawerHeader(
                           child: Row(
                             children: [
+                              _currentUserProfilePicLink == null ?
+                              Container(
+                                  margin: EdgeInsets.all(5),
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle, color: Colors.white),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 70,
+                                    color: Colors.black12,
+                                  ))
+                              :
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    _currentUserProfilePicLink),
+                                    _currentUserProfilePicLink!),
                                 radius: 30.0,
                               ),
                               SizedBox(
@@ -114,7 +135,16 @@ class _NavDrawerState extends State<NavDrawer> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => SetPersonalDetails(true)),
+                                          builder: (context) => SetPersonalDetails(true,
+                                          age: _currentUserAge,
+                                          city: _currentUserCity,
+                                          familyName: _currentUserFamilyName,
+                                          firstName: _currentUserFirstName,
+                                          gender: _currentUserGender,
+                                          phoneNumber: _currentUserPhoneNumber,
+                                          profilePicLink: _currentUserProfilePicLink,
+                                          province: _currentUserProvince,
+                                          )),
                                     ),
                                   },
                                   child: ListTile(

@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added name and profile pic to home page and drawer
+- profile pic link only changes when it's actually changed
 
 
 ## (  ) Creating and Styling the layouts
@@ -72,13 +72,12 @@ I will add various info down as I think of it<br />
 
 ## Known bugs:
 
-1. The bottom navigator from the "github.com/Pyozer/introduction_screen" lib moves slightly up in
-position when the next button is revealed for the first time, it is very minimal though and can be
-solved by making the button transparent and not clickable
-2. The picture of the issue isn't aligned properly in the orders page
-3. Pressing back button after navigating from drawer returns you to prev screen with drawer open, 
-need to close it.
-4. Onboarding page loads list of appropriate technicians multiple times and repeats them
+1. Added ability to delete profile pic
+2. Added drop down option for age and province
+3. Added city and address
+4. Styled profile info page
+5. KNOWN BUG: drop down option is passing only the value got from db to spinner, aka no options except just 1
+6. KNOWN BUG: prefs profile pic link doesn't switch to null when deleting image, look into changing it to ""
 
 [comment]: <> (## New things I learned:)
 
@@ -89,6 +88,7 @@ need to close it.
 - Add facebook login
 - Add payment
 - Add user details like location etc when creating acc.
+- Add zoom drawer package
 
 [comment]: <> (Visit Facebook Developer Account and click on the app you have created, )
 
