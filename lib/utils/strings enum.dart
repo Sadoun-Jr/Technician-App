@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:technicians/models/technician%20object.dart';
-import 'package:technicians/models/issue%20object.dart';
-
 class AppStrings {
   //login and register pages strings
   static const loginScreenHeader = "Sign in portal";

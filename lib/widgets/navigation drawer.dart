@@ -10,6 +10,7 @@ import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
+import 'package:technicians/layouts/test%20dashboard.dart';
 import 'package:technicians/layouts/user%20favourites.dart';
 import 'package:technicians/main.dart';
 import 'package:technicians/widgets/slider.dart';
@@ -251,7 +252,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                   onTap: () {
                                     Navigator.pop(context);
                                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                        StepperProcess()));
+                                        TestDashboard()));
                                   },
                                   child: ListTile(
                                     leading: Icon(

@@ -7,6 +7,7 @@ I will add various info down as I think of it<br />
 ## ChangeLog
 
 - profile pic link only changes when it's actually changed
+- added egypt cities and provinces maps
 
 
 ## (  ) Creating and Styling the layouts

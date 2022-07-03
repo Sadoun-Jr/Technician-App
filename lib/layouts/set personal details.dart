@@ -15,6 +15,7 @@ import 'package:technicians/utils/strings%20enum.dart';
 import 'dart:async';
 import 'dart:io';
 
+import '../utils/egypt cities.dart';
 import '../utils/hex colors.dart';
 import '../widgets/navigation drawer.dart';
 
@@ -46,6 +47,38 @@ class SetPersonalDetails extends StatefulWidget {
 }
 
 class _SetPersonalDetailsState extends State<SetPersonalDetails> {
+  Map<String, Map<String, String>> allCitiesEngAndArabic =
+      EgyptCities.citiesInEnglishAndArabic;
+  Map<String, List<String>?> citiesArabic = {
+    "Alexandria": null, //done
+    "Aswan": null, //done
+    "Asyut": null, //done
+    "Beheira": null, //done
+    "Beni Suef": null,
+    "Cairo": null, //done
+    "Dakahlia": null, //done
+    "Damietta": null, //done
+    "Fayoum": null, //done
+    "Gharbia": null, //done
+    "Giza": null, //done
+    "Ismailia": null, //done
+    "Kafr El Sheikh": null, //done
+    "Luxor": null, //done
+    "Matruh": null, //done
+    "Minya": null, //done
+    "Monufia": null, //done
+    "New Valley": null, //done
+    "North Sinai": null, //done
+    "Port Said": null, //done
+    "Qalyubia": null, //done
+    "Qena": null, //done
+    "Red Sea": null, //done
+    "Sharqia": null, //done
+    "Sohag": null, //done
+    "South Sinai": null, //done
+    "Suez": null, //done
+  };
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController familyNameController = TextEditingController();
@@ -56,11 +89,14 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   TextEditingController ageController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
+  late Future<void> userInfo;
+
   late var prefs;
 
   List<int> spinnerItemsAge = [for (var i = 18; i < 100; i += 1) i];
   List<String> spinnerItemsGender = ['Male', 'Female'];
   List<String> spinnerItemsLoc = AppStrings.locationsList;
+  List<String> spinnerCities = [];
   Map cities = AppStrings.citiesMap;
   final Color _midblack = Colors.black54;
   final Color _midBlue = Colors.blueAccent;
@@ -85,6 +121,32 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   // void didChangeDependencies() async {
   //   super.didChangeDependencies();
   // }
+
+  @override
+  void initState() {
+    super.initState();
+
+    userInfo = getCurrentUserInfo();
+
+    ///cities resulting from looping through each province in the map
+    List<String> citiesInOneProvince = [];
+
+    ///value map for the loop
+    Map<String, String> valueMap = {};
+
+    allCitiesEngAndArabic.forEach((keyMain, value) {
+      valueMap = value;
+
+      valueMap.forEach((keySmall, value) {
+        citiesInOneProvince.add(value);
+      });
+
+      citiesArabic[keyMain] = citiesInOneProvince;
+
+      debugPrint('$keyMain province has the cities: ${citiesArabic[keyMain]}');
+      citiesInOneProvince.clear();
+    });
+  }
 
   Widget dropDownSelection({
     required String hint,
@@ -152,7 +214,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
           }
           return null;
         },
-        searchController: controller,
+        // searchController: controller,
         onChanged: (value) {
           //Do something when changing the item if you want.
           switch (hint) {
@@ -165,15 +227,15 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
               break;
 
             case 'المحافظة':
-              // setState(() {
-              province = value.toString();
-              // });
+              setState(() {
+                province = value.toString();
+              });
               break;
 
             case 'المدينة':
-              // setState(() {
-              city = value as String;
-              // });
+              setState(() {
+                city = value as String;
+              });
               break;
           }
           debugPrint("Changed $hint to $value");
@@ -216,7 +278,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
     //TODO: use a stepper here
     return Material(
       child: FutureBuilder(
-        future: getCurrentUserInfo(),
+        future: userInfo,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
@@ -299,25 +361,27 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                     shape: BoxShape.circle,
                                                     border: Border.all(
                                                         color: _darkTxtClr,
-                                                        width: 3)),
+                                                        width: 2)),
                                                 child: FittedBox(
                                                   fit: BoxFit.fill,
-                                                  child: !_deletedProfilePic ? CircleAvatar(
-                                                    radius: 45.0,
-                                                    backgroundImage:
-                                                        NetworkImage(
-                                                            profilePicFromDb!),
-                                                  ) :
-                                                  CircleAvatar(
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      size: 50,
-                                                      color: Colors.black12,
-                                                    ),
-                                                    backgroundColor:
-                                                    Colors.white,
-                                                    maxRadius: 45,
-                                                  ),
+                                                  child: !_deletedProfilePic
+                                                      ? CircleAvatar(
+                                                          radius: 45.0,
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                                  profilePicFromDb!),
+                                                        )
+                                                      : CircleAvatar(
+                                                          child: Icon(
+                                                            Icons.person,
+                                                            size: 50,
+                                                            color:
+                                                                Colors.black12,
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          maxRadius: 45,
+                                                        ),
                                                 ),
                                               ),
                                             ),
@@ -352,8 +416,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Visibility(
-                                                visible:
-                                                    _deletedProfilePic,
+                                                visible: _deletedProfilePic,
                                                 child: IconButton(
                                                     color: _darkTxtClr,
                                                     tooltip:
@@ -362,8 +425,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                         selectProfileImage,
                                                     icon: Icon(Icons.add))),
                                             Visibility(
-                                                visible:
-                                                    !_deletedProfilePic,
+                                                visible: !_deletedProfilePic,
                                                 child: IconButton(
                                                     color: _darkTxtClr,
                                                     tooltip:
@@ -379,7 +441,8 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                             IconButton(
                                                 color: _darkTxtClr,
                                                 tooltip: "Delete profile image",
-                                                onPressed: _confirmDeleteProfilePic,
+                                                onPressed:
+                                                    _confirmDeleteProfilePic,
                                                 icon: Icon(Icons.delete)),
                                           ],
                                         ),
@@ -428,7 +491,6 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                     // filled: true,
                                                     hintText:
                                                         firstNameFromDb ?? "",
-
                                                     enabledBorder:
                                                         OutlineInputBorder(
                                                       borderRadius:
@@ -574,16 +636,13 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                             Expanded(
                                                 flex: 1,
                                                 child: dropDownSelection(
-                                                    dataFromDb:
-                                                        cityFromDb, //todo: change to city from db
+                                                    dataFromDb: cityFromDb,
                                                     hint: 'المدينة',
                                                     validatorError:
                                                         'Select a city',
                                                     controller: cityController,
-                                                    spinnerItemsList: AppStrings
-                                                                .citiesMap[
-                                                            provinceFromDb] ??
-                                                        ["1", "2"]))
+                                                    spinnerItemsList:
+                                                        spinnerCities))
                                           ],
                                         ),
                                         SizedBox(
@@ -842,7 +901,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
           AppStrings.phoneNumberKey:
               int.parse(phoneNumberController.text.trim()),
           AppStrings.addressKey: addressController.text.toString().trim(),
-          AppStrings.imageKey:  profilePicUrl,
+          AppStrings.imageKey: profilePicUrl,
         }, SetOptions(merge: true));
 
         //save into shared prefs for quick easy access later on
@@ -873,8 +932,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
           await prefs?.setString(
               AppStrings.currentUserProfilePicLink, profilePicUrl);
         } else {
-          await prefs?.setString(
-              AppStrings.currentUserProfilePicLink, null);
+          await prefs?.setString(AppStrings.currentUserProfilePicLink, null);
         }
 
         debugPrint("Saved user info \n"
@@ -942,7 +1000,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                             Expanded(
                               child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   GestureDetector(
                                     onTap: () {
@@ -959,13 +1017,12 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      setState(()  {
+                                      setState(() {
                                         _deletedProfilePic = true;
                                         file = null;
                                         profilePicUrl = null;
-                                        });
+                                      });
                                       Navigator.pop(context);
-
                                     },
                                     child: CircleAvatar(
                                       maxRadius: 40,
@@ -988,7 +1045,6 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
       },
     );
   }
-
 
   UploadTask? uploadTask;
   String? profilePicUrl;
@@ -1033,5 +1089,18 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
     } else {
       // User canceled the picker
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    addressController.dispose();
+    phoneNumberController.dispose();
+    firstNameController.dispose();
+    familyNameController.dispose();
+    genderController.dispose();
+    ageController.dispose();
+    provinceController.dispose();
+    cityController.dispose();
   }
 }
