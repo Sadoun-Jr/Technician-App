@@ -61,6 +61,7 @@ class AppStrings {
   static String currentUserCity = "city";
   static String currentUserPhoneNumber = "phone";
   static String currentUserAge = "age";
+  static String hasProfilePic = 'has profile pic';
 
   //issue database keys
   static String issueCategoryKey = "issueCategory";
@@ -350,7 +351,7 @@ class AppStrings {
     "Cairo",
     "Dakahlia",
     "Damietta",
-    "Faiyum",
+    "Fayoum",
     "Gharbia",
     "Giza",
     "Ismailia",

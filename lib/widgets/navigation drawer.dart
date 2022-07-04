@@ -36,6 +36,7 @@ class _NavDrawerState extends State<NavDrawer> {
   String _currentUserProvince = "";
   String _currentUserCity = "";
   int _currentUserPhoneNumber = 0;
+  bool _hasProfilePic = false;
 
   Future<void> getPrefs() async {
       prefs = await SharedPreferences.getInstance();
@@ -48,6 +49,7 @@ class _NavDrawerState extends State<NavDrawer> {
       _currentUserProvince = prefs!.getString(AppStrings.currentUserProvince)!;
       _currentUserPhoneNumber = prefs!.getInt(AppStrings.currentUserPhoneNumber)!;
       _currentUserCity = prefs!.getString(AppStrings.currentUserCity)!;
+      _hasProfilePic = prefs!.getString(AppStrings.currentUserProfilePicLink) != 'na' && prefs!.getString(AppStrings.currentUserProfilePicLink) != null;
 
   }
 
@@ -101,7 +103,9 @@ class _NavDrawerState extends State<NavDrawer> {
                         DrawerHeader(
                           child: Row(
                             children: [
-                              _currentUserProfilePicLink == null ?
+                              Expanded(
+                                flex: 1,
+                                child:_currentUserProfilePicLink == 'na' ?
                               Container(
                                   margin: EdgeInsets.all(5),
                                   padding: EdgeInsets.all(5),
@@ -109,7 +113,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                       shape: BoxShape.circle, color: Colors.white),
                                   child: Icon(
                                     Icons.person,
-                                    size: 70,
+                                    size: 45,
                                     color: Colors.black12,
                                   ))
                               :
@@ -117,11 +121,13 @@ class _NavDrawerState extends State<NavDrawer> {
                                 backgroundImage: NetworkImage(
                                     _currentUserProfilePicLink!),
                                 radius: 30.0,
-                              ),
+                              ),),
                               SizedBox(
                                 width: 20.0,
                               ),
-                              Text(_currentUserFirstName + " " + _currentUserFamilyName)
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(_currentUserFirstName + " " + _currentUserFamilyName))
                             ],
                           ),
                         ),

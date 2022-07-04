@@ -378,6 +378,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   }
 
   Widget selectionScreen() {
+    // debugPrint('profile pic link: ${prefs?.getString(AppStrings.currentUserProfilePicLink)}');
     return FutureBuilder(
       future: initalisePrefs(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -389,15 +390,13 @@ class _LoginLayoutState extends State<LoginLayout> {
 
                 title: Row(
                   children: [
-                    prefs!
-                            .getString(AppStrings.currentUserProfilePicLink)!
-                            .isEmpty
+                    prefs!.getString(AppStrings.currentUserProfilePicLink)! == 'na'
                         ? Container(
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.white),
                             child: Icon(
                               Icons.person,
-                              size: 57.5,
+                              size: 45.5,
                               color: Colors.black12,
                             ))
                         : Container(

@@ -46,6 +46,17 @@ class SetPersonalDetails extends StatefulWidget {
   State<SetPersonalDetails> createState() => _SetPersonalDetailsState();
 }
 
+class Tag {
+  List<String> citiesNotNull = [];
+
+  @override
+  bool operator ==(Object other) =>
+      other is Tag && other.citiesNotNull == citiesNotNull;
+
+  @override
+  int get hashCode => citiesNotNull.hashCode;
+}
+
 class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   Map<String, Map<String, String>> allCitiesEngAndArabic =
       EgyptCities.citiesInEnglishAndArabic;
@@ -95,8 +106,8 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
   List<int> spinnerItemsAge = [for (var i = 18; i < 100; i += 1) i];
   List<String> spinnerItemsGender = ['Male', 'Female'];
-  List<String> spinnerItemsLoc = AppStrings.locationsList;
-  List<String> spinnerCities = [];
+  List<String> spinnerItemsProvinces = AppStrings.locationsList;
+  List<String> spinnerCities = ['Select a province first'];
   Map cities = AppStrings.citiesMap;
   final Color _midblack = Colors.black54;
   final Color _midBlue = Colors.blueAccent;
@@ -109,6 +120,10 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   String? city;
   String? address;
   bool _deletedProfilePic = false;
+  bool _isSaving = false;
+
+  ///used because dropdown button bugs out after selecting a different province, so allow user to select just once
+  bool _selectedCity = false;
 
   // final Color _btnColor = HexColor("#d4c4ca");
   final Color _splashClr = Colors.white;
@@ -129,12 +144,12 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
     userInfo = getCurrentUserInfo();
 
     ///cities resulting from looping through each province in the map
-    List<String> citiesInOneProvince = [];
 
     ///value map for the loop
     Map<String, String> valueMap = {};
 
     allCitiesEngAndArabic.forEach((keyMain, value) {
+      List<String> citiesInOneProvince = [];
       valueMap = value;
 
       valueMap.forEach((keySmall, value) {
@@ -143,9 +158,11 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
       citiesArabic[keyMain] = citiesInOneProvince;
 
-      debugPrint('$keyMain province has the cities: ${citiesArabic[keyMain]}');
-      citiesInOneProvince.clear();
+      // debugPrint('cities arabic being created: ${citiesArabic[keyMain]}');
+      // citiesInOneProvince.clear();
     });
+
+    // debugPrint('[after looping] spinner has: ${citiesArabic.toString()}');
   }
 
   Widget dropDownSelection({
@@ -155,7 +172,8 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
     required String? dataFromDb,
     required TextEditingController controller,
   }) {
-    // debugPrint("Sent spinner is :${spinnerItemsList.toString()}");
+    bool isCity = hint == 'المدينة';
+    // debugPrint("Starting, province from db is: $provinceFromDb");
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       child: DropdownButtonFormField2(
@@ -179,15 +197,17 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                 width: 1.25,
               ),
             ),
-            labelText: dataFromDb == null ? "" : hint),
+            labelText: //dataFromDb == null ? "" :
+                hint),
 
         isExpanded: true,
-        dropdownMaxHeight: 250,
+        dropdownMaxHeight: hint == 'المدينة' || hint == 'المحافظة' ? 500 : 250,
         scrollbarAlwaysShow: true,
-        hint: Text(
-          dataFromDb ?? hint,
-          style: TextStyle(fontSize: 14),
-        ),
+        // hint: Text(
+        //   dataFromDb ??
+        //       hint,
+        //   style: TextStyle(fontSize: 14),
+        // ),
         icon: const Icon(
           Icons.arrow_drop_down,
           color: Colors.black45,
@@ -201,7 +221,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
             .map((item) => DropdownMenuItem<dynamic>(
                   value: item,
                   child: Text(
-                    '${item}',
+                    '$item',
                     style: const TextStyle(
                       fontSize: 14,
                     ),
@@ -228,13 +248,17 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
             case 'المحافظة':
               setState(() {
+                // debugPrint('spinner has: ${citiesArabic.toString()}');
                 province = value.toString();
+                spinnerCities = citiesArabic[province]!;
+                // debugPrint('spinner length is ${spinnerCities.length} and has: ${spinnerCities.toString()}');
               });
               break;
 
             case 'المدينة':
               setState(() {
                 city = value as String;
+                _selectedCity = true;
               });
               break;
           }
@@ -275,538 +299,743 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        'has profile pic is ${_hasProfilePic}\nhas temp pic is $_tempProfilePicSet');
+
     //TODO: use a stepper here
-    return Material(
-      child: FutureBuilder(
-        future: userInfo,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: _darkTxtClr,
-                onPressed: saveIntoDb,
-                child: Icon(Icons.save),
-              ),
-              key: _scaffoldKey,
-              // drawer: NavDrawer(),
-              // extendBodyBehindAppBar: true,
-              appBar: AppBar(
-                leadingWidth: 50,
-                toolbarHeight: MediaQuery.of(context).size.height / 10,
-                backgroundColor: HexColor("#96878D"),
-                title: Text("Profile details"),
-                leading: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
-                    onPressed: null,
-                  ),
-                ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(5)
-                        // Radius.elliptical(MediaQuery.of(context).size.width, 32)
-                        )),
-              ),
-              body: Stack(
-                children: [
-                  Image.asset(
-                    "assets/abstract bg.jpg",
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                  ),
-                  Container(
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    return WillPopScope(
+      onWillPop: () async {
+        await showDialog(
+            context: context,
+            builder: (_) => Dialog(
+                  backgroundColor: Colors.transparent,
+                  child: Container(
+                      height: 200,
+                      width: MediaQuery.of(context).size.width,
+                      // margin:
+                      // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       child: Align(
                           alignment: Alignment.topCenter,
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             child: BackdropFilter(
                               filter:
-                                  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                                  ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
                               child: Container(
-                                width: double.infinity,
+                                padding: EdgeInsets.all(25),
                                 height: double.infinity,
+                                width: double.infinity,
                                 decoration: BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(30)),
                                     border: Border.all(
-                                        width: 3, color: Colors.white),
+                                        width: 2, color: Colors.white),
                                     color:
                                         Colors.grey.shade200.withOpacity(0.25)),
-                                child: Center(
-                                  child: Form(
-                                    key: _formKey,
-                                    child: ListView(
-                                      shrinkWrap: true,
-                                      physics: ScrollPhysics(),
-                                      children: [
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        //======profile pic=======
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Visibility(
-                                              visible: profilePicFromDb != null,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                        color: _darkTxtClr,
-                                                        width: 2)),
-                                                child: FittedBox(
-                                                  fit: BoxFit.fill,
-                                                  child: !_deletedProfilePic
-                                                      ? CircleAvatar(
-                                                          radius: 45.0,
-                                                          backgroundImage:
-                                                              NetworkImage(
-                                                                  profilePicFromDb!),
-                                                        )
-                                                      : CircleAvatar(
-                                                          child: Icon(
-                                                            Icons.person,
-                                                            size: 50,
-                                                            color:
-                                                                Colors.black12,
-                                                          ),
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                          maxRadius: 45,
-                                                        ),
-                                                ),
-                                              ),
-                                            ),
-                                            Visibility(
-                                              visible: profilePicFromDb == null,
-                                              child: FittedBox(
-                                                  fit: BoxFit.fill,
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                            color: _darkTxtClr,
-                                                            width: 3)),
-                                                    child: CircleAvatar(
-                                                      child: Icon(
-                                                        Icons.person,
-                                                        size: 50,
-                                                        color: Colors.black12,
-                                                      ),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      maxRadius: 45,
-                                                    ),
-                                                  )),
-                                            ),
-                                          ],
-                                        ),
-
-                                        //====profile pic actions=====
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Visibility(
-                                                visible: _deletedProfilePic,
-                                                child: IconButton(
-                                                    color: _darkTxtClr,
-                                                    tooltip:
-                                                        "Add profile image",
-                                                    onPressed:
-                                                        selectProfileImage,
-                                                    icon: Icon(Icons.add))),
-                                            Visibility(
-                                                visible: !_deletedProfilePic,
-                                                child: IconButton(
-                                                    color: _darkTxtClr,
-                                                    tooltip:
-                                                        "Change profile image",
-                                                    onPressed:
-                                                        selectProfileImage,
-                                                    icon: Icon(Icons.edit))),
-                                            Container(
-                                              height: 20,
-                                              width: 2,
+                                child: Column(
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Text(
+                                          "Leaving without saving will not save any info",
+                                          style: TextStyle(
                                               color: Colors.white,
-                                            ),
-                                            IconButton(
-                                                color: _darkTxtClr,
-                                                tooltip: "Delete profile image",
-                                                onPressed:
-                                                    _confirmDeleteProfilePic,
-                                                icon: Icon(Icons.delete)),
-                                          ],
-                                        ),
-
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        textWithUnderLine(
-                                            'Personal Information',
-                                            Icons.person),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        //====first and family names====
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 5,
-                                                    vertical: 10),
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: TextFormField(
-                                                  controller:
-                                                      firstNameController,
-                                                  maxLines: 1,
-                                                  keyboardType:
-                                                      TextInputType.name,
-                                                  textInputAction:
-                                                      TextInputAction.next,
-                                                  autovalidateMode:
-                                                      AutovalidateMode
-                                                          .onUserInteraction,
-                                                  validator: (value) => value!
-                                                              .length <
-                                                          2
-                                                      ? "Names have to be 2 letters at least"
-                                                      : null,
-                                                  style: TextStyle(
-                                                      color: _blackText),
-                                                  decoration: InputDecoration(
-                                                    // contentPadding: EdgeInsets.symmetric(horizontal: 25),
-                                                    // fillColor: Colors.white54,
-                                                    // filled: true,
-                                                    hintText:
-                                                        firstNameFromDb ?? "",
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25.0),
-                                                      borderSide: BorderSide(
-                                                        color: _darkTxtClr,
-                                                        width: 1.25,
-                                                      ),
-                                                    ),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0),
-                                                    ),
-                                                    labelText: "First name",
-                                                    labelStyle: TextStyle(
-                                                        color: _darkTxtClr),
-                                                    // focusedBorder: OutlineInputBorder(
-                                                    //   borderSide: BorderSide(
-                                                    //       color: _darkTxtClr, width: 2.5),
-                                                    //   borderRadius: BorderRadius.circular(25.0),
-                                                    // ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5),
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: TextFormField(
-                                                  controller:
-                                                      familyNameController,
-                                                  maxLines: 1,
-                                                  keyboardType:
-                                                      TextInputType.name,
-                                                  textInputAction:
-                                                      TextInputAction.next,
-                                                  autovalidateMode:
-                                                      AutovalidateMode
-                                                          .onUserInteraction,
-                                                  validator: (value) => value!
-                                                              .length <
-                                                          2
-                                                      ? "Names have to be 2 letters at least"
-                                                      : null,
-                                                  style: TextStyle(
-                                                      color: _blackText),
-                                                  decoration: InputDecoration(
-                                                    // contentPadding: EdgeInsets.symmetric(horizontal: 25),
-                                                    // fillColor: Colors.white54,
-                                                    // filled: true,
-                                                    hintText:
-                                                        familyNameFromDb ?? "",
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25.0),
-                                                      borderSide: BorderSide(
-                                                        color: _darkTxtClr,
-                                                        width: 1.25,
-                                                      ),
-                                                    ),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0),
-                                                    ),
-                                                    labelText: "Family name",
-                                                    labelStyle: TextStyle(
-                                                        color: _darkTxtClr),
-                                                    // focusedBorder: OutlineInputBorder(
-                                                    //   borderSide: BorderSide(
-                                                    //       color: _darkTxtClr, width: 2.5),
-                                                    //   borderRadius: BorderRadius.circular(25.0),
-                                                    // ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        //=====gender and age====
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 1,
-                                                child: dropDownSelection(
-                                                    dataFromDb:
-                                                        gender, //todo: change to genderFromDb
-                                                    hint: 'Gender',
-                                                    validatorError:
-                                                        'Select gender',
-                                                    controller:
-                                                        genderController,
-                                                    spinnerItemsList:
-                                                        spinnerItemsGender)),
-                                            Expanded(
-                                                flex: 1,
-                                                child: dropDownSelection(
-                                                    dataFromDb:
-                                                        ageFromDb.toString(),
-                                                    hint: 'Age',
-                                                    validatorError:
-                                                        'Select age',
-                                                    spinnerItemsList:
-                                                        spinnerItemsAge,
-                                                    controller: ageController))
-                                          ],
-                                        ),
-
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        textWithUnderLine('Location',
-                                            Icons.location_on_rounded),
-                                        SizedBox(
-                                          height: 25,
-                                        ),
-
-                                        //=====location=====
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: dropDownSelection(
-                                                  hint: 'المحافظة',
-                                                  dataFromDb: provinceFromDb,
-                                                  validatorError:
-                                                      'Select a province',
-                                                  spinnerItemsList:
-                                                      spinnerItemsLoc,
-                                                  controller:
-                                                      provinceController),
-                                            ),
-                                            Expanded(
-                                                flex: 1,
-                                                child: dropDownSelection(
-                                                    dataFromDb: cityFromDb,
-                                                    hint: 'المدينة',
-                                                    validatorError:
-                                                        'Select a city',
-                                                    controller: cityController,
-                                                    spinnerItemsList:
-                                                        spinnerCities))
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        textWithUnderLine(
-                                            'Contact', Icons.phone),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-
-                                        //=====phone and address======
-                                        Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              10, 0, 10, 0),
-                                          padding: const EdgeInsets.all(10),
-                                          child: TextFormField(
-                                            controller: phoneNumberController,
-                                            maxLines: 1,
-                                            keyboardType: TextInputType.number,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-
-                                            //TODO: some way to validate if the phone number is real or not
-                                            //TODO: someway to prevent same phone number from registering twice
-                                            validator: (value) => value!
-                                                        .length !=
-                                                    11
-                                                ? "Insert a valid phone number"
-                                                : null,
-
-                                            style: TextStyle(color: _blackText),
-                                            decoration: InputDecoration(
-                                              hintText: phoneNumberFromDb ==
-                                                      null
-                                                  ? phoneNumberFromDb.toString()
-                                                  : "",
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(25.0),
-                                                borderSide: BorderSide(
-                                                  color: _darkTxtClr,
-                                                  width: 1.25,
-                                                ),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                              labelText: "Phone number",
-                                              labelStyle:
-                                                  TextStyle(color: _darkTxtClr),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: _midBlue,
-                                                    width: 2.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(25.0),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              10, 0, 10, 0),
-                                          padding: const EdgeInsets.all(10),
-                                          child: TextFormField(
-                                            controller: addressController,
-                                            maxLines: 1,
-                                            keyboardType: TextInputType.number,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            validator: (value) =>
-                                                value!.length < 15
-                                                    ? "Insert your address"
-                                                    : null,
-                                            style: TextStyle(color: _blackText),
-                                            decoration: InputDecoration(
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(25.0),
-                                                borderSide: BorderSide(
-                                                  color: _darkTxtClr,
-                                                  width: 1.25,
-                                                ),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                              labelText: "Address",
-                                              labelStyle:
-                                                  TextStyle(color: _darkTxtClr),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: _midBlue,
-                                                    width: 2.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(25.0),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        )
-                                      ],
+                                              fontSize: 18),
+                                        )),
+                                    SizedBox(
+                                      height: 12.5,
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context)
+                                                  .pushNamedAndRemoveUntil(
+                                                      '/dashboard or login',
+                                                      (Route<dynamic> route) =>
+                                                          false);
+                                            },
+                                            child: CircleAvatar(
+                                              maxRadius: 40,
+                                              backgroundColor: Colors.red,
+                                              child: Icon(
+                                                Icons.close_rounded,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              _isSaving = false;
+                                              _tempProfilePicSet = false;
+                                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                                  '/dashboard or login', (Route<dynamic> route) => false);
+                                            },
+                                            child: CircleAvatar(
+                                              maxRadius: 40,
+                                              backgroundColor: Colors.green,
+                                              child: Icon(
+                                                Icons.done,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
                           ))),
+                ));
+        return false;
+      },
+      child: Material(
+        child: _isSaving
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/loading gear.json',
+                      height: 75, width: 75),
+                  Text(
+                    'Saving',
+                    style: TextStyle(fontSize: 17),
+                  )
                 ],
-              ),
-            );
-          } else {
-            return Stack(
-              children: [
-                Image.asset(
-                  "assets/abstract bg.jpg",
-                  fit: BoxFit.cover,
-                  height: double.infinity,
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Lottie.asset('assets/loading gear.json',
-                              height: 75,
-                              width: 75,
-                              alignment: Alignment.bottomCenter,
-                              animate: true),
+              )
+            : FutureBuilder(
+                future: userInfo,
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Scaffold(
+                      floatingActionButton: FloatingActionButton(
+                        backgroundColor: _darkTxtClr,
+                        onPressed: () {
+                          saveIntoDb();
+                        },
+                        child: Icon(Icons.save),
+                      ),
+                      key: _scaffoldKey,
+                      // drawer: NavDrawer(),
+                      // extendBodyBehindAppBar: true,
+                      appBar: AppBar(
+                        leadingWidth: 50,
+                        toolbarHeight: MediaQuery.of(context).size.height / 10,
+                        backgroundColor: HexColor("#96878D"),
+                        title: Text("Profile details"),
+                        leading: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
+                            onPressed: null,
+                          ),
                         ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(5)
+                                // Radius.elliptical(MediaQuery.of(context).size.width, 32)
+                                )),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              "Loading...",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold),
-                            )),
+                      body: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/abstract bg.jpg",
+                            fit: BoxFit.cover,
+                            height: double.infinity,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 10.0, sigmaY: 10.0),
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30)),
+                                            border: Border.all(
+                                                width: 3, color: Colors.white),
+                                            color: Colors.grey.shade200
+                                                .withOpacity(0.25)),
+                                        child: Center(
+                                          child: Form(
+                                            key: _formKey,
+                                            child: ListView(
+                                              shrinkWrap: true,
+                                              physics: ScrollPhysics(),
+                                              children: [
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+                                                //======profile pic=======
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    //profile pic already set in db
+                                                    Visibility(
+                                                      visible: _hasProfilePic && !_tempProfilePicSet,
+                                                      child: FittedBox(
+                                                          fit: BoxFit.fill,
+                                                          child: Container(
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          _darkTxtClr,
+                                                                      width:
+                                                                          1)),
+                                                              //profile pic exists in db
+                                                              child:
+                                                                  CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                radius: 45.0,
+                                                                backgroundImage:
+                                                                    NetworkImage(
+                                                                        prefs?.getString(
+                                                                            AppStrings.currentUserProfilePicLink)),
+                                                              ))),
+                                                    ),
+
+                                                    //no profile pic in db
+                                                    Visibility(
+                                                        visible:
+                                                            _tempProfilePicSet,
+                                                        child: FittedBox(
+                                                            fit: BoxFit.fill,
+                                                            child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    border: Border.all(
+                                                                        color:
+                                                                            _darkTxtClr,
+                                                                        width:
+                                                                            1)),
+                                                                //profile pic exists in db
+                                                                child: CircleAvatar(
+                                                                        radius:
+                                                                            45.0,
+                                                                        backgroundImage: _tempProfilePicSet ?
+                                                                            FileImage(File(file!.path)) : null,
+                                                                      )
+                                                                    ))),
+
+                                                    //no profile pic set
+                                                    Visibility(
+                                                      visible: !_hasProfilePic &&
+                                                          !_tempProfilePicSet,
+                                                      child: FittedBox(
+                                                          fit: BoxFit.fill,
+                                                          child: Container(
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          _darkTxtClr,
+                                                                      width:
+                                                                          1)),
+                                                              //profile pic exists in db
+                                                              child: Container(
+                                                                padding: EdgeInsets.all(5),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .person,
+                                                                    size: 60,
+                                                                    color: Colors
+                                                                        .black12,
+                                                                  )))),
+                                                    )
+                                                  ],
+                                                ),
+
+                                                //====profile pic actions=====
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Visibility(
+                                                        visible: true,
+                                                        // !_deletedProfilePic,
+                                                        child: IconButton(
+                                                            color: _darkTxtClr,
+                                                            tooltip:
+                                                                "Change profile image",
+                                                            onPressed:
+                                                                selectProfileImage,
+                                                            icon: Icon(
+                                                                Icons.edit))),
+                                                    Container(
+                                                      height: 20,
+                                                      width: 2,
+                                                      color: Colors.white,
+                                                    ),
+                                                    IconButton(
+                                                        color: _darkTxtClr,
+                                                        tooltip:
+                                                            "Delete profile image",
+                                                        onPressed:
+                                                            _confirmDeleteProfilePic,
+                                                        icon:
+                                                            Icon(Icons.delete)),
+                                                  ],
+                                                ),
+
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                textWithUnderLine(
+                                                    'Personal Information',
+                                                    Icons.person),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                //====first and family names====
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Container(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 5,
+                                                                vertical: 10),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              firstNameController,
+                                                          maxLines: 1,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .name,
+                                                          textInputAction:
+                                                              TextInputAction
+                                                                  .next,
+                                                          autovalidateMode:
+                                                              AutovalidateMode
+                                                                  .onUserInteraction,
+                                                          validator: (value) =>
+                                                              value!.length < 2
+                                                                  ? "Names have to be 2 letters at least"
+                                                                  : null,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  _blackText),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            // contentPadding: EdgeInsets.symmetric(horizontal: 25),
+                                                            // fillColor: Colors.white54,
+                                                            // filled: true,
+                                                            hintText:
+                                                                firstNameFromDb ??
+                                                                    "",
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25.0),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color:
+                                                                    _darkTxtClr,
+                                                                width: 1.25,
+                                                              ),
+                                                            ),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                            ),
+                                                            labelText:
+                                                                "First name",
+                                                            labelStyle: TextStyle(
+                                                                color:
+                                                                    _darkTxtClr),
+                                                            // focusedBorder: OutlineInputBorder(
+                                                            //   borderSide: BorderSide(
+                                                            //       color: _darkTxtClr, width: 2.5),
+                                                            //   borderRadius: BorderRadius.circular(25.0),
+                                                            // ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 5),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              familyNameController,
+                                                          maxLines: 1,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .name,
+                                                          textInputAction:
+                                                              TextInputAction
+                                                                  .next,
+                                                          autovalidateMode:
+                                                              AutovalidateMode
+                                                                  .onUserInteraction,
+                                                          validator: (value) =>
+                                                              value!.length < 2
+                                                                  ? "Names have to be 2 letters at least"
+                                                                  : null,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  _blackText),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            // contentPadding: EdgeInsets.symmetric(horizontal: 25),
+                                                            // fillColor: Colors.white54,
+                                                            // filled: true,
+                                                            hintText:
+                                                                familyNameFromDb ??
+                                                                    "",
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25.0),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color:
+                                                                    _darkTxtClr,
+                                                                width: 1.25,
+                                                              ),
+                                                            ),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                            ),
+                                                            labelText:
+                                                                "Family name",
+                                                            labelStyle: TextStyle(
+                                                                color:
+                                                                    _darkTxtClr),
+                                                            // focusedBorder: OutlineInputBorder(
+                                                            //   borderSide: BorderSide(
+                                                            //       color: _darkTxtClr, width: 2.5),
+                                                            //   borderRadius: BorderRadius.circular(25.0),
+                                                            // ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                //=====gender and age====
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                        flex: 1,
+                                                        child:
+                                                            dropDownSelection(
+                                                                dataFromDb:
+                                                                    gender, //todo: change to genderFromDb
+                                                                hint: 'Gender',
+                                                                validatorError:
+                                                                    'Select gender',
+                                                                controller:
+                                                                    genderController,
+                                                                spinnerItemsList:
+                                                                    spinnerItemsGender)),
+                                                    Expanded(
+                                                        flex: 1,
+                                                        child: dropDownSelection(
+                                                            dataFromDb:
+                                                                ageFromDb
+                                                                    .toString(),
+                                                            hint: 'Age',
+                                                            validatorError:
+                                                                'Select age',
+                                                            spinnerItemsList:
+                                                                spinnerItemsAge,
+                                                            controller:
+                                                                ageController))
+                                                  ],
+                                                ),
+
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+                                                textWithUnderLine('Location',
+                                                    Icons.location_on_rounded),
+                                                SizedBox(
+                                                  height: 25,
+                                                ),
+
+                                                //=====location=====
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: IgnorePointer(
+                                                        ignoring: _selectedCity,
+                                                        child: dropDownSelection(
+                                                            hint: 'المحافظة',
+                                                            dataFromDb:
+                                                                provinceFromDb,
+                                                            validatorError:
+                                                                'Select a province',
+                                                            spinnerItemsList:
+                                                                spinnerItemsProvinces,
+                                                            controller:
+                                                                provinceController),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                        flex: 1,
+                                                        child: dropDownSelection(
+                                                            dataFromDb:
+                                                                cityFromDb,
+                                                            hint: 'المدينة',
+                                                            validatorError:
+                                                                'Select a city',
+                                                            controller:
+                                                                cityController,
+                                                            spinnerItemsList:
+                                                                spinnerCities))
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+                                                textWithUnderLine(
+                                                    'Contact', Icons.phone),
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+
+                                                //=====phone and address======
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 0),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: TextFormField(
+                                                    controller:
+                                                        phoneNumberController,
+                                                    maxLines: 1,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    textInputAction:
+                                                        TextInputAction.next,
+                                                    autovalidateMode:
+                                                        AutovalidateMode
+                                                            .onUserInteraction,
+
+                                                    //TODO: some way to validate if the phone number is real or not
+                                                    //TODO: someway to prevent same phone number from registering twice
+                                                    validator: (value) => value!
+                                                                .length !=
+                                                            11
+                                                        ? "Insert a valid phone number"
+                                                        : null,
+
+                                                    style: TextStyle(
+                                                        color: _blackText),
+                                                    decoration: InputDecoration(
+                                                      hintText:
+                                                          phoneNumberFromDb ==
+                                                                  null
+                                                              ? phoneNumberFromDb
+                                                                  .toString()
+                                                              : "",
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25.0),
+                                                        borderSide: BorderSide(
+                                                          color: _darkTxtClr,
+                                                          width: 1.25,
+                                                        ),
+                                                      ),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20.0),
+                                                      ),
+                                                      labelText: "Phone number",
+                                                      labelStyle: TextStyle(
+                                                          color: _darkTxtClr),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: _midBlue,
+                                                            width: 2.5),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 0),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: TextFormField(
+                                                    controller:
+                                                        addressController,
+                                                    maxLines: 1,
+                                                    textInputAction:
+                                                        TextInputAction.next,
+                                                    autovalidateMode:
+                                                        AutovalidateMode
+                                                            .onUserInteraction,
+                                                    validator: (value) => value!
+                                                                .length <
+                                                            15
+                                                        ? "Insert your address"
+                                                        : null,
+                                                    style: TextStyle(
+                                                        color: _blackText),
+                                                    decoration: InputDecoration(
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25.0),
+                                                        borderSide: BorderSide(
+                                                          color: _darkTxtClr,
+                                                          width: 1.25,
+                                                        ),
+                                                      ),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20.0),
+                                                      ),
+                                                      labelText: "Address",
+                                                      labelStyle: TextStyle(
+                                                          color: _darkTxtClr),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: _midBlue,
+                                                            width: 2.5),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 15,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ))),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          }
-        },
+                    );
+                  } else {
+                    return Stack(
+                      children: [
+                        Image.asset(
+                          "assets/abstract bg.jpg",
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Lottie.asset(
+                                      'assets/loading gear.json',
+                                      height: 75,
+                                      width: 75,
+                                      alignment: Alignment.bottomCenter,
+                                      animate: true),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Text(
+                                      "Loading...",
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
       ),
     );
   }
@@ -820,6 +1049,8 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   int? ageFromDb; //todo: put this, removed atm cuz not all users have it
   String? genderFromDb; //todo: put this, removed atm cuz not all users have it
   String? addressfromDb;
+  bool _hasProfilePic = false;
+  bool _tempProfilePicSet = false;
 
   Future<void> getCurrentUserInfo() async {
     try {
@@ -836,22 +1067,28 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
       phoneNumberController.text = phoneNumberFromDb.toString();
 
       provinceFromDb = prefs!.getString(AppStrings.currentUserProvince)!;
-      provinceController.text = provinceFromDb.toString();
+      // provinceController.text = provinceFromDb.toString();
 
       cityFromDb = prefs!.getString(AppStrings.currentUserCity)!;
-      cityController.text = cityFromDb.toString();
+      // cityController.text = cityFromDb.toString();
 
       ageFromDb = prefs!.getInt(AppStrings.currentUserAge)!;
-      ageController.text = ageFromDb.toString();
+      // ageController.text = ageFromDb.toString();
 
       genderFromDb = prefs!.getString(AppStrings.currentUserGender)!;
-      genderController.text = genderFromDb!;
+      // genderController.text = genderFromDb!;
 
       addressfromDb = prefs!.getString(AppStrings.currentUserAddress);
       addressController.text = addressfromDb!;
 
       profilePicFromDb =
           prefs!.getString(AppStrings.currentUserProfilePicLink)!;
+
+      debugPrint(
+          '====prefs link${prefs!.getString(AppStrings.currentUserProfilePicLink)}====');
+      _hasProfilePic =
+          prefs!.getString(AppStrings.currentUserProfilePicLink) != 'na' &&
+              prefs!.getString(AppStrings.currentUserProfilePicLink) != null;
 
       debugPrint("Received user info \n"
           "first name: $firstNameFromDb\n"
@@ -862,6 +1099,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
           "city: $cityFromDb\n"
           "phone: $phoneNumberFromDb\n"
           "address: $addressfromDb\n"
+          "profile pic ? : $_hasProfilePic\n"
           "profile pic: $profilePicFromDb\n");
     } catch (e) {
       debugPrint(e.toString());
@@ -869,6 +1107,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   }
 
   Future<void> saveIntoDb() async {
+    bool _noImage = true;
     bool formValid = _formKey.currentState!.validate();
 
     if (formValid) {
@@ -882,15 +1121,18 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
             msg: "No internet connection", backgroundColor: Colors.red);
         return;
       }
+      setState(() => _isSaving = true);
 
       try {
         var userRef = FirebaseFirestore.instance.collection("users");
         var currentUser = FirebaseAuth.instance.currentUser;
 
         if (file != null) {
+          _noImage = false;
           await uploadImageToFirebase(file!);
         }
 
+        debugPrint('is profile pic null? ${file == null}');
         await userRef.doc(currentUser!.uid).set({
           AppStrings.firstNameKey: firstNameController.text.trim().toString(),
           AppStrings.familyNameKey: familyNameController.text.trim().toString(),
@@ -901,8 +1143,10 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
           AppStrings.phoneNumberKey:
               int.parse(phoneNumberController.text.trim()),
           AppStrings.addressKey: addressController.text.toString().trim(),
-          AppStrings.imageKey: profilePicUrl,
-        }, SetOptions(merge: true));
+          AppStrings.imageKey: _noImage
+              ? prefs?.getString(AppStrings.currentUserProfilePicLink) ?? 'na'
+              : profilePicUrl,
+        }, SetOptions(merge: true)).then((value)  async {
 
         //save into shared prefs for quick easy access later on
         await prefs.setBool(AppStrings.isSetBasicInfo, true);
@@ -929,10 +1173,13 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
         //profile pic choosen
         if (file != null) {
-          await prefs?.setString(
+          await prefs!.setString(
               AppStrings.currentUserProfilePicLink, profilePicUrl);
+          debugPrint('saving this link right now : ${profilePicUrl}');
+          await prefs!.setBool(AppStrings.hasProfilePic, true);
         } else {
-          await prefs?.setString(AppStrings.currentUserProfilePicLink, null);
+          await prefs!.setString(AppStrings.currentUserProfilePicLink, 'na');
+          await prefs!.setBool(AppStrings.hasProfilePic, false);
         }
 
         debugPrint("Saved user info \n"
@@ -944,6 +1191,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
             "city: $city\n"
             "phone: ${phoneNumberController.text.toString().trim()}\n"
             "address: ${addressController.text.toString().trim()}\n"
+            "has profile pic? : ${_hasProfilePic}\n"
             "profile pic: $profilePicUrl\n");
 
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -951,10 +1199,15 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
 
         Fluttertoast.showToast(
             msg: "Saved", backgroundColor: Colors.greenAccent);
+        setState(() => _isSaving = false);
+
+        });
+
       } catch (e) {
         debugPrint(e.toString());
         Fluttertoast.showToast(
             msg: "Error saving data", backgroundColor: Colors.redAccent);
+        setState(() => _isSaving = false);
       }
     }
   }
@@ -1019,8 +1272,11 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                     onTap: () {
                                       setState(() {
                                         _deletedProfilePic = true;
+                                        _tempProfilePicSet = false;
                                         file = null;
-                                        profilePicUrl = null;
+                                        profilePicUrl = 'na';
+                                        prefs!.setString(AppStrings.currentUserProfilePicLink, 'na');
+                                        prefs!.setBool(AppStrings.hasProfilePic, false);
                                       });
                                       Navigator.pop(context);
                                     },
@@ -1066,6 +1322,10 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
       setState(() {
         uploadTask = null;
       });
+
+      await prefs!
+          .setString(AppStrings.currentUserProfilePicLink, profilePicUrl);
+
       debugPrint("Download link: $profilePicUrl");
     } catch (e) {
       debugPrint(e.toString());
@@ -1085,6 +1345,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
       setState(() {
         file = File(result.files.single.path!);
         _deletedProfilePic = false;
+        _tempProfilePicSet = true;
       });
     } else {
       // User canceled the picker

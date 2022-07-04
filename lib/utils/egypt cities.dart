@@ -187,7 +187,7 @@ class EgyptCities {
       "Manshaa Abdalla	": "	منشاء عبد الله",
       "Youssef Sadek	": "	يوسف صادق",
       "Manshaa Elgamal	": "	منشأة الجمال"
-    },
+    }, //todo: not workign 'Fayoum'
     "Gharbia": {
       "Alsanta	": "	السنطة",
       "Al Mahala Al Kobra	": "	المحلة الكبرى",
@@ -264,7 +264,7 @@ class EgyptCities {
       "Serfa	": "	سيرفا",
       "Manflout	": "	منفلوط"
     },
-    "Bani Souaif": {
+    "Beni Suef": {
       "Bani Souaif	": "	بني سويف",
       "El Wastaa	": "	الواسطى",
       "El Korimat	": "	الكريمات",

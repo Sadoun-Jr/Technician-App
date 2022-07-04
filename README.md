@@ -6,9 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- profile pic link only changes when it's actually changed
-- added egypt cities and provinces maps
-
+- Profile pictures can be added and deleted properly now and will have reflected changes
 
 ## (  ) Creating and Styling the layouts
 
@@ -71,14 +69,15 @@ I will add various info down as I think of it<br />
 
 [comment]: <> (7. NO CHAT SYSTEM<br />)
 
-## Known bugs:
+## Known bugs/issues:
 
 1. Added ability to delete profile pic
 2. Added drop down option for age and province
 3. Added city and address
 4. Styled profile info page
-5. KNOWN BUG: drop down option is passing only the value got from db to spinner, aka no options except just 1
+5. KNOWN BUG: city dropdown button error if re-select province, used IgnorePointer for now
 6. KNOWN BUG: prefs profile pic link doesn't switch to null when deleting image, look into changing it to ""
+7. Deleting the profile picture will completely delete it even if the user doesn't save changes
 
 [comment]: <> (## New things I learned:)
 
