@@ -77,102 +77,118 @@ class _StepperProcessState extends State<StepperProcess>
   //TODO: get profile image and display it here
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Hero(
-              tag: "bg",
-              child: Image.asset(
-                "assets/abstract bg.jpg",
-                fit: BoxFit.cover,
-                height: double.infinity,
-                width: double.infinity,
-                alignment: Alignment.center,
-              ),
-            ),
-            SafeArea(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                child: ListView(
-                  // shrinkWrap: true,
-                  // physics: ScrollPhysics(),
-                  children: [
-                    Hero(
-                      tag: "123124s",
-                      child: Material(
-                        color: Colors.transparent,
-                        child: IconStepper(
-                          stepRadius: 20,
-                          icons: const [
-                            Icon(Icons.question_mark, color: Colors.white),
-                            Icon(Icons.description, color: Colors.white),
-                            Icon(Icons.list, color: Colors.white),
-                            Icon(Icons.person, color: Colors.white),
-                            Icon(Icons.done, color: Colors.white),
-                          ],
-                          enableStepTapping: true,
-                          enableNextPreviousButtons: false,
-                          activeStepColor: _btnColor,
-                          // activeStep property set to activeStep variable defined above.
-                          activeStep: activeStep,
+    debugPrint('active stepper: $activeStep');
+    return WillPopScope(
+      onWillPop: () async {
 
-                          // This ensures step-tapping updates the activeStep.
-                          onStepReached: (index) {
-                            setState(() {
-                              activeStep = index;
-                            });
-                          },
+        //go back a step instead of going back screen
+        setState((){
+          if(activeStep != 0){
+            activeStep--;
+          }
+          else{
+            Navigator.pop(context);
+          }
+        });
+        return false;
+      },
+      child: Material(
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Hero(
+                tag: "bg",
+                child: Image.asset(
+                  "assets/abstract bg.jpg",
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                ),
+              ),
+              SafeArea(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: ListView(
+                    // shrinkWrap: true,
+                    // physics: ScrollPhysics(),
+                    children: [
+                      Hero(
+                        tag: "123124s",
+                        child: Material(
+                          color: Colors.transparent,
+                          child: IconStepper(
+                            stepRadius: 20,
+                            icons: const [
+                              Icon(Icons.question_mark, color: Colors.white),
+                              Icon(Icons.description, color: Colors.white),
+                              Icon(Icons.list, color: Colors.white),
+                              Icon(Icons.person, color: Colors.white),
+                              Icon(Icons.done, color: Colors.white),
+                            ],
+                            enableStepTapping: true,
+                            enableNextPreviousButtons: false,
+                            activeStepColor: _btnColor,
+                            // activeStep property set to activeStep variable defined above.
+                            activeStep: activeStep,
+
+                            // This ensures step-tapping updates the activeStep.
+                            onStepReached: (index) {
+                              setState(() {
+                                activeStep = index;
+                              });
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: 3,
-                      width: double.infinity,
-                      color: Colors.white,
-                    ),
-                    header(),
-                    Visibility(
-                        visible: activeStep == 0,
-                        child: categoryPageHeader(true)),
-                    Visibility(
-                        visible: activeStep == 0,
-                        child: selectCategoryOnboarding()),
-                    Visibility(
-                      visible: activeStep == 1,
-                      child:
-                          selectIssueTypeOnboarding(selectKindOfIssuesArray()),
-                    ),
-                    Visibility(
-                      visible: activeStep == 2,
-                      child: selectTechnicianOnboarding(),
-                    ),
-                    Visibility(
-                      visible: activeStep == 3,
-                      child: assignedTechnicianProfileOnBoarding(),
-                    ),
-                    Visibility(
-                      visible: activeStep == 4,
-                      child: creatingIssueOnboarding(),
-                    ),
-                  ],
+                      Container(
+                        height: 3,
+                        width: double.infinity,
+                        color: Colors.white,
+                      ),
+                      header(),
+                      Visibility(
+                          visible: activeStep == 0,
+                          child: categoryPageHeader(true)),
+                      Visibility(
+                          visible: activeStep == 0,
+                          child: selectCategoryOnboarding()),
+                      Visibility(
+                        visible: activeStep == 1,
+                        child:
+                            selectIssueTypeOnboarding(selectKindOfIssuesArray()),
+                      ),
+                      Visibility(
+                        visible: activeStep == 2,
+                        child: selectTechnicianOnboarding(),
+                      ),
+                      Visibility(
+                        visible: activeStep == 3,
+                        child: assignedTechnicianProfileOnBoarding(),
+                      ),
+                      Visibility(
+                        visible: activeStep == 4,
+                        child: creatingIssueOnboarding(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 8, 0, 16),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    previousButton(),
-                    nextButton(),
-                  ],
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      previousButton(),
+                      nextButton(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
