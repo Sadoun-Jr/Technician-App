@@ -77,19 +77,92 @@ class _StepperProcessState extends State<StepperProcess>
   //TODO: get profile image and display it here
   @override
   Widget build(BuildContext context) {
+    debugPrint('hiring: ${widget.hiredSpecificTech}');
     debugPrint('active stepper: $activeStep');
     return WillPopScope(
       onWillPop: () async {
 
-        //go back a step instead of going back screen
-        setState((){
-          if(activeStep != 0){
-            activeStep--;
-          }
-          else{
-            Navigator.pop(context);
-          }
-        });
+        await showDialog(
+            context: context,
+            builder: (_) => Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                  height: 200,
+                  width: MediaQuery.of(context).size.width,
+                  // margin:
+                  // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        child: BackdropFilter(
+                          filter:
+                          ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
+                          child: Container(
+                            padding: EdgeInsets.all(25),
+                            height: double.infinity,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(30)),
+                                border: Border.all(
+                                    width: 2, color: Colors.white),
+                                color:
+                                Colors.grey.shade200.withOpacity(0.25)),
+                            child: Column(
+                              children: [
+                                Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Text(
+                                      "Going back will completely delete the issue",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18),
+                                    )),
+                                SizedBox(
+                                  height: 12.5,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: CircleAvatar(
+                                          maxRadius: 40,
+                                          backgroundColor: Colors.red,
+                                          child: Icon(
+                                            Icons.close_rounded,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              '/dashboard or login', (Route<dynamic> route) => false);
+                                        },
+                                        child: CircleAvatar(
+                                          maxRadius: 40,
+                                          backgroundColor: Colors.green,
+                                          child: Icon(
+                                            Icons.done,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ))),
+            ));
         return false;
       },
       child: Material(

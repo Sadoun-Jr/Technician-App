@@ -16,12 +16,15 @@ import 'package:technicians/models/portfolio%20object.dart';
 import 'package:technicians/utils/strings%20enum.dart';
 import 'package:technicians/widgets/slider.dart';
 
+import '../utils/hex colors.dart';
+
 class ViewDetailedPortfolioItem extends StatefulWidget {
   final int? index;
   final List<dynamic>? urlImages;
   final String? desc;
   final bool isIssueImage;
-  const ViewDetailedPortfolioItem(this.urlImages, this.index, this.desc,this.isIssueImage,
+  const ViewDetailedPortfolioItem(
+      this.urlImages, this.index, this.desc, this.isIssueImage,
       {Key? key})
       : super(key: key);
 
@@ -31,7 +34,6 @@ class ViewDetailedPortfolioItem extends StatefulWidget {
 }
 
 class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
-
   bool isDescVisible = true;
 
   @override
@@ -40,55 +42,71 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
         child: Scaffold(
       body: Hero(
         tag: widget.index ?? 1234,
-        child: Stack(children: [
-          PhotoViewGallery.builder(
-            itemCount: widget.urlImages!.length,
-            builder: (context, index) {
-              final urlImage = widget.urlImages![index];
-
-              return PhotoViewGalleryPageOptions(
-                imageProvider: widget.isIssueImage ? FileImage(urlImage) as ImageProvider
-                    : NetworkImage(urlImage),
-
-                minScale: PhotoViewComputedScale.contained,
-                maxScale: PhotoViewComputedScale.contained * 4,
-              );
-            },
-          ),
-          Visibility(
-            visible: isDescVisible,
-            child: Align(
+        child: Material(
+          color: Colors.transparent,
+          child: Stack(alignment: Alignment.center, children: [
+            PhotoViewGallery.builder(
+              itemCount: widget.urlImages!.length,
+              builder: (context, index) {
+                final urlImage = widget.urlImages![index];
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: widget.isIssueImage
+                      ? FileImage(urlImage) as ImageProvider
+                      : NetworkImage(urlImage),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.contained * 4,
+                );
+              },
+            ),
+            Align(
               alignment: Alignment.bottomCenter,
               child: Material(
                 color: Colors.transparent,
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  color: Colors.black54,
-                  child: Text(widget.desc ?? "", style: TextStyle(color: Colors.white),),
+                child: AnimatedContainer(
+                  color: isDescVisible ? Colors.transparent : Colors.transparent,
+                  duration: Duration(milliseconds: 500),
+                  height: isDescVisible
+                      ? MediaQuery.of(context).size.height / 3
+                      : 50,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16),
+                    color: Colors.black54,
+                    child: Text( isDescVisible ?
+                      "${widget.desc}" : '\n',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(16
-            ),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                child: Text(isDescVisible ? "HIDE DESC" : "SHOW DESC"),
-                onPressed: () {
-                  if(isDescVisible){
-                    setState(() => {isDescVisible = false});
-                  }
-                  else if(!isDescVisible){
-                    setState(() => {isDescVisible = true});
-                  }
-                },
-              ),
-            ),
-          )
-        ]),
+            AnimatedPositioned(
+                bottom: isDescVisible
+                    ? (MediaQuery.of(context).size.height / 3)
+                    : MediaQuery.of(context).size.height / 25,
+                // top: MediaQuery.of(context).size.height/10,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _darkTxtClr,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      isDescVisible
+                          ? Icons.arrow_downward_outlined
+                          : Icons.arrow_upward_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () =>
+                        setState(() => isDescVisible = !isDescVisible),
+                  ),
+                ),
+                duration: Duration(milliseconds: 500)),
+          ]),
+        ),
       ),
     ));
   }
+
+  final Color _darkTxtClr = HexColor("#96878D");
 }

@@ -26,6 +26,13 @@ class _UserFavouritesState extends State<UserFavourites> {
   final Color _btnColor = HexColor("#96878D");
   final Color _splashClr = Colors.white;
   final Color _lightPrimary = HexColor("#d4c4ca");
+  late Future<void> getFavsData;
+
+  @override
+  void initState() {
+    super.initState();
+    getFavsData = getAppropriateTechnicians();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +154,7 @@ class _UserFavouritesState extends State<UserFavourites> {
           alignment: Alignment.center,
         ),
         FutureBuilder(
-            future: getAppropriateTechnicians(),
+            future: getFavsData,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 listOfFavTechnicians.toSet().toList();

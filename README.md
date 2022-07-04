@@ -6,7 +6,9 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Profile pictures can be added and deleted properly now and will have reflected changes
+- Fixed reload every time user likes in specific technician profile page
+- styled detailed portfolio item
+- styled portfolio grid view
 
 ## (  ) Creating and Styling the layouts
 

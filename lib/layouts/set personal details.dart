@@ -352,11 +352,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context)
-                                                  .pushNamedAndRemoveUntil(
-                                                      '/dashboard or login',
-                                                      (Route<dynamic> route) =>
-                                                          false);
+                                              Navigator.pop(context);
                                             },
                                             child: CircleAvatar(
                                               maxRadius: 40,

@@ -150,6 +150,7 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
   Animation<double>? animation;
   AnimationController? _lottieAnimationController;
   Tween<double> tween = Tween(begin: 0, end: 100);
+  late Future<void> getTechDate;
 
   @override
   void initState() {
@@ -165,6 +166,8 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
       }
     });
     // animation = tween.animate(_lottieAnimationController!);
+
+    getTechDate = getSelectedTechnician();
     super.initState();
   }
 
@@ -179,7 +182,7 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
           alignment: Alignment.center,
         ),
         FutureBuilder(
-            future: getSelectedTechnician(),
+            future: getTechDate,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return Stack(
