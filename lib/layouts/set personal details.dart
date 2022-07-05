@@ -496,11 +496,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                                       .transparent,
                                                                   shape: BoxShape
                                                                       .circle,
-                                                                  border: Border.all(
-                                                                      color:
-                                                                          _darkTxtClr,
-                                                                      width:
-                                                                          1)),
+                                                                  ),
                                                               //profile pic exists in db
                                                               child:
                                                                   CircleAvatar(
@@ -527,11 +523,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                                         .red,
                                                                     shape: BoxShape
                                                                         .circle,
-                                                                    border: Border.all(
-                                                                        color:
-                                                                            _darkTxtClr,
-                                                                        width:
-                                                                            1)),
+                                                                    ),
                                                                 //profile pic exists in db
                                                                 child: CircleAvatar(
                                                                         radius:
@@ -553,11 +545,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                                       .transparent,
                                                                   shape: BoxShape
                                                                       .circle,
-                                                                  border: Border.all(
-                                                                      color:
-                                                                          _darkTxtClr,
-                                                                      width:
-                                                                          1)),
+                                                                  ),
                                                               //profile pic exists in db
                                                               child: Container(
                                                                 padding: EdgeInsets.all(5),

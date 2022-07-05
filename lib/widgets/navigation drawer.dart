@@ -210,27 +210,27 @@ class _NavDrawerState extends State<NavDrawer> {
                                   ),
                                 ),
                               ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TechnicianReviews(true, null)),
-                                    );
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.reviews,
-                                      color: Colors.black,
-                                    ),
-                                    title: Text("My Reviews"),
-                                  ),
-                                ),
-                              ),
+                              // Material(
+                              //   color: Colors.transparent,
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.pop(context);
+                              //       Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //             builder: (context) =>
+                              //                 TechnicianReviews(true, null)),
+                              //       );
+                              //     },
+                              //     child: ListTile(
+                              //       leading: Icon(
+                              //         Icons.reviews,
+                              //         color: Colors.black,
+                              //       ),
+                              //       title: Text("My Reviews"),
+                              //     ),
+                              //   ),
+                              // ),
                               Material(
                                 color: Colors.transparent,
                                 child: InkWell(

@@ -45,7 +45,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
   }
 
   Future<void> getSelectedTechnician() async {
-
     var technicianCollection =
         FirebaseFirestore.instance.collection("technicians");
 
@@ -187,7 +186,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
               if (snapshot.connectionState == ConnectionState.done) {
                 return Stack(
                   children: [
-
                     //=======the background glass rectangle=======
                     Container(
                         margin:
@@ -225,7 +223,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                         children: [
                           Row(
                             children: [
-
                               //=======profile pic=======
                               selectedTechnician?.image == null
                                   ? Container(
@@ -263,7 +260,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                     Row(
                                       children: [
                                         Expanded(
-
                                           child: Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
@@ -319,48 +315,71 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                             ),
                                           ],
                                         )),
-                                    SizedBox(height: 15,),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
 
                                     //======like======
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton.extended(
-                                                onPressed: () {
-                                                  _isLiked = !_isLiked!;
-                                                  onLikeButtonTapped(_isLiked!);
-                                                  setState(() => _isLiked = _isLiked);
-                                                },
-                                            label: Text("اعجاب", style: TextStyle(color: _isLiked! ? Colors.red[800] : _darkTxtClr),),
-                                                icon: Icon(
-                                            Icons.favorite,
-                                            color:  _isLiked! ? Colors.red[800] : _darkTxtClr,
-                                          ),
+                                            onPressed: () {
+                                              _isLiked = !_isLiked!;
+                                              onLikeButtonTapped(_isLiked!);
+                                              setState(
+                                                  () => _isLiked = _isLiked);
+                                            },
+                                            label: Text(
+                                              "اعجاب",
+                                              style: TextStyle(
+                                                  color: _isLiked!
+                                                      ? Colors.red[800]
+                                                      : _darkTxtClr),
+                                            ),
+                                            icon: Icon(
+                                              Icons.favorite,
+                                              color: _isLiked!
+                                                  ? Colors.red[800]
+                                                  : _darkTxtClr,
+                                            ),
                                             heroTag: "12",
                                             backgroundColor: Colors.white,
-                                              ),
+                                          ),
                                         ),
-                                        SizedBox(width: 10,),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
 
                                         //======hire me=======
                                         Flexible(
-                                          flex:1,
+                                          flex: 1,
                                           child: FloatingActionButton.extended(
                                             onPressed: () {
-                                              debugPrint("${selectedTechnician!.firstName!} is first name");
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                              StepperProcess(hiredSpecificTech: selectedTechnician!)));
+                                              debugPrint(
+                                                  "${selectedTechnician!.firstName!} is first name");
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          StepperProcess(
+                                                              hiredSpecificTech:
+                                                                  selectedTechnician!)));
                                             },
-                                            label: Text("وظفني",style: TextStyle(color: _darkTxtClr),),
+                                            label: Text(
+                                              "وظفني",
+                                              style:
+                                                  TextStyle(color: _darkTxtClr),
+                                            ),
                                             heroTag: "1",
                                             icon: Icon(
                                               Icons.business_center,
                                               color: _darkTxtClr,
                                             ),
                                             backgroundColor: Colors.white,
-
                                           ),
                                         ),
                                       ],
@@ -373,7 +392,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-
                               //=======jobs completed box=======
                               Expanded(
                                 flex: 1,
@@ -399,10 +417,10 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                                             Radius.circular(
                                                                 30)),
                                                     border: Border.all(
-                                                        width: 2,
-                                                        color: _jobsBoxClr),
-                                                    color: Colors.grey.shade200
-                                                        .withOpacity(0.25)),
+                                                        width: 3,
+                                                        color: Colors.white),
+                                                    color: Colors.white54
+                                                        ),
                                                 child: Center(
                                                     child: Center(
                                                         child: Column(
@@ -476,14 +494,14 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                                 height: _statsHeight,
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                30)),
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            30)),
                                                     border: Border.all(
-                                                        width: 2,
-                                                        color: _ratingBoxClr),
-                                                    color: Colors.grey.shade200
-                                                        .withOpacity(0.25)),
+                                                        width: 3,
+                                                        color: Colors.white),
+                                                    color: Colors.white54
+                                                ),
                                                 child: Center(
                                                   child: Center(
                                                       child: Column(
@@ -561,15 +579,14 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                                 height: _statsHeight,
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                30)),
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            30)),
                                                     border: Border.all(
-                                                        width: 2,
-                                                        color:
-                                                            _completedBoxClr),
-                                                    color: Colors.grey.shade200
-                                                        .withOpacity(0.25)),
+                                                        width: 3,
+                                                        color: Colors.white),
+                                                    color: Colors.white54
+                                                ),
                                                 child: Center(
                                                   child: Center(
                                                       child: Column(
@@ -703,7 +720,6 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                           ),
                           Stack(
                             children: [
-
                               //=======portfolio button=======
                               Align(
                                 alignment: Alignment.bottomCenter,
@@ -717,7 +733,8 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
                                           color: Colors.grey.withOpacity(0.5),
                                           spreadRadius: 3,
                                           blurRadius: 7,
-                                          offset: Offset(0, 4), // changes position of shadow
+                                          offset: Offset(0,
+                                              4), // changes position of shadow
                                         ),
                                       ],
                                       color: Colors.white,
@@ -898,28 +915,27 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return Dialog(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Align(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Align(
                 alignment: Alignment.center,
-                child: Lottie.asset( _isLiked! ?
-                    "assets/remove love ani.json" :
-                "assets/love ani 2.json",
-                controller: _lottieAnimationController,
-                repeat: false,
-                  animate: true,
+                child: Lottie.asset(
+                    _isLiked!
+                        ? "assets/remove love ani.json"
+                        : "assets/love ani 2.json",
+                    controller: _lottieAnimationController,
+                    repeat: false,
+                    animate: true,
                     height: 500,
-                    width: 500,
-                    onLoaded: (composition) {
-                      _lottieAnimationController?.duration = composition.duration;
-                      _lottieAnimationController?.forward();
-                    }
-          ),
-          ),
-        ));
+                    width: 500, onLoaded: (composition) {
+                  _lottieAnimationController?.duration = composition.duration;
+                  _lottieAnimationController?.forward();
+                }),
+              ),
+            ));
       },
     );
   }
@@ -981,14 +997,15 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
       },
     );
   }
+
   @override
   void dispose() {
     _lottieAnimationController?.dispose();
     super.dispose();
   }
 
-
-  final Color _btnColor = HexColor("#d4c4ca");
+  // final Color _btnColor = HexColor("#d4c4ca");
+  final Color _btnColor = HexColor("#96878D");
   final Color _splashClr = Colors.white;
   final Color _darkTxtClr = HexColor("#96878D");
   bool _isDescExpanded = false;
@@ -997,5 +1014,4 @@ class _TechnicianMainProfilePageState extends State<TechnicianMainProfilePage>
   final Color _jobsBoxClr = HexColor("#96878D");
   final Color _ratingBoxClr = HexColor("#96878D");
   final Color _completedBoxClr = HexColor("#96878D");
-
 }

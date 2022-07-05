@@ -245,7 +245,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
             return SizedBox(height: 10);
           },
           shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
+          physics: ScrollPhysics(),
           itemCount: listOfAllIssues.length,
           itemBuilder: (context, index) {
             //                             .toString(),
@@ -487,7 +487,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
     var dt = DateTime.fromMillisecondsSinceEpoch(input);
     String date;
 
-    return date = DateFormat('MM/dd/yyyy').format(dt); // 12/31/2000, 10:00 PM
+    return date = DateFormat('dd MMM yyyy').format(dt);
   }
 
   Future<void> insertMockUsers() async {

@@ -64,7 +64,7 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
                 color: Colors.transparent,
                 child: AnimatedContainer(
                   color: isDescVisible ? Colors.transparent : Colors.transparent,
-                  duration: Duration(milliseconds: 500),
+                  duration: Duration(milliseconds: 300),
                   height: isDescVisible
                       ? MediaQuery.of(context).size.height / 3
                       : 50,
@@ -101,7 +101,7 @@ class _ViewDetailedPortfolioItemState extends State<ViewDetailedPortfolioItem> {
                         setState(() => isDescVisible = !isDescVisible),
                   ),
                 ),
-                duration: Duration(milliseconds: 500)),
+                duration: Duration(milliseconds: 300)),
           ]),
         ),
       ),

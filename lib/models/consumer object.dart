@@ -19,6 +19,7 @@ class Consumer {
   int? age;
   List? listOfFavourites;
   //String gender;
+  //int numberOfReviewsGiven
 
   Consumer({
      required this.firstName,

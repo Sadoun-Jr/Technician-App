@@ -41,6 +41,17 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   }
 
   Future<String> changeUidToName(String uid, bool isUser) async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return 'null';
+    }
+
     String? firstName;
     String? familyName;
 
@@ -63,6 +74,17 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
   }
 
   Future<void> getPortfolioItems() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
     listOfPortfolioItems = [];
     debugPrint(
         "Started fetching portfolio items for: " "${widget.technicianUid}");
@@ -155,29 +177,40 @@ class _PortfolioSummaryState extends State<PortfolioSummary> {
             return SizedBox(
               height: MediaQuery.of(context).size.height - 125,
               width: MediaQuery.of(context).size.width,
-              child: Column(
+              child: Stack(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Lottie.asset('assets/loading gear.json',
-                          height: 75,
-                          width: 75,
-                          alignment: Alignment.bottomCenter,
-                          animate: true),
-                    ),
+                  Image.asset(
+                    "assets/abstract bg.jpg",
+                    fit: BoxFit.cover,
+                    height: double.infinity,
+                    width: double.infinity,
+                    alignment: Alignment.center,
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          "Loading...",
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold),
-                        )),
+                  Column(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Lottie.asset('assets/loading gear.json',
+                              height: 75,
+                              width: 75,
+                              alignment: Alignment.bottomCenter,
+                              animate: true),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              "Loading...",
+                              style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                      ),
+                    ],
                   ),
                 ],
               ),
