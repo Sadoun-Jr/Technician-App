@@ -6,9 +6,11 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Fixed reload every time user likes in specific technician profile page
-- styled detailed portfolio item
-- styled portfolio grid view
+- Styled pending and completed orders page
+- Added status bar in orders list
+- Hidden and shown appropriate views
+- Added rating with stars and completion date
+- Added tech profile pic to orders
 
 ## (  ) Creating and Styling the layouts
 

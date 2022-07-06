@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +30,7 @@ class PendingAndCompletedOrders extends StatefulWidget {
 class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
   List<TestIssue> listOfAllIssues = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final Color _darkTxtClr = HexColor("#96878D");
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +39,22 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
         drawer: NavDrawer(),
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          leadingWidth: 50,
-          toolbarHeight: MediaQuery.of(context).size.height / 10,
-          backgroundColor: HexColor("#96878D"),
-          title: Text("My Orders"),
-          leading: Container(
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            child: IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            leadingWidth: 50,
+            toolbarHeight: MediaQuery.of(context).size.height / 10,
+            backgroundColor: HexColor("#96878D"),
+            title: Text("My Orders"),
+            leading: Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              child: IconButton(
+                icon: Icon(Icons.list),
+                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+              ),
             ),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-               bottom: Radius.circular(5)))
-                  // bottom: Radius.elliptical(
-                  //     MediaQuery.of(context).size.width, 32))),
-        ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)))
+            // bottom: Radius.elliptical(
+            //     MediaQuery.of(context).size.width, 32))),
+            ),
         body: Stack(
           children: [
             Image.asset(
@@ -64,7 +65,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
               alignment: Alignment.center,
             ),
             FutureBuilder(
-              future: getData(),
+              future: getOrdersData,
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return ordersList();
@@ -117,7 +118,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
   List<String> listOfNamesFromUid = [];
 
-  Future<void> getData() async {
+  Future<void> getOrders() async {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -169,12 +170,24 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
           listOfAllIssues.add(i);
 
+          Future<String> profilePic = changeUidToProfilePic(i.issuedTo!, false);
           Future<String> name = changeUidToName(i.issuedTo!, false);
+
           listOfNamesFromUid.add(await name);
+          listOfTechsProfileImageLinks.add(await profilePic);
         }
+
+        listOfAllIssues.toSet().toList();
+        listOfTechsProfileImageLinks.toSet().toList();
+        listOfNamesFromUid.toSet().toList();
       });
       debugPrint("# of names: ${listOfNamesFromUid.length}");
-      debugPrint("# of issues: ${listOfAllIssues.length}");
+      debugPrint("current user uid: ${user!.uid}");
+      // for(int i=0;i<listOfAllIssues.length;i++){
+      //   debugPrint('isCompleted? ${listOfAllIssues[i].isCompleted.toString()}');
+      // }
+
+      // debugPrint("# of issues: ${listOfAllIssues.length}");
     } catch (e) {
       debugPrint(e.toString());
       Fluttertoast.showToast(
@@ -182,9 +195,12 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
     }
   }
 
+  ///profile pics of users giving reviews to techs
+  List<String> listOfTechsProfileImageLinks = [];
+
   Widget ordersList() {
     return Container(
-      margin: EdgeInsets.fromLTRB(8, 5, 8, 5),
+      // margin: EdgeInsets.fromLTRB(8, 5, 8, 5),
       child: orders(),
     );
   }
@@ -239,7 +255,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
 
   Widget orders() {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+      margin: EdgeInsets.fromLTRB(8, 5, 8, 5),
       child: ListView.separated(
           separatorBuilder: (BuildContext context, int index) {
             return SizedBox(height: 10);
@@ -248,239 +264,429 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
           physics: ScrollPhysics(),
           itemCount: listOfAllIssues.length,
           itemBuilder: (context, index) {
-            //                             .toString(),
-            return ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: Material(
-                  color: Colors.white54,
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                    // onTap: () {
-                    //   _orderDetails(index);
-                    // },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            border: Border.all(color: Colors.white, width: 3)),
-                        // height: listOfAllIssues[index].isCompleted! ? 250 : 200,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 1, horizontal: 4),
+            return Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Material(
+                      color: Colors.white54,
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        // onTap: () {
+                        //   _orderDetails(index);
+                        // },
                         child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          child: Row(
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.transparent),
-                                  height: 60.0,
-                                  width: 60.0,
-                                  child: Image.asset(CommonIssues
-                                          .mapOfSelectedImages[
-                                      listOfAllIssues[index].issueCategory]!),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              //========description========
-                              Flexible(
-                                child: Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        listOfAllIssues[index].issueDesc!,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 18),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(30),
+                                    bottomRight: Radius.circular(30),
+                                    topLeft: Radius.circular(30)),
+                                border:
+                                    Border.all(color: Colors.white, width: 3)),
+                            // height: listOfAllIssues[index].isCompleted! ? 250 : 200,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1, horizontal: 4),
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                              child: Column(
+                                children: [
+                                  //======profile pic=========
+                                  Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color:
+                                                  listOfTechsProfileImageLinks[
+                                                              index] ==
+                                                          'na'
+                                                      ? Colors.white
+                                                      : Colors.transparent),
+                                          height: 45.0,
+                                          width: 45.0,
+                                          child: listOfTechsProfileImageLinks[
+                                                      index] ==
+                                                  'na'
+                                              ? Icon(
+                                                  Icons.person,
+                                                  color: Colors.black12,
+                                                  size: 36,
+                                                )
+                                              : ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(50)),
+                                                  child: Image.network(
+                                                    listOfTechsProfileImageLinks[
+                                                        index],
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      //========status========
-                                      children: [
-                                        Visibility(
-                                          visible: !listOfAllIssues[index]
-                                              .isCompleted!,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              listOfAllIssues[index]
-                                                      .isAcceptedByTechnician!
-                                                  ? "Status: Being worked on by "
-                                                  : "Status: Waiting for technician response",
-                                              style: TextStyle(
-                                                  color: Colors.orange[700]),
-                                            ),
-                                          ),
-                                        ),
-                                        //todo: this will be status:terminated mid work
-                                        Visibility(
-                                          visible: !listOfAllIssues[index]
-                                              .isCompleted!,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(""),
-                                          ),
-                                        ),
-                                        Visibility(
-                                            visible: listOfAllIssues[index]
-                                                .isCompleted!,
-                                            child: Text(
-                                              "Completed by: ",
-                                              style: TextStyle(
-                                                  color: Colors.green[800]),
-                                            )),
-                                        Expanded(
-                                          child: Visibility(
-                                            visible: listOfAllIssues[index]
-                                                .isAcceptedByTechnician!,
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  children: [
-                                                    // ),
-                                                    TextSpan(
-                                                      recognizer:
-                                                          TapGestureRecognizer()
-                                                            ..onTap =
-                                                                () => {
-                                                                      Fluttertoast
-                                                                          .showToast(
-                                                                              msg: "msg")
-                                                                    },
-                                                      //todo: change to issuedTo
-                                                      text: listOfNamesFromUid[
-                                                          index],
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                //=========name=========
+                                                Expanded(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    child: Text(
+                                                      listOfNamesFromUid[index],
                                                       style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors
-                                                              .brown[400]),
+                                                          fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                //=====price=====
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        '${listOfAllIssues[index].price!.toString()} \$'),
+                                                    SizedBox(
+                                                      width: 10,
                                                     ),
                                                   ],
                                                 ),
-                                              ),
+                                                //=======date ordered=======
+                                                Text(convertTimeFromDb(
+                                                    listOfAllIssues[index]
+                                                        .timeRequested!)),
+                                              ],
                                             ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  //=========desc=========
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      'Issue Description',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          // shadows: [Shadow(color: _darkTxtClr, offset: Offset(0, -5))],
+                                          color: _darkTxtClr,
+                                          fontWeight: FontWeight.bold
+                                          // decoration: TextDecoration.underline,
+                                          // decorationColor: Colors.grey,
+                                          // decorationThickness: 1,
                                           ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      listOfAllIssues[index].issueDesc != ' '
+                                          ? listOfAllIssues[index].issueDesc!
+                                          : 'No Description set',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      // maxLines: 3,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].isCompleted!,
+                                    child: Divider(
+                                      height: 2,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                  //=====review=====
+                                  Visibility(
+                                    visible: listOfAllIssues[index].isCompleted!,
+                                    child: SizedBox(
+                                      height: 5,
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].isCompleted!,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Rating',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              // shadows: [Shadow(color: _darkTxtClr, offset: Offset(0, -5))],
+                                              color: _darkTxtClr,
+                                              fontWeight: FontWeight.bold
+                                              // decoration: TextDecoration.underline,
+                                              // decorationColor: Colors.grey,
+                                              // decorationThickness: 1,
+                                              ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        //=======rating=======
+                                        RatingBar.builder(
+                                          initialRating: listOfAllIssues[index]
+                                              .technicianRating!,
+                                          itemSize: 20,
+                                          glowColor: Colors.transparent,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          ignoreGestures: true,
+                                          itemCount: 5,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 1.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {},
+                                        ),
+                                        Spacer(),
+                                        Visibility(
+                                          visible: listOfAllIssues[index].technicianReview == ' ',
+                                          child: Text(convertTimeFromDb(
+                                              listOfAllIssues[index]
+                                                  .timeCompleted!)),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].isCompleted!,
+                                    child: SizedBox(
                                       height: 5,
                                     ),
-                                    //========date=========
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].isCompleted! && listOfAllIssues[index].technicianReview != ' ',
+                                    child: Row(
                                       children: [
                                         Align(
                                           alignment: Alignment.topLeft,
-                                          child: Text( listOfAllIssues[index].isCompleted! ? "Completed on: " + convertTimeFromDb(listOfAllIssues[index].timeCompleted!) :
-                                              "Requested on: " +convertTimeFromDb(listOfAllIssues[index].timeRequested!),
-                                            style: TextStyle(color: Colors.black54),
+                                          child: Text(
+                                            'Review',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                // shadows: [Shadow(color: _darkTxtClr, offset: Offset(0, -5))],
+                                                color: _darkTxtClr,
+                                                fontWeight: FontWeight.bold
+                                                // decoration: TextDecoration.underline,
+                                                // decorationColor: Colors.grey,
+                                                // decorationThickness: 1,
+                                                ),
                                           ),
                                         ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Spacer(),
 
+                                        //====date completed=====
                                         Visibility(
-                                            visible: !listOfAllIssues[index].isCompleted!
-                                            ,child: Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: IconButton(
-                                            splashColor: Colors.white,
-                                            onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                                MarkOrderFinished())); },
-                                            icon:Icon(Icons.done, color: Colors.green, size: 35,),
-                                            //todo: change this according to if technician is willing to end
-                                          ),
-                                        ))
+                                          visible: listOfAllIssues[index].technicianReview != ' ',
+                                          child: Text(convertTimeFromDb(
+                                              listOfAllIssues[index]
+                                                  .timeCompleted!)),
+                                        ),
                                       ],
                                     ),
-                                    SizedBox(
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].technicianReview! != ' ',
+                                    child: SizedBox(
                                       height: 5,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        //========price==========
-                                        Visibility(
-                                          visible:
-                                              listOfAllIssues[index].price! > 0,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(listOfAllIssues[index]
-                                                    .price!
-                                                    .toString() +
-                                                "\$"),
-                                          ),
+                                  ),
+                                  Visibility(
+                                    visible: listOfAllIssues[index].technicianReview != ' ',
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        listOfAllIssues[index].technicianReview !=
+                                                ' '
+                                            ? listOfAllIssues[index]
+                                                .technicianReview!
+                                            : 'No review made',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade600,
                                         ),
-                                        //========rating==========
-                                        Row(
-                                          children: [
-                                            Visibility(
-                                              visible: listOfAllIssues[index]
-                                                  .isCompleted!,
-                                              child: Text(listOfAllIssues[index]
-                                                  .technicianRating
-                                                  .toString()),
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Visibility(
-                                                visible: listOfAllIssues[index]
-                                                    .isCompleted!,
-                                                child: Icon(Icons.star))
-                                          ],
-                                        ),
-                                        //========payment method==========
-                                        Row(
-                                          children: [
-                                            Visibility(
-                                                visible: listOfAllIssues[index]
-                                                    .isCompleted!,
-                                              child: Text(listOfAllIssues[index].paymentMethod!),
-                                                ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Visibility(
-                                                visible: listOfAllIssues[index]
-                                                    .isCompleted!,
-                                                child: Icon(Icons.handshake_rounded))
-                                          ],
-                                        ),
-                                        //=========review=========
-                                      ],
+                                        // maxLines: 3,
+                                      ),
                                     ),
-                                    SizedBox(height: 5,),
-                                    Visibility(child: Text(listOfAllIssues[index].technicianReview!),
-                                      visible: listOfAllIssues[index]
-                                          .isCompleted!,),
-
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  )
+                                ],
+                              ),
+                            )),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(30)),
+
+                //=======status box========
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    // margin: EdgeInsets.symmetric(horizontal: 0, vertical: 1),
+                    decoration: BoxDecoration(
+                        // border: const Border(
+                        //     bottom: BorderSide(width: 3, color: Colors.red),
+                        //     left: BorderSide(width: 3, color: Colors.red)),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                Colors.grey.withOpacity(0.5), //color of shadow
+                            spreadRadius: 1, //spread radius
+                            blurRadius: 2, // blur radius
+                            offset: Offset(0, 3), // changes position of shadow
+                            //first paramerter of offset is left-right
+                            //second parameter is top to down
+                          ),
+                        ],
+                        color: setFullStatusResponse(index, 0),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(30))),
+                    height: 30,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: Image.asset(
+                              setFullStatusResponse(index, 2),
+                              height: 25,
+                              width: 25,
+                            )),
+                        Expanded(
+                            flex: 2,
+                            child: Text(setFullStatusResponse(index, 1))),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             );
           }),
     );
+  }
+
+  Color _statusClr = Colors.redAccent.withOpacity(0.75);
+
+  ///string used to call method that sets status color, icon and response:
+  ///0 for color, 1 for response string, 2 for icon
+  String accessedFrom = '';
+
+  dynamic setFullStatusResponse(int index, int accessedFrom) {
+    String? statusResponse;
+    Color? statusClr;
+    String? image;
+    bool orderComplete = listOfAllIssues[index].isCompleted!;
+    bool orderCancelledByUser = listOfAllIssues[index].isCanceledByUser!;
+    bool orderAccepted = listOfAllIssues[index].isAcceptedByTechnician!;
+    // bool orderTerminatedByTech = listOfAllIssues[index].isterminated
+
+    //waiting for technician response
+    if (!orderAccepted) {
+      switch (accessedFrom) {
+        case 0:
+          return statusClr = Colors.amberAccent.withOpacity(0.75);
+
+        case 1:
+          return statusResponse = 'Awaiting tech';
+
+        case 2:
+          return image = 'assets/time-left.png';
+      }
+    }
+    //waiting for technician to finish work
+    else if (orderAccepted && !orderCancelledByUser && !orderComplete) {
+      switch (accessedFrom) {
+        case 0:
+          return statusClr = Colors.amberAccent.withOpacity(0.75);
+
+        case 1:
+          return statusResponse = 'In progress';
+
+        case 2:
+          return image = 'assets/hammer.png';
+      }
+    }
+    //cancelled by user
+    else if (orderAccepted && orderCancelledByUser) {
+      switch (accessedFrom) {
+        case 0:
+          return statusClr = Colors.redAccent.withOpacity(0.75);
+
+        case 1:
+          return statusResponse = 'Cancelled';
+
+        case 2:
+          return image = 'assets/cancelled.png';
+      }
+    }
+
+    //completed by technician
+    else if (orderAccepted && !orderCancelledByUser && orderComplete) {
+      switch (accessedFrom) {
+        case 0:
+          return statusClr = Colors.greenAccent.withOpacity(0.75);
+
+        case 1:
+          return statusResponse = 'Completed';
+
+        case 2:
+          return image = 'assets/checked.png';
+      }
+    }
+    //todo: add status for terminated mid work
+  }
+
+  @override
+  void initState() {
+    debugPrint("Calling data fetch");
+    listOfAllIssues.clear();
+    listOfNamesFromUid.clear();
+    listOfTechsProfileImageLinks.clear();
+
+    debugPrint('clearing array');
+    getOrdersData = getOrders();
+    super.initState();
   }
 
   String convertTimeFromDb(int input) {
@@ -544,14 +750,9 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
           }));
     }
   }
-
-  @override
-  void initState() {
-    debugPrint("Calling data fetch");
-    listOfAllIssues.clear();
-    super.initState();
-  }
 }
+
+late Future<void> getOrdersData;
 
 Future<void> insertMockIssues() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -626,6 +827,26 @@ Future<void> insertMockIssues() async {
               (listOfAllTechnicians.toList()..shuffle()).first
         }));
   }
+}
+
+Future<String> changeUidToProfilePic(String uid, bool isUser) async {
+  String? picLink;
+
+  var myRef = isUser
+      ? FirebaseFirestore.instance.collection("users")
+      : FirebaseFirestore.instance.collection("technicians");
+  await myRef
+      .where(isUser ? AppStrings.userUidKey : AppStrings.technicianUidKey,
+          isEqualTo: uid)
+      .get()
+      .then((value) => {
+            for (var element in value.docs)
+              {
+                picLink = element.data()[AppStrings.imageKey],
+              }
+          });
+
+  return picLink ?? 'na';
 }
 
 Future<String> changeUidToName(String uid, bool isUser) async {

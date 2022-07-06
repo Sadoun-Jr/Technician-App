@@ -25,7 +25,6 @@ class NavDrawer extends StatefulWidget {
 }
 
 class _NavDrawerState extends State<NavDrawer> {
-
   SharedPreferences? prefs;
 
   String _currentUserFirstName = "";
@@ -39,27 +38,29 @@ class _NavDrawerState extends State<NavDrawer> {
   bool _hasProfilePic = false;
 
   Future<void> getPrefs() async {
-      prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
-      _currentUserFirstName = prefs!.getString(AppStrings.currentUserFirstName)!;
-      _currentUserFamilyName = prefs!.getString(AppStrings.currentUserFamilyName)!;
-      _currentUserProfilePicLink = prefs!.getString(AppStrings.currentUserProfilePicLink)!;
-      _currentUserGender = prefs!.getString(AppStrings.currentUserGender)!;
-      _currentUserAge = prefs!.getInt(AppStrings.currentUserAge)!;
-      _currentUserProvince = prefs!.getString(AppStrings.currentUserProvince)!;
-      _currentUserPhoneNumber = prefs!.getInt(AppStrings.currentUserPhoneNumber)!;
-      _currentUserCity = prefs!.getString(AppStrings.currentUserCity)!;
-      _hasProfilePic = prefs!.getString(AppStrings.currentUserProfilePicLink) != 'na' && prefs!.getString(AppStrings.currentUserProfilePicLink) != null;
-
+    _currentUserFirstName = prefs!.getString(AppStrings.currentUserFirstName)!;
+    _currentUserFamilyName =
+        prefs!.getString(AppStrings.currentUserFamilyName)!;
+    _currentUserProfilePicLink =
+        prefs!.getString(AppStrings.currentUserProfilePicLink)!;
+    _currentUserGender = prefs!.getString(AppStrings.currentUserGender)!;
+    _currentUserAge = prefs!.getInt(AppStrings.currentUserAge)!;
+    _currentUserProvince = prefs!.getString(AppStrings.currentUserProvince)!;
+    _currentUserPhoneNumber = prefs!.getInt(AppStrings.currentUserPhoneNumber)!;
+    _currentUserCity = prefs!.getString(AppStrings.currentUserCity)!;
+    _hasProfilePic =
+        prefs!.getString(AppStrings.currentUserProfilePicLink) != 'na' &&
+            prefs!.getString(AppStrings.currentUserProfilePicLink) != null;
   }
-
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getPrefs(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if(snapshot.connectionState == ConnectionState.done){
+        if (snapshot.connectionState == ConnectionState.done) {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.only(
@@ -105,29 +106,32 @@ class _NavDrawerState extends State<NavDrawer> {
                             children: [
                               Expanded(
                                 flex: 1,
-                                child:_currentUserProfilePicLink == 'na' ?
-                              Container(
-                                  margin: EdgeInsets.all(5),
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle, color: Colors.white),
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 45,
-                                    color: Colors.black12,
-                                  ))
-                              :
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    _currentUserProfilePicLink!),
-                                radius: 30.0,
-                              ),),
+                                child: _currentUserProfilePicLink == 'na'
+                                    ? Container(
+                                        margin: EdgeInsets.all(5),
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white),
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 45,
+                                          color: Colors.black12,
+                                        ))
+                                    : CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            _currentUserProfilePicLink!),
+                                        radius: 30.0,
+                                      ),
+                              ),
                               SizedBox(
                                 width: 20.0,
                               ),
                               Expanded(
                                   flex: 2,
-                                  child: Text(_currentUserFirstName + " " + _currentUserFamilyName))
+                                  child: Text(_currentUserFirstName +
+                                      " " +
+                                      _currentUserFamilyName))
                             ],
                           ),
                         ),
@@ -142,16 +146,22 @@ class _NavDrawerState extends State<NavDrawer> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => SetPersonalDetails(true,
-                                          age: _currentUserAge,
-                                          city: _currentUserCity,
-                                          familyName: _currentUserFamilyName,
-                                          firstName: _currentUserFirstName,
-                                          gender: _currentUserGender,
-                                          phoneNumber: _currentUserPhoneNumber,
-                                          profilePicLink: _currentUserProfilePicLink,
-                                          province: _currentUserProvince,
-                                          )),
+                                          builder: (context) =>
+                                              SetPersonalDetails(
+                                                true,
+                                                age: _currentUserAge,
+                                                city: _currentUserCity,
+                                                familyName:
+                                                    _currentUserFamilyName,
+                                                firstName:
+                                                    _currentUserFirstName,
+                                                gender: _currentUserGender,
+                                                phoneNumber:
+                                                    _currentUserPhoneNumber,
+                                                profilePicLink:
+                                                    _currentUserProfilePicLink,
+                                                province: _currentUserProvince,
+                                              )),
                                     ),
                                   },
                                   child: ListTile(
@@ -168,7 +178,8 @@ class _NavDrawerState extends State<NavDrawer> {
                                 child: InkWell(
                                   onTap: () => {
                                     Navigator.of(context)
-                                        .pushNamedAndRemoveUntil('/dashboard or login',
+                                        .pushNamedAndRemoveUntil(
+                                            '/dashboard or login',
                                             (Route<dynamic> route) => false)
                                     // Navigator.pop(context),
                                     // Navigator.push(
@@ -239,8 +250,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              GlobalSearch()),
+                                          builder: (context) => GlobalSearch()),
                                     );
                                   },
                                   child: ListTile(
@@ -257,8 +267,11 @@ class _NavDrawerState extends State<NavDrawer> {
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pop(context);
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                        TestDashboard()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TestDashboard()));
                                   },
                                   child: ListTile(
                                     leading: Icon(
@@ -270,6 +283,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                 ),
                               ),
                               Material(
+                                //todo: add confirm logout
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: signOut,
@@ -292,8 +306,7 @@ class _NavDrawerState extends State<NavDrawer> {
               ),
             ),
           );
-        }
-        else {
+        } else {
           return SizedBox(
             height: MediaQuery.of(context).size.height - 125,
             width: MediaQuery.of(context).size.width,
@@ -317,8 +330,7 @@ class _NavDrawerState extends State<NavDrawer> {
                       child: Text(
                         "Loading...",
                         style: TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold),
+                            color: Colors.black54, fontWeight: FontWeight.bold),
                       )),
                 ),
               ],
@@ -353,5 +365,4 @@ class _NavDrawerState extends State<NavDrawer> {
 
     // Navigator.pop(context);
   }
-
 }

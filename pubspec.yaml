@@ -102,6 +102,11 @@ flutter:
     - assets/gold btn.png
     - assets/green btn.png
     - assets/human not selected.png
+    - assets/checked.png
+    - assets/delete.png
+    - assets/time-left.png
+    - assets/cancelled.png
+    - assets/hammer.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
