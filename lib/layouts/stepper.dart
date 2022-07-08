@@ -82,88 +82,95 @@ class _StepperProcessState extends State<StepperProcess>
     return WillPopScope(
       onWillPop: () async {
 
-        await showDialog(
-            context: context,
-            builder: (_) => Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  // margin:
-                  // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                  child: Align(
-                      alignment: Alignment.topCenter,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        child: BackdropFilter(
-                          filter:
-                          ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
-                          child: Container(
-                            padding: EdgeInsets.all(25),
-                            height: double.infinity,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(30)),
-                                border: Border.all(
-                                    width: 2, color: Colors.white),
-                                color:
-                                Colors.grey.shade200.withOpacity(0.25)),
-                            child: Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.topCenter,
-                                    child: Text(
-                                      "Going back will completely delete the issue",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    )),
-                                SizedBox(
-                                  height: 12.5,
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: CircleAvatar(
-                                          maxRadius: 40,
-                                          backgroundColor: Colors.red,
-                                          child: Icon(
-                                            Icons.close_rounded,
+        if(activeStep !=0 ){
+          await showDialog(
+              context: context,
+              builder: (_) => Dialog(
+                backgroundColor: Colors.transparent,
+                child: Container(
+                    height: 200,
+                    width: MediaQuery.of(context).size.width,
+                    // margin:
+                    // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    child: Align(
+                        alignment: Alignment.topCenter,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          child: BackdropFilter(
+                            filter:
+                            ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
+                            child: Container(
+                              padding: EdgeInsets.all(25),
+                              height: double.infinity,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                                  border: Border.all(
+                                      width: 2, color: Colors.white),
+                                  color:
+                                  Colors.grey.shade200.withOpacity(0.25)),
+                              child: Column(
+                                children: [
+                                  Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Text(
+                                        "Going back will completely delete the issue",
+                                        style: TextStyle(
                                             color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pushNamedAndRemoveUntil(
-                                              '/dashboard or login', (Route<dynamic> route) => false);
-                                        },
-                                        child: CircleAvatar(
-                                          maxRadius: 40,
-                                          backgroundColor: Colors.green,
-                                          child: Icon(
-                                            Icons.done,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                            fontSize: 18),
+                                      )),
+                                  SizedBox(
+                                    height: 12.5,
                                   ),
-                                )
-                              ],
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: CircleAvatar(
+                                            maxRadius: 40,
+                                            backgroundColor: Colors.red,
+                                            child: Icon(
+                                              Icons.close_rounded,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                                '/dashboard or login', (Route<dynamic> route) => false);
+                                          },
+                                          child: CircleAvatar(
+                                            maxRadius: 40,
+                                            backgroundColor: Colors.green,
+                                            child: Icon(
+                                              Icons.done,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ))),
-            ));
-        return false;
+                        ))),
+              ));
+          return false;
+
+          //if going back from first page, go back without warning
+        } else {
+          return true;
+        }
+
       },
       child: Material(
         child: Scaffold(
@@ -1670,11 +1677,14 @@ class _StepperProcessState extends State<StepperProcess>
                                                             .fromLTRB(
                                                                 0, 16, 0, 16),
                                                         child: Stack(
+                                                          alignment: Alignment.bottomRight,
                                                             children: [
                                                               listOfAppropriateTechnicians[index]
                                                                           .image ==
                                                                       null
                                                                   ? Container(
+                                                                      height: 57.5,
+                                                                      width: 57.5,
                                                                       decoration: BoxDecoration(
                                                                           shape: BoxShape
                                                                               .circle,
@@ -1685,7 +1695,7 @@ class _StepperProcessState extends State<StepperProcess>
                                                                         Icons
                                                                             .person,
                                                                         size:
-                                                                            57.5,
+                                                                            40,
                                                                         color:
                                                                             Colors.black12,
                                                                       ))
@@ -1693,7 +1703,7 @@ class _StepperProcessState extends State<StepperProcess>
                                                                       decoration: BoxDecoration(
                                                                           shape:
                                                                               BoxShape.circle,
-                                                                          border: Border.all(width: 2, color: Colors.white)),
+                                                                          ),
                                                                       child:
                                                                           CircleAvatar(
                                                                         backgroundColor:
@@ -1706,22 +1716,16 @@ class _StepperProcessState extends State<StepperProcess>
                                                                         //   myAssignedTech!.image!, height: 125, width: 125,),
                                                                       ),
                                                                     ),
-                                                              Align(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .bottomCenter,
-                                                                child:
-                                                                    Visibility(
+                                                              Visibility(
                                                                   visible: listOfAppropriateTechnicians[
-                                                                          index]
-                                                                      .isAvailable!,
+                                                                    index]
+                                                                .isAvailable!,
                                                                   child: CircleAvatar(
-                                                                      maxRadius:
-                                                                          7,
-                                                                      backgroundColor:
-                                                                          Colors.green),
-                                                                ),
-                                                              )
+                                                                maxRadius:
+                                                                    7,
+                                                                backgroundColor:
+                                                                    Colors.green),
+                                                                )
                                                             ]),
                                                       ),
                                                       SizedBox(
@@ -1825,13 +1829,13 @@ class _StepperProcessState extends State<StepperProcess>
                                                                         Text(
                                                                           listOfAppropriateTechnicians[index].rating.toString(),
                                                                           style:
-                                                                              TextStyle(fontSize: 16, fontWeight: listOfAppropriateTechnicians[index].isAvailable! ? FontWeight.bold : FontWeight.normal),
+                                                                              TextStyle(fontSize: 16,),
                                                                         ),
                                                                         Container(
                                                                           margin: EdgeInsets.fromLTRB(
                                                                               5,
                                                                               0,
-                                                                              16,
+                                                                              5,
                                                                               0),
                                                                           child: Icon(Icons.star,
                                                                               size: 16,

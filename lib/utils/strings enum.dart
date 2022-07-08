@@ -62,6 +62,8 @@ class AppStrings {
   static String currentUserPhoneNumber = "phone";
   static String currentUserAge = "age";
   static String hasProfilePic = 'has profile pic';
+  static String hasSetProfileInfo = 'user set profile info';
+  static String isFirstTimeUser = 'first time user';
 
   //issue database keys
   static String issueCategoryKey = "issueCategory";

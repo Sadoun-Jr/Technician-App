@@ -29,8 +29,11 @@ class SetPersonalDetails extends StatefulWidget {
   final String? city;
   final String? profilePicLink;
   final int? phoneNumber;
+  final bool isFirstTimeUser;
 
-  const SetPersonalDetails(this.isEditMode,
+  const SetPersonalDetails(
+      this.isEditMode,
+      this.isFirstTimeUser,
       {Key? key,
       required this.firstName,
       required this.familyName,
@@ -121,6 +124,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   String? address;
   bool _deletedProfilePic = false;
   bool _isSaving = false;
+  bool hasSetProfileInfo = false;
 
   ///used because dropdown button bugs out after selecting a different province, so allow user to select just once
   bool _selectedCity = false;
@@ -131,11 +135,6 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
   ///color for text and buttons
   final Color _darkTxtClr = HexColor("#96878D");
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // @override
-  // void didChangeDependencies() async {
-  //   super.didChangeDependencies();
-  // }
 
   @override
   void initState() {
@@ -364,9 +363,18 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                             ),
                                           ),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               _isSaving = false;
                                               _tempProfilePicSet = false;
+
+                                              //first time user hasn't set info so don't go to main page
+                                              if(widget.isFirstTimeUser){
+                                                Fluttertoast.cancel();
+                                                await prefs!.setBool(AppStrings.hasSetProfileInfo, false);
+                                                Fluttertoast.showToast(msg: 'Please set profile info to use the app', backgroundColor: Colors.red);
+                                                return;
+                                              }
+
                                               Navigator.of(context).pushNamedAndRemoveUntil(
                                                   '/dashboard or login', (Route<dynamic> route) => false);
                                             },
@@ -1178,8 +1186,12 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
             "has profile pic? : ${_hasProfilePic}\n"
             "profile pic: $profilePicUrl\n");
 
+        //user not first time anymore since he set the profile details
+        await prefs!.setBool(AppStrings.isFirstTimeUser, false);
+        await prefs!.setBool(AppStrings.hasSetProfileInfo, true);
+
         Navigator.of(context).pushNamedAndRemoveUntil(
-            '/dashboard or login', (Route<dynamic> route) => false);
+              '/dashboard or login', (Route<dynamic> route) => false);
 
         Fluttertoast.showToast(
             msg: "Saved", backgroundColor: Colors.greenAccent);
@@ -1347,5 +1359,6 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
     ageController.dispose();
     provinceController.dispose();
     cityController.dispose();
+
   }
 }

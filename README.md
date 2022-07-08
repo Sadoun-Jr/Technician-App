@@ -6,11 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Styled pending and completed orders page
-- Added status bar in orders list
-- Hidden and shown appropriate views
-- Added rating with stars and completion date
-- Added tech profile pic to orders
+- User must set profile details before continuing now
 
 ## (  ) Creating and Styling the layouts
 

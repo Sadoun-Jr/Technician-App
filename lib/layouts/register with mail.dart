@@ -278,29 +278,6 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             ),
           ),
         ),
-        // Container(
-        //   width: double.infinity,
-        //   decoration: BoxDecoration(
-        //     color: Colors.transparent,
-        //     border: Border.all(color: Colors.transparent),
-        //     borderRadius: BorderRadius.circular(20),
-        //   ),
-        //   height: 50,
-        //   margin: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-        //   child: FloatingActionButton.extended(
-        //     heroTag: AppStrings.heroRegister,
-        //     backgroundColor: _midWhite,
-        //     label: Text(
-        //       AppStrings.createAccountButton,
-        //       style:
-        //           TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        //     ),
-        //     onPressed: () => {
-        //     signUp()
-        //     },
-        //     // onPressed: signIn,
-        //   ),
-        // ),
       ]),
     );
   }
@@ -316,20 +293,8 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
         toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.red
       );
-
       return;
     }
-
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (context) => Center(child: slider()),
-    // );
-
-    Random random = Random();
-    List booleanList = [true,false];
-    var firstName = (AppStrings.firstNamesList.toList()..shuffle()).first;
-    var lastName=  (AppStrings.lastNamesList.toList()..shuffle()).first;
 
     try {
       await FirebaseAuth.instance
@@ -343,32 +308,28 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               .doc(user?.uid)
               .set({
             AppStrings.listOfFavouritesKey        : [],
-            AppStrings.userUidKey                 : user!.uid,//TODO: TEXT CONTROLLER
-            AppStrings.firstNameKey               : "...", //TODO: TEXT CONTROLLER
-            AppStrings.familyNameKey              : "...",
-            AppStrings.imageKey                   : null, //TODO: GET THIS LATER
+            AppStrings.userUidKey                 : user!.uid,
+            AppStrings.firstNameKey               : '',
+            AppStrings.familyNameKey              : '',
+            AppStrings.imageKey                   : 'na',
             AppStrings.accountCreationTimeStampKey: DateTime.now().millisecondsSinceEpoch,
-            AppStrings.phoneNumberKey             : random.nextInt(123456789),
+            AppStrings.phoneNumberKey             : 0,
             AppStrings.emailKey                   : emailController.text.trim().toString(),
             AppStrings.jobsPaidPhysicallyKey      : 0,
             AppStrings.jobsPaidThroughAppKey      : 0,
-            AppStrings.isVerifiedByIdKey          : (booleanList.toList()..shuffle()).first,
+            AppStrings.isVerifiedByIdKey          : false,
             AppStrings.numberOfFavouritesKey      : 0,
             AppStrings.numberOfReviewsKey         : 0,
-            AppStrings.locationKey                : (AppStrings.locationsList.toList()..shuffle()).first,
+            AppStrings.locationKey                : '',
           });
       });
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
       backgroundColor: Colors.green, toastLength: Toast.LENGTH_SHORT);
-      // navigatorKey.currentState!.popUntil((route) => route.isFirst);
-      // navigatorKey.currentState!.popUntil((route) => route.isFirst);
-
-
-      // Navigator.of(context).pushNamedAndRemoveUntil(
-      //     '/dashboard or login', (Route<dynamic> route) => false);
 
       Navigator.push(context, MaterialPageRoute(builder: (context) =>
-          SetPersonalDetails(false, gender: null, city: null, age: null, profilePicLink: null, firstName: null, familyName: null, province: null, phoneNumber: null,)));
+          SetPersonalDetails(false, true, gender: null, city: null, age: null,
+            profilePicLink: null, firstName: null, familyName: null, province: null,
+            phoneNumber: null,)));
 
     } catch (e) {
       debugPrint("Sign up error: " + e.toString());

@@ -22,9 +22,6 @@ class SelectRegisterMethodLayout extends StatefulWidget {
 }
 
 const String noAccountRegisterPlease = "Don't have an account?";
-Color _primaryColor = HexColor("#1D4EAB");
-Color _whiteText = Colors.white;
-Color _midWhite = Colors.white54;
 
 class _SelectRegisterMethodLayoutState
     extends State<SelectRegisterMethodLayout> {

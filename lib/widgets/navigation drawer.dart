@@ -149,6 +149,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                           builder: (context) =>
                                               SetPersonalDetails(
                                                 true,
+                                                false,
                                                 age: _currentUserAge,
                                                 city: _currentUserCity,
                                                 familyName:
@@ -286,7 +287,7 @@ class _NavDrawerState extends State<NavDrawer> {
                                 //todo: add confirm logout
                                 color: Colors.transparent,
                                 child: InkWell(
-                                  onTap: signOut,
+                                  onTap: confirmLogout,
                                   child: ListTile(
                                     leading: Icon(
                                       Icons.logout,
@@ -341,13 +342,92 @@ class _NavDrawerState extends State<NavDrawer> {
     );
   }
 
+  Future<void> confirmLogout() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              // margin:
+              // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
+                      child: Container(
+                        padding: EdgeInsets.all(25),
+                        height: double.infinity,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(width: 2, color: Colors.white),
+                            color: Colors.grey.shade200.withOpacity(0.25)),
+                        child: Column(
+                          children: [
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "Confirm Logout?",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                )),
+                            SizedBox(
+                              height: 12.5,
+                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: CircleAvatar(
+                                      maxRadius: 40,
+                                      backgroundColor: Colors.red,
+                                      child: Icon(
+                                        Icons.close_rounded,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      signOut();
+                                    },
+                                    child: CircleAvatar(
+                                      maxRadius: 40,
+                                      backgroundColor: Colors.green,
+                                      child: Icon(
+                                        Icons.done,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ))),
+        );
+      },
+    );
+  }
+
+
   void signOut() async {
     Fluttertoast.cancel();
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (context) => Center(child: slider()),
-    // );
 
     try {
       await FirebaseAuth.instance.signOut();
@@ -355,6 +435,19 @@ class _NavDrawerState extends State<NavDrawer> {
           backgroundColor: Colors.green,
           msg: "Logout successful",
           toastLength: Toast.LENGTH_LONG);
+
+      //successfully logged out
+      if(FirebaseAuth.instance.currentUser==null){
+        await prefs?.setString(AppStrings.currentUserFirstName, '');
+        await prefs?.setString(AppStrings.currentUserFamilyName, '');
+        await prefs?.setInt(AppStrings.currentUserPhoneNumber, 0);
+        await prefs?.setString(AppStrings.currentUserProvince, '');
+        await prefs?.setString(AppStrings.currentUserCity, '');
+        await prefs?.setInt(AppStrings.currentUserAge, 0);
+        await prefs?.setString(AppStrings.currentUserGender, '');
+        await prefs?.setString(AppStrings.currentUserAddress, '');
+        await prefs?.setString(AppStrings.currentUserProfilePicLink, 'na');
+      }
     } catch (e) {
       debugPrint(e.toString());
       Fluttertoast.showToast(
@@ -363,6 +456,5 @@ class _NavDrawerState extends State<NavDrawer> {
           toastLength: Toast.LENGTH_LONG);
     }
 
-    // Navigator.pop(context);
   }
 }

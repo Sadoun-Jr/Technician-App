@@ -8,7 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technicians/layouts/choose%20register%20method.dart';
+import 'package:technicians/layouts/payment%20options.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
+import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/layouts/stats.dart';
 import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/utils/hex%20colors.dart';
@@ -258,26 +260,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           ),
           height: 50,
           margin: const EdgeInsets.fromLTRB(20, 40, 20, 10),
-          // child: FloatingActionButton.extended(
-          //   heroTag: AppStrings.heroLogin,
-          //   splashColor: Colors.white,
-          //   backgroundColor: _primaryColor,
-          //   label: Text(
-          //     AppStrings.loginString,
-          //     style:
-          //         TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          //   ),
-          //   onPressed: signIn,
-          // ),
         ),
-
-        // TextButton(
-        //   child: Text(
-        //     AppStrings.forgotPassword,
-        //     style: TextStyle(color: _textClr),
-        //   ),
-        //   onPressed: () => {},
-        // )
       ]),
     );
   }
@@ -321,6 +304,10 @@ class _LoginLayoutState extends State<LoginLayout> {
       var docSnapshot = await collection.doc(user?.uid).get();
       debugPrint(
           "Role is " "${docSnapshot["role"]} for user ${docSnapshot["email"]}");
+
+      if (FirebaseAuth.instance.currentUser != null) {
+        prefs!.setBool(AppStrings.isFirstTimeUser, true);
+      }
 
       Fluttertoast.showToast(
           backgroundColor: Colors.green,
@@ -374,7 +361,8 @@ class _LoginLayoutState extends State<LoginLayout> {
   SharedPreferences? prefs;
 
   Future<void> initalisePrefs() async {
-     prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
+    hasSetProfileInfo = prefs!.getBool(AppStrings.hasSetProfileInfo)!;
   }
 
   Widget selectionScreen() {
@@ -382,21 +370,44 @@ class _LoginLayoutState extends State<LoginLayout> {
     return FutureBuilder(
       future: initalisePrefs(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            !hasSetProfileInfo) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SetPersonalDetails(
+                      false,
+                      true,
+                      gender: null,
+                      city: null,
+                      age: null,
+                      profilePicLink: null,
+                      firstName: null,
+                      familyName: null,
+                      province: null,
+                      phoneNumber: null,
+                    )));
+          });
+
+          return Text('');
+        } else if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
               extendBodyBehindAppBar: true,
               drawer: NavDrawer(),
               appBar: AppBar(
-
                 title: Row(
                   children: [
-                    prefs!.getString(AppStrings.currentUserProfilePicLink)! == 'na'
+                    prefs!.getString(AppStrings.currentUserProfilePicLink)! ==
+                            'na'
                         ? Container(
+                            height: 45.5,
+                            width: 45.5,
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.white),
                             child: Icon(
                               Icons.person,
-                              size: 45.5,
+                              size: 35.5,
                               color: Colors.black12,
                             ))
                         : Container(
@@ -475,7 +486,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                                   Colors.green[200], "12", () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Stats()),
+                              MaterialPageRoute(
+                                  builder: (context) => PaymentOptions()),
                             );
                           })),
                           Flexible(
@@ -527,7 +539,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                           child: Text(
                             "Loading account data...",
                             style: TextStyle(
-                                color: Colors.black54, fontWeight: FontWeight.bold),
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold),
                           )),
                     ),
                   ],
@@ -545,9 +558,9 @@ class _LoginLayoutState extends State<LoginLayout> {
     return Hero(
       tag: tag,
       child: Container(
-          margin: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 27),
           child: Align(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(150)),
                 child: BackdropFilter(
@@ -559,12 +572,12 @@ class _LoginLayoutState extends State<LoginLayout> {
                       onTap: function,
                       child: Container(
                         width: double.infinity,
-                        height: 150,
+                        height: 145,
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
-                            border: Border.all(width: 1, color: Colors.white54),
-                            color: Colors.grey.shade200.withOpacity(0.25)),
+                            border: Border.all(width: 3, color: Colors.white54),
+                            color: Colors.white.withOpacity(0.3)),
                         child: Center(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -605,6 +618,7 @@ class _LoginLayoutState extends State<LoginLayout> {
     );
   }
 
+  bool hasSetProfileInfo = true;
   String schoolName = "TEXAS SCHOOL";
   String LOGIN_SCREEN_HEADER = "Sign in portal";
   String register = "Register";

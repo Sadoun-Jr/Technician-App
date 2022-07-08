@@ -665,7 +665,7 @@ class _PendingAndCompletedOrdersState extends State<PendingAndCompletedOrders> {
     else if (orderAccepted && !orderCancelledByUser && orderComplete) {
       switch (accessedFrom) {
         case 0:
-          return statusClr = Colors.greenAccent.withOpacity(0.75);
+          return statusClr = Colors.greenAccent.withOpacity(0.5);
 
         case 1:
           return statusResponse = 'Completed';
