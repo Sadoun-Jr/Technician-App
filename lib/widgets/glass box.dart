@@ -36,7 +36,7 @@ class FrostedGlassBox extends StatelessWidget {
             //     )),
             Container(
               decoration: BoxDecoration(
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15),
+                  boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.15),
                       blurRadius: 30, offset: Offset(2, 2))],
                   borderRadius: BorderRadius.circular(50.0),
                   border: Border.all(color: Colors.white.withOpacity(0.2),

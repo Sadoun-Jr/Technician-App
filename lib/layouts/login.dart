@@ -79,65 +79,87 @@ class _LoginLayoutState extends State<LoginLayout> {
       },
     ));
   }
+  @override
+  void initState() {
+    super.initState();
+    loginImg = AssetImage('assets/login anim.gif');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    loginImg.evict();
+  }
+
+  final Color _darkTxtClr = HexColor("#96878D");
+  final Color _btnColor = HexColor("#96878D");
+  late AssetImage loginImg;
 
   Widget loginLayout() {
-    return Stack(
-      children: [
-        loginLayoutBackGroundImage(),
-        Align(
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                Hero(
-                  tag: "lottie",
-                  child: SizedBox(
-                    height: 300,
-                    width: 300,
-                    child: Lottie.asset('assets/intro_abstract_anime.json'),
-                  ),
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        );
+        return false;
+      },
+      child: Stack(
+        children: [
+          loginLayoutBackGroundImage(),
+          Align(
+              alignment: Alignment.topCenter,
+              child: Hero(
+                tag: "lottie",
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                      bottom: Radius.elliptical(
+                          MediaQuery.of(context).size.width, 32)),
+                  child: Image(image: loginImg,),
                 ),
-              ],
-            )),
-        Align(
-          child: glassyLoginBox(),
-          alignment: Alignment.bottomCenter,
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 2, color: Colors.brown)
-            // ),
-            width: 310,
-            margin: EdgeInsets.fromLTRB(0, 40, 0, 130),
-            child: FloatingActionButton.extended(
-              heroTag: AppStrings.heroLogin,
-              splashColor: Colors.white,
-              backgroundColor: _primaryColor,
-              label: Text(
-                AppStrings.loginString,
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              onPressed: signIn,
-            ),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 40, 0, 80),
-          child: Align(
+              )),
+          Align(
+            child: glassyLoginBox(),
             alignment: Alignment.bottomCenter,
-            child: TextButton(
-              child: Text(
-                AppStrings.forgotPassword,
-                style: TextStyle(color: _textClr),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // decoration: BoxDecoration(
+              //   border: Border.all(width: 2, color: Colors.brown)
+              // ),
+              width: 310,
+              margin: EdgeInsets.fromLTRB(0, 40, 0, 130),
+              child: FloatingActionButton.extended(
+                heroTag: AppStrings.heroLogin,
+                splashColor: Colors.white,
+                backgroundColor: _btnColor,
+                label: Text(
+                  AppStrings.loginString,
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                onPressed: signIn,
               ),
-              onPressed: () => {},
             ),
           ),
-        )
-        // loginBoxContents(),
-      ],
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 40, 0, 80),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: TextButton(
+                child: Text(
+                  AppStrings.forgotPassword,
+                  style: TextStyle(color: _darkTxtClr),
+                ),
+                onPressed: () => {},
+              ),
+            ),
+          )
+          // loginBoxContents(),
+        ],
+      ),
     );
   }
 
@@ -162,6 +184,7 @@ class _LoginLayoutState extends State<LoginLayout> {
         child: Container(
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
           decoration: BoxDecoration(
+            border: Border.all(width: 3, color: Colors.white),
             borderRadius: BorderRadius.circular(50.0),
           ),
           child: FrostedGlassBox(
@@ -199,13 +222,13 @@ class _LoginLayoutState extends State<LoginLayout> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _borderColor,
+                  color: _darkTxtClr,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.email,
-                color: _borderColor,
+                color: _darkTxtClr,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -231,13 +254,13 @@ class _LoginLayoutState extends State<LoginLayout> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _borderColor,
+                  color: _darkTxtClr,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _borderColor,
+                color: _darkTxtClr,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -285,12 +308,47 @@ class _LoginLayoutState extends State<LoginLayout> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Material(
-        child: Center(
-            child: Container(
-          height: 150,
-          width: 150,
-          child: Lottie.asset('assets/loading.json'),
-        )),
+        child: Stack(
+          children: [
+            Image.asset(
+              "assets/abstract bg.jpg",
+              fit: BoxFit.cover,
+              height: double.infinity,
+              width: double.infinity,
+              alignment: Alignment.center,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 125,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Lottie.asset('assets/loading gear.json',
+                          height: 75,
+                          width: 75,
+                          alignment: Alignment.center,
+                          animate: true),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          "Signing in",
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        )
       ),
     );
 
@@ -328,7 +386,7 @@ class _LoginLayoutState extends State<LoginLayout> {
   void navigateToRegisterPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SelectRegisterMethodLayout()),
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
     );
   }
 
@@ -370,28 +428,30 @@ class _LoginLayoutState extends State<LoginLayout> {
     return FutureBuilder(
       future: initalisePrefs(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            !hasSetProfileInfo) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SetPersonalDetails(
-                      false,
-                      true,
-                      gender: null,
-                      city: null,
-                      age: null,
-                      profilePicLink: null,
-                      firstName: null,
-                      familyName: null,
-                      province: null,
-                      phoneNumber: null,
-                    )));
-          });
-
-          return Text('');
-        } else if (snapshot.connectionState == ConnectionState.done) {
+        // if (snapshot.connectionState == ConnectionState.done &&
+        //     !hasSetProfileInfo) {
+          // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          //   Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (context) => SetPersonalDetails(
+          //             false,
+          //             true,
+          //             gender: null,
+          //             city: null,
+          //             age: null,
+          //             profilePicLink: null,
+          //             firstName: null,
+          //             familyName: null,
+          //             province: null,
+          //             phoneNumber: null,
+          //           )));
+          // });
+          //
+          // return Text('');
+        // }
+        // else
+          if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
               extendBodyBehindAppBar: true,
               drawer: NavDrawer(),

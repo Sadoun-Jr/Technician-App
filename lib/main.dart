@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return LoginLayout();
           } else {
-            return SelectRegisterMethodLayout();
+            return WelcomeScreen();
           }
         },
       ),

@@ -6,7 +6,8 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- User must set profile details before continuing now
+- Updated sign in waiting animation
+- Hero animations in login and register screens etc disabled, because Navigaor pops context not to restart welcome gif
 
 ## (  ) Creating and Styling the layouts
 

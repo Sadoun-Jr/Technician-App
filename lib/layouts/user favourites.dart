@@ -41,7 +41,7 @@ class _UserFavouritesState extends State<UserFavourites> {
       drawer: NavDrawer(),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        leadingWidth: 50,
+        // leadingWidth: 50,
         toolbarHeight: MediaQuery.of(context).size.height / 10,
         backgroundColor: HexColor("#96878D"),
         title: Text("My Favourites"),

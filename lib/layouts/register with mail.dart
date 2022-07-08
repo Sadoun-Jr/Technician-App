@@ -15,6 +15,7 @@ import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/slider.dart';
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
+import 'choose register method.dart';
 
 class RegisterWithMailLayout extends StatefulWidget {
   const RegisterWithMailLayout({Key? key}) : super(key: key);
@@ -51,8 +52,18 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: (loginLayout()),
+      home: WillPopScope(
+        onWillPop: () async{
+          // Navigator.pop(context);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          // );
+          return true;
+        },
+        child: Scaffold(
+          body: (loginLayout()),
+        ),
       ),
     );
   }
