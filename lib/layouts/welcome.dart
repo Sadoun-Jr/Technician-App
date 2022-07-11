@@ -89,7 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             margin: EdgeInsets.only(top: 75),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              // color: Colors.white,
               //   gradient: LinearGradient(
               //     begin: Alignment.topRight,
               //     end: Alignment.bottomLeft,

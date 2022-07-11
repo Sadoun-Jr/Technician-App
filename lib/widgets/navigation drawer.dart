@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technicians/layouts/global%20search.dart';
 import 'package:technicians/layouts/login.dart';
+import 'package:technicians/layouts/payment%20options.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/layouts/stepper.dart';
 import 'package:technicians/layouts/technician%20reviews.dart';
@@ -195,6 +196,23 @@ class _NavDrawerState extends State<NavDrawer> {
                                       color: Colors.black,
                                     ),
                                     title: Text("My Dashboard"),
+                                  ),
+                                ),
+                              ),
+                              Material(
+                                //todo: add confirm logout
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: ()=>{ Navigator.pop(context),
+                                    Navigator.push(context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PaymentOptions()))},
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.credit_card_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    title: Text("Payment"),
                                   ),
                                 ),
                               ),

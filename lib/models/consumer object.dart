@@ -7,25 +7,23 @@ class Consumer {
   int? jobsPaidPhysically;
   int? jobsPaidThroughApp;
   String? profilePicUrl;
-  Widget? image; //TODO: change to bitmap...?
   int? numberOfReviews;
   int? accountCreationTimeStamp;
   String? phoneNumber;
   String? email;
   bool? isVerifiedById;
   int? numberOfFavourites;
-  String? location;
-  String? subLocation;
+  String? location; //todo:  rename to province
+  String? subLocation; // todo: rename to city
   int? age;
   List? listOfFavourites;
-  //String gender;
-  //int numberOfReviewsGiven
+  String gender;
+  int numberOfReviewsGiven;
 
   Consumer({
      required this.firstName,
     required this.familyName,
     required this.userUid,
-    required this.image,
     required this.numberOfReviews,
     required this.jobsPaidPhysically,
     required this.jobsPaidThroughApp,
@@ -37,5 +35,8 @@ class Consumer {
     required this.profilePicUrl,
     required this.age,
     required this.numberOfFavourites,
-    required this.location});
+    required this.location,
+    required this.gender,
+    required this.listOfFavourites,
+   required this.numberOfReviewsGiven,});
 }

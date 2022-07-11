@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
@@ -15,7 +17,8 @@ import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/slider.dart';
 import '../utils/strings enum.dart';
 import '../widgets/logo.dart';
-import 'choose register method.dart';
+import 'intro onboarding.dart';
+import 'welcome.dart';
 
 class RegisterWithMailLayout extends StatefulWidget {
   const RegisterWithMailLayout({Key? key}) : super(key: key);
@@ -28,12 +31,14 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   final Color _textColor = HexColor("#052163");
   final Color _borderColor = HexColor("#0d3fb5");
   final Color _primaryColor = HexColor("##1651db");
+  final Color _darkTxtClr = HexColor("#96878D");
 
   final formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   late var prefs;
+  bool isRegistering = false;
 
   @override
   void initState() {
@@ -62,7 +67,47 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
           return true;
         },
         child: Scaffold(
-          body: (loginLayout()),
+          body: isRegistering ?  SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: [
+                Image.asset(
+                  "assets/abstract bg.jpg",
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Lottie.asset('assets/loading gear.json',
+                            height: 75,
+                            width: 75,
+                            alignment: Alignment.bottomCenter,
+                            animate: true),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            "Creating account",
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ) : (loginLayout()),
         ),
       ),
     );
@@ -94,32 +139,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
             alignment: Alignment.bottomCenter,
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
 
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(50, 0, 50, 70),
-            child: Visibility(
-              visible:MediaQuery.of(context).viewInsets.bottom == 0,
-              child: FloatingActionButton.extended(
-                heroTag: AppStrings.heroRegister,
-                splashColor: Colors.white,
-                backgroundColor: _borderColor,
-                label: Text(
-                  AppStrings.createAccountButton,
-                  style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                onPressed: () => {
-                  signUp()
-                },
-                // onPressed: signIn,
-              ),
-            ),
-          ),
-        ),
         // loginBoxContents(),
       ],
     );
@@ -129,7 +149,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
     return Hero(
       tag: "bg",
       child: Image.asset(
-        "assets/cyan_bg.jpg",
+        "assets/abstract bg.jpg",
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -144,20 +164,14 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50.0),
       ),
-      child: Hero(
-        tag: "box",
-        child: Material(
-          color: Colors.transparent,
-          child: FrostedGlassBox(
-            450,
-            double.infinity,
-            Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                    child: loginBoxContents())),
-          ),
-        ),
+      child: FrostedGlassBox(
+        450,
+        double.infinity,
+        Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: loginBoxContents())),
       ),
     );
   }
@@ -172,7 +186,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
           child: Text(
             AppStrings.registerNewAccountString,
             style: TextStyle(
-                fontSize: 24, color: _borderColor, fontWeight: FontWeight.bold),
+                fontSize: 24, color: _darkTxtClr, fontWeight: FontWeight.bold),
           ),
         ),
         Container(
@@ -194,21 +208,21 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                   borderSide: BorderSide(
-                    color: _borderColor,
+                    color: _darkTxtClr,
                     width: 1.25,
                   ),
                 ),
                 prefixIcon: Icon(
                   Icons.email,
-                  color: _borderColor,
+                  color: _darkTxtClr,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 labelText: AppStrings.emailString,
-                labelStyle: TextStyle(color: _textColor),
+                labelStyle: TextStyle(color: _darkTxtClr),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _borderColor, width: 2.5),
+                  borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
                   borderRadius: BorderRadius.circular(25.0),
                 ),
               ),
@@ -232,21 +246,21 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _borderColor,
+                  color: _darkTxtClr,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _borderColor,
+                color: _darkTxtClr,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.passwordString,
-              labelStyle: TextStyle(color: _textColor),
+              labelStyle: TextStyle(color: _darkTxtClr),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _borderColor, width: 2.5),
+                borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -269,22 +283,48 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
                 borderSide: BorderSide(
-                  color: _borderColor,
+                  color: _darkTxtClr,
                   width: 1.25,
                 ),
               ),
               prefixIcon: Icon(
                 Icons.lock,
-                color: _borderColor,
+                color: _darkTxtClr,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
               labelText: AppStrings.confirmPasswordString,
-              labelStyle: TextStyle(color: _textColor),
+              labelStyle: TextStyle(color: _darkTxtClr),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _borderColor, width: 2.5),
+                borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 30,),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            margin: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+            child: Visibility(
+              visible:MediaQuery.of(context).viewInsets.bottom == 0,
+              child: FloatingActionButton.extended(
+                heroTag: AppStrings.heroRegister,
+                splashColor: Colors.white,
+                backgroundColor: _darkTxtClr,
+                label: Text(
+                  AppStrings.createAccountButton,
+                  style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                onPressed: () => {
+                  signUp()
+                },
+                // onPressed: signIn,
               ),
             ),
           ),
@@ -294,6 +334,70 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
   }
 
   Future signUp() async {
+
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // debugPrint('connected');
+      }
+    } on SocketException catch (_) {
+      Fluttertoast.showToast(
+          msg: "No internet connection", backgroundColor: Colors.red);
+      return;
+    }
+
+    setState(() => isRegistering = true);
+
+    // showDialog(context: context, builder:(BuildContext context) {
+    //   return Dialog(
+    //     backgroundColor: Colors.transparent,
+    //     child: Container(
+    //         height: 200,
+    //         width: MediaQuery.of(context).size.width,
+    //         // margin:
+    //         // EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+    //         child: Align(
+    //             alignment: Alignment.topCenter,
+    //             child: ClipRRect(
+    //               borderRadius: BorderRadius.all(Radius.circular(30)),
+    //               child: BackdropFilter(
+    //                 filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.5),
+    //                 child: Container(
+    //                   padding: EdgeInsets.all(25),
+    //                   height: double.infinity,
+    //                   width: double.infinity,
+    //                   decoration: BoxDecoration(
+    //                       borderRadius: BorderRadius.all(Radius.circular(30)),
+    //                       border: Border.all(width: 2, color: Colors.white),
+    //                       color: Colors.grey.shade200.withOpacity(0.25)),
+    //                   child: Column(
+    //                     children: [
+    //                       Align(
+    //                           alignment: Alignment.topCenter,
+    //                           child: Text(
+    //                             "Delete profile picture?",
+    //                             style: TextStyle(
+    //                                 color: Colors.white, fontSize: 18),
+    //                           )),
+    //                       SizedBox(
+    //                         height: 12.5,
+    //                       ),
+    //                       Expanded(
+    //                         child: Row(
+    //                           mainAxisAlignment:
+    //                           MainAxisAlignment.spaceAround,
+    //                           children: [
+    //                           ],
+    //                         ),
+    //                       )
+    //                     ],
+    //                   ),
+    //                 ),
+    //               ),
+    //             ))),
+    //   );
+    // },);
+
     await prefs.setBool(AppStrings.isSetBasicInfo, false);
 
     Fluttertoast.cancel();
@@ -337,12 +441,21 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
       backgroundColor: Colors.green, toastLength: Toast.LENGTH_SHORT);
 
+      // Navigator.pop(context);
+
       Navigator.push(context, MaterialPageRoute(builder: (context) =>
-          SetPersonalDetails(false, true, gender: null, city: null, age: null,
-            profilePicLink: null, firstName: null, familyName: null, province: null,
-            phoneNumber: null,)));
+      IntoOnboarding()));
+
+      // Navigator.push(context, MaterialPageRoute(builder: (context) =>
+      //     SetPersonalDetails(false, true, gender: null, city: null, age: null,
+      //       profilePicLink: null, firstName: null, familyName: null, province: null,
+      //       phoneNumber: null,)));
+
 
     } catch (e) {
+      // Navigator.pop(context);
+      setState(() => isRegistering = false);
+
       debugPrint("Sign up error: " + e.toString());
       Fluttertoast.showToast(msg: AppStrings.userRegistered,
           backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);

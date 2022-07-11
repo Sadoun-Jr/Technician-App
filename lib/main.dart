@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/login.dart';
 import 'package:technicians/layouts/mark%20order%20as%20complete.dart';
 import 'package:technicians/layouts/portfolio%20summary.dart';
@@ -10,6 +9,8 @@ import 'package:technicians/layouts/user%20favourites.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+
+import 'layouts/welcome.dart';
 
 
 Future main() async {

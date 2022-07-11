@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:technicians/layouts/choose%20register%20method.dart';
 import 'package:technicians/layouts/payment%20options.dart';
 import 'package:technicians/layouts/pending%20and%20completed%20orders.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
 import 'package:technicians/layouts/stats.dart';
 import 'package:technicians/layouts/stepper.dart';
+import 'package:technicians/layouts/welcome.dart';
 import 'package:technicians/utils/hex%20colors.dart';
 import 'package:technicians/widgets/glass%20box.dart';
 import 'package:technicians/widgets/navigation%20drawer.dart';
@@ -45,7 +45,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           return selectionScreen();
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
-            height: MediaQuery.of(context).size.height - 125,
+            height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
@@ -79,6 +79,7 @@ class _LoginLayoutState extends State<LoginLayout> {
       },
     ));
   }
+
   @override
   void initState() {
     super.initState();
@@ -97,7 +98,7 @@ class _LoginLayoutState extends State<LoginLayout> {
 
   Widget loginLayout() {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         Navigator.pop(context);
         Navigator.push(
           context,
@@ -108,17 +109,17 @@ class _LoginLayoutState extends State<LoginLayout> {
       child: Stack(
         children: [
           loginLayoutBackGroundImage(),
-          Align(
-              alignment: Alignment.topCenter,
-              child: Hero(
-                tag: "lottie",
-                child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                      bottom: Radius.elliptical(
-                          MediaQuery.of(context).size.width, 32)),
-                  child: Image(image: loginImg,),
-                ),
-              )),
+          // Align(
+          //     alignment: Alignment.topCenter,
+          //     child: Hero(
+          //       tag: "lottie",
+          //       child: ClipRRect(
+          //         borderRadius: BorderRadius.vertical(
+          //             bottom: Radius.elliptical(
+          //                 MediaQuery.of(context).size.width, 32)),
+          //         child: Image(image: loginImg,),
+          //       ),
+          //     )),
           Align(
             child: glassyLoginBox(),
             alignment: Alignment.bottomCenter,
@@ -137,8 +138,8 @@ class _LoginLayoutState extends State<LoginLayout> {
                 backgroundColor: _btnColor,
                 label: Text(
                   AppStrings.loginString,
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 onPressed: signIn,
               ),
@@ -184,7 +185,7 @@ class _LoginLayoutState extends State<LoginLayout> {
         child: Container(
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 60),
           decoration: BoxDecoration(
-            border: Border.all(width: 3, color: Colors.white),
+            border: Border.all(width: 0, color: Colors.white),
             borderRadius: BorderRadius.circular(50.0),
           ),
           child: FrostedGlassBox(
@@ -236,7 +237,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               labelText: AppStrings.emailString,
               labelStyle: TextStyle(color: Colors.black54),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _borderColor, width: 2.5),
+                borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -268,7 +269,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               labelText: AppStrings.passwordString,
               labelStyle: TextStyle(color: Colors.black54),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _borderColor, width: 2.5),
+                borderSide: BorderSide(color: _darkTxtClr, width: 2.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),
@@ -304,68 +305,94 @@ class _LoginLayoutState extends State<LoginLayout> {
       return;
     }
 
+    //show loading animation while signing in
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Material(
-        child: Stack(
-          children: [
-            Image.asset(
-              "assets/abstract bg.jpg",
-              fit: BoxFit.cover,
-              height: double.infinity,
-              width: double.infinity,
-              alignment: Alignment.center,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 125,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Lottie.asset('assets/loading gear.json',
-                          height: 75,
-                          width: 75,
-                          alignment: Alignment.center,
-                          animate: true),
-                    ),
+          child: Stack(
+        children: [
+          Image.asset(
+            "assets/abstract bg.jpg",
+            fit: BoxFit.cover,
+            height: double.infinity,
+            width: double.infinity,
+            alignment: Alignment.center,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height - 125,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Lottie.asset('assets/loading gear.json',
+                        height: 75,
+                        width: 75,
+                        alignment: Alignment.center,
+                        animate: true),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          "Signing in",
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ),
-                ],
-              ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "Signing in",
+                        style: TextStyle(
+                            color: Colors.black54, fontWeight: FontWeight.bold),
+                      )),
+                ),
+              ],
             ),
-          ],
-        )
-      ),
+          ),
+        ],
+      )),
     );
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
+          email: _emailController.text.trim().toLowerCase(),
           password: _passwordController.text.trim());
 
       var collection = FirebaseFirestore.instance.collection("users");
       User? user = FirebaseAuth.instance.currentUser;
-      var docSnapshot = await collection.doc(user?.uid).get();
-      debugPrint(
-          "Role is " "${docSnapshot["role"]} for user ${docSnapshot["email"]}");
 
-      if (FirebaseAuth.instance.currentUser != null) {
-        prefs!.setBool(AppStrings.isFirstTimeUser, true);
-      }
+      await collection
+          .where(AppStrings.userUidKey, isEqualTo: user!.uid)
+          .get()
+          .then((value) async {
+        //get user info and save it in prefs
+        for (var element in value.docs) {
+          await prefs!.setString(AppStrings.currentUserFirstName,
+              element.data()[AppStrings.firstNameKey] ?? '');
+          await prefs!.setString(AppStrings.currentUserFamilyName,
+              element.data()[AppStrings.familyNameKey] ?? '');
+          await prefs!.setString(AppStrings.currentUserProfilePicLink,
+              element.data()[AppStrings.imageKey] ?? 'na');
+          await prefs!.setString(AppStrings.currentUserGender,
+              element.data()[AppStrings.genderKey] ?? '');
+          await prefs!.setInt(AppStrings.currentUserAge,
+              element.data()[AppStrings.ageKey] ?? 0);
+          await prefs!.setString(AppStrings.currentUserProvince,
+              element.data()[AppStrings.locationKey] ?? '');
+          await prefs!.setString(AppStrings.currentUserCity,
+              element.data()[AppStrings.subLocationKey] ?? '');
+          await prefs!.setInt(AppStrings.currentUserPhoneNumber,
+              element.data()[AppStrings.currentUserPhoneNumber] ?? 0);
+          await prefs!.setString(AppStrings.currentUserAddress,
+              element.data()[AppStrings.addressKey] ?? '');
+        }
+
+        //check if user is first time or not and state it
+        prefs!.setBool(
+            AppStrings.isFirstTimeUser,
+            prefs!.getString(AppStrings.currentUserFirstName) == ''
+                ? true
+                : false);
+      });
 
       Fluttertoast.showToast(
           backgroundColor: Colors.green,
@@ -379,6 +406,8 @@ class _LoginLayoutState extends State<LoginLayout> {
           msg: e.toString(),
           toastLength: Toast.LENGTH_LONG);
     }
+
+    //user logged in, get info from db and fill prefs
 
     Navigator.pop(context);
   }
@@ -413,14 +442,20 @@ class _LoginLayoutState extends State<LoginLayout> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-  String _currentUserFirstName = "";
-  String _currentUserFamilyName = "";
-  String _currentUserProfilePicLink = "";
   SharedPreferences? prefs;
+  bool accessDataAnimation = true;
 
   Future<void> initalisePrefs() async {
     prefs = await SharedPreferences.getInstance();
     hasSetProfileInfo = prefs!.getBool(AppStrings.hasSetProfileInfo)!;
+  }
+
+  void getUserData() {
+    prefs!.getString(AppStrings.currentUserFirstName);
+    prefs!.getString(AppStrings.currentUserFamilyName);
+    prefs!.getString(AppStrings.currentUserProfilePicLink);
+    debugPrint('link method: ${prefs!.getString(AppStrings.currentUserProfilePicLink)}');
+
   }
 
   Widget selectionScreen() {
@@ -428,30 +463,33 @@ class _LoginLayoutState extends State<LoginLayout> {
     return FutureBuilder(
       future: initalisePrefs(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        //========disabled for testing purposes only, its working===========
         // if (snapshot.connectionState == ConnectionState.done &&
         //     !hasSetProfileInfo) {
-          // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          //   Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (context) => SetPersonalDetails(
-          //             false,
-          //             true,
-          //             gender: null,
-          //             city: null,
-          //             age: null,
-          //             profilePicLink: null,
-          //             firstName: null,
-          //             familyName: null,
-          //             province: null,
-          //             phoneNumber: null,
-          //           )));
-          // });
-          //
-          // return Text('');
+        // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => SetPersonalDetails(
+        //             false,
+        //             true,
+        //             gender: null,
+        //             city: null,
+        //             age: null,
+        //             profilePicLink: null,
+        //             firstName: null,
+        //             familyName: null,
+        //             province: null,
+        //             phoneNumber: null,
+        //           )));
+        // });
+        //
+        // return Text('');
         // }
         // else
-          if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          getUserData();
+          debugPrint('link: ${prefs!.getString(AppStrings.currentUserProfilePicLink)}');
           return Scaffold(
               extendBodyBehindAppBar: true,
               drawer: NavDrawer(),
@@ -473,8 +511,7 @@ class _LoginLayoutState extends State<LoginLayout> {
                         : Container(
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border:
-                                    Border.all(width: 2, color: Colors.white)),
+                                ),
                             child: CircleAvatar(
                               backgroundColor: Colors.white70,
                               maxRadius: 28.5,
@@ -577,7 +614,7 @@ class _LoginLayoutState extends State<LoginLayout> {
                 alignment: Alignment.center,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height - 125,
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [

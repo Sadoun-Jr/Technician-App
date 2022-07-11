@@ -39,7 +39,7 @@ class FrostedGlassBox extends StatelessWidget {
                   boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.15),
                       blurRadius: 30, offset: Offset(2, 2))],
                   borderRadius: BorderRadius.circular(50.0),
-                  border: Border.all(color: Colors.white.withOpacity(0.2),
+                  border: Border.all(color: Colors.white,
                       width: 3.0),
                   gradient: LinearGradient(begin: Alignment.topLeft,
                       end: Alignment.bottomRight, colors: [
