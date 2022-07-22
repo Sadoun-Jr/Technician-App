@@ -496,7 +496,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               appBar: AppBar(
                 title: Row(
                   children: [
-                    prefs!.getString(AppStrings.currentUserProfilePicLink)! ==
+                    prefs!.getString(AppStrings.currentUserProfilePicLink) ==
                             'na'
                         ? Container(
                             height: 45.5,

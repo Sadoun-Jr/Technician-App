@@ -352,7 +352,7 @@ class _StepperProcessState extends State<StepperProcess>
               }
             : null,
         child: Icon(
-          activeStep == 3 ? Icons.upload : Icons.navigate_next,
+          activeStep == 3 ? Icons.done : Icons.navigate_next,
           size: 35,
         ),
       ),

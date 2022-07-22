@@ -193,7 +193,7 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Form(
-            key: formKey,
+            // key: formKey,
             child: TextFormField(
               textInputAction: TextInputAction.next,
               controller: emailController,
@@ -397,21 +397,25 @@ class _RegisterWithMailLayoutState extends State<RegisterWithMailLayout> {
     //             ))),
     //   );
     // },);
+    prefs = await SharedPreferences.getInstance();
 
     await prefs.setBool(AppStrings.isSetBasicInfo, false);
 
     Fluttertoast.cancel();
-    final isValid = formKey.currentState!.validate();
 
-    if (!isValid) {
-      Fluttertoast.showToast(msg: "Fill the form correctly",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red
-      );
-      return;
-    }
 
     try {
+
+      // final isValid = formKey.currentState!.validate();
+      //
+      // if (!isValid) {
+      //   Fluttertoast.showToast(msg: "Fill the form correctly",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       backgroundColor: Colors.red
+      //   );
+      //   return;
+      // }
+
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: emailController.text.trim(),

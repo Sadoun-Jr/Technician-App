@@ -19,8 +19,8 @@ class _IntoOnboardingState extends State<IntoOnboarding> {
           rtl: true,
           rawPages: [
             singleIntroPage('أهلا و سهلا', 'أهلا بيك في عيلة صلحلي', 'المكان الصح عشان تصلح أي حاجة في بيتك','assets/Hello.png'),
-            singleIntroPage('حرية الاختيار', 'اختار الجهاز اللي عايز يتصلح أو اختار صنايعي معين', '','assets/Broken light bulb.png'),
-            singleIntroPage('وصف المشكلة', 'اكتب وصف المشكلة و حط صور ليها براحتك', 'و اختار الصنايعي اللي انت عايزه من الاختيارات','assets/Select.png'),
+            // singleIntroPage('حرية الاختيار', 'اختار الجهاز اللي عايز يتصلح أو اختار صنايعي معين', '','assets/Broken light bulb.png'),
+            singleIntroPage('وصف المشكلة', 'اكتب وصف المشكلة و حط صور ليها براحتك', 'و اختار الصنايعي اللي انت عايزه من الاختيارات','assets/Broken light bulb.png'),
             singleIntroPage('سهولة الحساب', 'الصنايعي بيحددلك السعر و ليك حرية القبول أو الرفض', 'بعد ما بيخلص شغل هتدفع الرقم اللي متفقين عليه','assets/Wallet.png'),
             singleIntroPage('تقييم', 'متنساش تقيم الصنايعي بعد الشغل عشان تساعد غيرك', 'و لو في أي مشكلة تقدر تبلغ عن الصنايعي','assets/Rate.png'),
             singleIntroPage('يلا بينا', 'عرفنا بنفسك شوية عشان نبتدي', 'املا البيانات اللي مطلوبة فالصفحة اللي جاية','assets/Fill out.png'),

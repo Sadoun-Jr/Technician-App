@@ -515,7 +515,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                                 backgroundImage:
                                                                     NetworkImage(
                                                                         prefs?.getString(
-                                                                            AppStrings.currentUserProfilePicLink)),
+                                                                            AppStrings.currentUserProfilePicLink) ?? 'na'),
                                                               ))),
                                                     ),
 
@@ -616,6 +616,7 @@ class _SetPersonalDetailsState extends State<SetPersonalDetails> {
                                                 SizedBox(
                                                   height: 10,
                                                 ),
+
                                                 //====first and family names====
                                                 Row(
                                                   children: [
