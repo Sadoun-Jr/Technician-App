@@ -371,6 +371,7 @@ class _StepperProcessState extends State<StepperProcess>
                 // Decrement activeStep, when the previous button is tapped. However, check for lower bound i.e., must be greater than 0.
                 if (activeStep > 0) {
                   if (_isHiringFromFavs) {
+
                     setState(() {
                       if (activeStep == 3) {
                         activeStep = activeStep - 2;
