@@ -6,9 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- When user logs in now, his data is immediately retrieved from DB and put in SP, this is for personal details page
-- Added visible indicator when user creating account 
-- Added onboarding introduction screen
+- Added onboarding option 2 layout
 
 [comment]: <> (## &#40;  &#41; Creating and Styling the layouts)
 
