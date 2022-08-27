@@ -1,6 +1,13 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:technicians/layouts/set%20personal%20details.dart';
+
+import '../utils/strings common issues.dart';
+import '../utils/strings enum.dart';
 
 class OnboardingOption2 extends StatefulWidget {
   const OnboardingOption2({Key? key}) : super(key: key);
@@ -122,6 +129,81 @@ class _OnboardingOption2State extends State<OnboardingOption2> {
         alignment: Alignment.center,
       ),
     );
+  }
+
+  Future<void> insertMockIssues() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    List<double> listOfRatings = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
+    for (int i = 0; i < 300; i++) {
+      Random random = Random();
+      List booleanList = [true, false];
+      bool randomBool = (booleanList.toList()..shuffle()).first;
+      int randomTime = random.nextInt(123456789);
+      double randomDouble = double.parse(random.nextInt(100).toString());
+
+      var randomIssueCategory = (booleanList.toList()..shuffle()).first
+          ? (CommonIssues.listOfTechnicianCategories.toList()..shuffle()).first
+          : (CommonIssues.listOfAppliancesCategories.toList()..shuffle()).first;
+
+      var firstName = (AppStrings.firstNamesList.toList()..shuffle()).first;
+      var lastName = (AppStrings.lastNamesList.toList()..shuffle()).first;
+
+      List<String> listOfAllUsers = [];
+      List<String> listOfAllTechnicians = [];
+      var issuesCollection = FirebaseFirestore.instance.collection("issues");
+
+      await FirebaseFirestore.instance.collection("users").get().then((value) => {
+        for (var element in value.docs)
+          {listOfAllUsers.add(element.data()[AppStrings.userUidKey])}
+      });
+
+      await FirebaseFirestore.instance
+          .collection("technicians")
+          .get()
+          .then((value) => {
+        for (var element in value.docs)
+          {
+            listOfAllTechnicians
+                .add(element.data()[AppStrings.technicianUid])
+          }
+      });
+
+      await issuesCollection.add({
+        AppStrings.userUidKey: " ",
+      }).then((value) async => await FirebaseFirestore.instance
+          .collection("issues")
+          .doc(value.id)
+          .set({
+        AppStrings.issueCategoryKey: randomIssueCategory,
+        AppStrings.issueDescKey:
+        (CommonIssues.mapAllCommonIssues[randomIssueCategory]!.toList()
+          ..shuffle())
+            .first,
+        AppStrings.isCompletedKey: randomBool,
+        AppStrings.technicianRatingKey:
+        (listOfRatings.toList()..shuffle()).first,
+        AppStrings.technicianReviewKey:
+        (AppStrings.listOfReviews.toList()..shuffle()).first,
+        AppStrings.timeCompletedKey: randomTime + random.nextInt(12345659),
+        AppStrings.timeRequestedKey: randomTime,
+        AppStrings.paymentMethodKey: randomBool ? "In App" : "Physical",
+        AppStrings.priceKey: randomDouble,
+        AppStrings.issueUidKey: value.id,
+        AppStrings.isEmergencyKey: randomBool,
+        AppStrings.isPaidKey: randomBool,
+        AppStrings.issuedByKey: ((listOfAllUsers).toList()..shuffle()).first,
+        AppStrings.isAcceptedByTechnicianKey:
+        (booleanList.toList()..shuffle()).first,
+        AppStrings.isCanceledByUserKey:
+        (booleanList.toList()..shuffle()).first,
+        AppStrings.isTerminatedMidWork:
+        (booleanList.toList()..shuffle()).first,
+        AppStrings.issuedToKey:
+        (listOfAllTechnicians.toList()..shuffle()).first
+      }));
+    }
   }
 
 }

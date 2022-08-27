@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added onboarding option 2 layout
+- Added function to insert array of random issues
 
 [comment]: <> (## &#40;  &#41; Creating and Styling the layouts)
 
