@@ -6,7 +6,7 @@ I will add various info down as I think of it<br />
 
 ## ChangeLog
 
-- Added function to insert array of random issues
+- Adjusted onboarding 2 to preload data
 
 [comment]: <> (## &#40;  &#41; Creating and Styling the layouts)
 
