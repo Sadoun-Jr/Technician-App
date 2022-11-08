@@ -4,6 +4,9 @@ Find various technicians to get the job done<br />
 <br />
 I will add various info down as I think of it<br />
 
+##DEMO
+[![Demo](https://imgur.com/AofUdPl)]
+
 ## ChangeLog
 
 - Adjusted onboarding 2 to preload data
@@ -94,14 +97,10 @@ I will add various info down as I think of it<br />
 
 ## Known bugs/issues:
 
-1. Added ability to delete profile pic
-2. Added drop down option for age and province
-3. Added city and address
-4. Styled profile info page
-5. KNOWN BUG: city dropdown button error if re-select province, used IgnorePointer for now
-6. KNOWN BUG: prefs profile pic link doesn't switch to null when deleting image, look into changing it to ""
-7. Deleting the profile picture will completely delete it even if the user doesn't save changes
-8. When the user logs in, the profile pic and name aren't retrieved yet and displayed as empty in the dashboard page
+. KNOWN BUG: city dropdown button error if re-select province, used IgnorePointer for now
+. KNOWN BUG: prefs profile pic link doesn't switch to null when deleting image, look into changing it to ""
+. Deleting the profile picture will completely delete it even if the user doesn't save changes
+. When the user logs in, the profile pic and name aren't retrieved yet and displayed as empty in the dashboard page
 
 
 [comment]: <> (## New things I learned:)
@@ -111,9 +110,6 @@ I will add various info down as I think of it<br />
 - Add firebase app-check
 - Add google fonts
 - Add facebook login
-- Add payment
-- Add user details like location etc when creating acc.
-- Add zoom drawer package
 
 [comment]: <> (Visit Facebook Developer Account and click on the app you have created, )
 
